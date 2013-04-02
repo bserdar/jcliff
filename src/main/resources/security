@@ -1,0 +1,49 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=security
+getContents=/subsystem=security:read-resource(recursive=true)
+client.preprocess.strip=/security
+server.preprocess.strip=/security-domain
+
+match.addSecurityDomain=add:/*
+addSecurityDomain.precedence=50
+addSecurityDomain.rule.1=/subsystem=security/security-domain=${name(.)}:add
+addSecurityDomain.refresh=true
+
+match.removeSecurityDomain=remove:/*
+removeSecurityDomain.precedence=50
+removeSecurityDomain.rule.1=/subsystem=security/security-domain=${name(.)}:remove
+removeSecurityDomain.refresh=true
+
+match.addLoginModule=add:/*/authentication/*/*
+addLoginModule.precedence=55
+addLoginModule.rule.1=/subsystem=security/security-domain=${name(../../..)}/authentication=classic:add(login-modules=${value(.)})
+
+match.modifyLoginModule=modify:/*/authentication/*/*
+modifyLoginModule.precedence=55
+modifyLoginModule.rule.1=/subsystem=security/security-domain=${name(../../..)}/authentication=classic:remove
+modifyLoginModule.rule.2=/subsystem=security/security-domain=${name(../../..)}/authentication=classic:add(login-modules=${value(.)})
+modifyLoginModule.refresh=true
+
+# Rules that don't do anything. They are here only to prevent "No rules for diffs" errors.
+match.addLoginModuleNoAction1=add:/*/authentication/classic
+match.addLoginModuleNoAction2=add:/*/authentication/classic/login-modules/*
+match.modifyLoginModuleNoAction1=modify:/*
+match.modifyLoginModuleNoAction2=modify:/*/authentication
+
+

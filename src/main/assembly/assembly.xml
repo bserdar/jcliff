@@ -1,0 +1,40 @@
+<assembly>
+    <id>dist</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+          <directory>${project.basedir}</directory>
+          <outputDirectory>/</outputDirectory>
+          <includes>
+              <include>README*</include>
+              <include>COPYING*</include>
+              <include>INSTALL**</include>
+              <include>jcliff</include>
+          </includes>
+        </fileSet>
+        <fileSet>
+          <directory>${project.build.directory}</directory>
+          <outputDirectory>/</outputDirectory>
+          <includes>
+             <include>*.jar</include>
+          </includes>
+        </fileSet>
+        <fileSet>
+          <directory>${project.build.directory}/dependency</directory>
+          <outputDirectory>/</outputDirectory>
+          <includes>
+             <include>*.jar</include>
+          </includes>
+        </fileSet>
+        <fileSet>
+          <directory>${project.basedir}/src/main/resources</directory>
+          <outputDirectory>/rules</outputDirectory>
+          <includes>
+             <include>*</include>
+          </includes>
+        </fileSet>
+    </fileSets>
+</assembly>
+

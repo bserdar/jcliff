@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+
+    This file is part of jcliff.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.redhat.util</groupId>
+  <artifactId>jcliff</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>JBoss configuration client front-end</name>
+  <developers>
+    <developer>
+      <name>Burak Serdar</name>
+      <email>bserdar@redhat.com</email>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Marek Paterczyk</name>
+      <email>mpatercz@redhat.com</email>
+    </contributor>
+    <contributor>
+      <name>Ben Rose</name>
+      <email>brose@redhat.com</email>
+    </contributor>
+  </contributors>
+  <dependencies>
+        <dependency>
+            <groupId>com.google.code.cookcc</groupId>
+            <artifactId>cookcc</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-dmr</artifactId>
+            <version>1.1.0.Final</version>
+        </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+               <goal>copy-dependencies</goal>
+            </goals>
+          </execution>
+         </executions>
+         <configuration>
+         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>assembly</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rpm-maven-plugin</artifactId>
+        <version>2.1-alpha-2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>rpm</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <copyright>2013, Red Hat, Inc. and/or its affiliates.</copyright>
+          <name>${project.artifactId}</name>
+          <release>1</release>
+          <group>Applications/File</group>
+          <specfileName>redhat-sd-${project.artifactId}.spec</specfileName>
+          <defaultDirmode>755</defaultDirmode>
+          <defaultGroupname>jboss</defaultGroupname>
+          <defaultUsername>jboss</defaultUsername>
+          <mappings>
+            <mapping>
+              <directory>/usr/share/jcliff-${project.version}</directory>
+              <filemode>755</filemode>
+            </mapping>
+            <mapping>
+              <directory>/usr/share/jcliff-${project.version}</directory>
+              <sources>
+                <source>
+                  <location>target/${project.build.finalName}.${project.packaging}</location>
+                </source>
+                <source>
+                  <location>target/dependency</location>
+                </source>
+              </sources>
+            </mapping>
+            <mapping>
+              <directory>/usr/share/jcliff-${project.version}/rules</directory>
+              <filemode>755</filemode>
+            </mapping>
+            <mapping>
+              <directory>/usr/share/jcliff-${project.version}/rules</directory>
+              <sources>
+                <source>
+                  <location>src/main/resources</location>
+                  <includes>
+                     <include>*</include>
+                  </includes>
+                </source>
+              </sources>
+            </mapping>
+            <mapping>
+              <directory>/usr/share/jcliff-${project.version}</directory>
+              <filemode>755</filemode>
+              <sources>
+                <source>
+                  <location>jcliff</location>
+                </source>
+              </sources>
+            </mapping>
+            <mapping>
+              <directory>/usr/bin</directory>
+              <sources>
+                 <softlinkSource>
+                     <destination>jcliff</destination>
+                     <location>/usr/share/jcliff-${project.version}/jcliff</location>
+                 </softlinkSource>
+              </sources>
+            </mapping>
+          </mappings>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+     <rpm.release>1</rpm.release>
+  </properties>
+</project>

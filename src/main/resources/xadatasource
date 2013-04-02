@@ -1,0 +1,55 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=xadatasource
+getContents=/subsystem=datasources:read-children-resources(child-type=xa-data-source)
+server.preprocess.prepend=/xadatasource
+
+match.add=add:/xadatasource/*
+add.rule.1=xa-data-source add --name=${name(.)} --jndi-name=${value(jndi-name)} --driver-name=${value(driver-name)} 
+add.rule.2=xa-data-source enable --name=${name(.)}
+add.precedence=50
+add.refresh=true
+
+
+match.addXAProperty=add:/xadatasource/*/xa-datasource-properties/*
+addXAProperty.rule.1=/subsystem=datasources/xa-data-source=${name(../..)}/xa-datasource-properties=${name(.)}:add(value=${value(value)})
+addXAProperty.precedence=70
+
+match.setXAProperty=modify:/xadatasource/*/xa-datasource-properties/*
+setXAProperty.rule.1=/subsystem=datasources/xa-datasource=${name(../..)}/xa-datasource-properties=${name(.)}:remove
+setXAProperty.rule.2=/subsystem=datasources/xa-datasource=${name(../..)}/xa-datasource-properties=${name(.)}:add(value=${value(.)})
+setXAProperty.precedence=70
+
+match.removeXAProperty=remove:/xadatasource/*/xa-datasource-properties/*
+removeXAProperty.rule.1=/subsystem=datasources/xa-datasource=${name(../..)}/xa-datasource-properties=${name(.)}:remove
+removeXAProperty.precedence=80
+
+
+match.modify=modify:/xadatasource/*/*
+modify.rule.1=/subsystem=datasources/xa-data-source=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modify.precedence=50
+
+
+match.delete=remove:/xadatasource/*
+delete.rule.1=xa-data-source disable --name=${name(.)}
+delete.rule.2=xa-data-source remove --name=${name(.)}
+delete.refresh=true
+
+
+match.undefine=undefine:/xadatasource/*/*
+undefine.rule.1=/subsystem=datasources/xa-data-source=${name(..)}:undefine-attribute(name=${name(.)})
