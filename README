@@ -1,13 +1,13 @@
-EAP6 configuration sucks if you intend to use puppet. The command line
-client provides an interactive front-end for configuration tasks, not
-easily called from puppet scripts. There is no easy way to retrieve
-what's already configured, find the differences between the current
-state and the desired state, and come up with a way to implement
-those. Jcliff does exactly that. User supplies the desired
-configuration, jcliff executes the jboss client to retrieve the
-current state, derive deltas, and apply them. What kind of delta
-results in what kind of action is defined using a property file based
-rule language.
+EAP6 configuration is difficult if you intend to use puppet. The
+command line client provides an interactive front-end for
+configuration tasks, not easily called from puppet scripts. There is
+no easy way to retrieve what's already configured, find the
+differences between the current state and the desired state, and come
+up with a way to implement those. Jcliff does exactly that. User
+supplies the desired configuration, jcliff executes the jboss client
+to retrieve the current state, derive deltas, and apply them. What
+kind of delta results in what kind of action is defined using a
+property file based rule language.
 
 JBoss configuration model:
 
