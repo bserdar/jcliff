@@ -146,6 +146,7 @@ public class Main {
 
                 for(String system:rules.getSystemNames()) {
                     if(systemNames.contains(system)) {
+                        ctx.cmdsRun=new HashSet<Script>();
                         ctx.log("Processing "+system);
                         Configurable cfg=rules.get(system);
                         refreshServerNode(ctx,system,rules);
@@ -194,14 +195,19 @@ public class Main {
                     if(rule.expr.matches(diff.configPath.path)) {
                         norule.remove(diff);
                         ctx.log(rule.name+" will be run on "+diff);
-                        String[] script=cfg.getScript(rule.name,diff.configPath.path,ctx.configPaths);
+                        boolean rerun=false;
+                        Script script=cfg.getScript(rule.name,diff.configPath.path,ctx.configPaths);
                         if(script!=null) {
-                            for(String x:script)
-                                ctx.log("run:"+x);
+                            ctx.log("run:"+script);
+                            if(ctx.cmdsRun!=null)
+                                if(ctx.cmdsRun.contains(script)) {
+                                    rerun=true;
+                                    System.err.println("re-run:"+script);
+                                }
                             ctx.runcmd(script,cfg.getScriptResultPostprocessor());
                         }
                         // Check if we need to refresh
-                        if(cfg.needsRefresh(rule.name))
+                        if(!rerun&&cfg.needsRefresh(rule.name))
                             return true;
                     } 
                 }

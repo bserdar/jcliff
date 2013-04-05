@@ -47,6 +47,23 @@ public class NodePath {
         return path.toString()+ " => "+ node.toString();
     }
 
+    public boolean equals(NodePath p) {
+        if(p!=null)
+            try {
+                return listElement==p.listElement&&
+                    ((path==null&&p.path==null)||(path.equals(p.path)))&&
+                    ( (node==null&&p.node==null)||(node.equals(p.node)));
+            } catch (Exception e) {}
+        return false;
+    }
+     
+    public boolean equals(Object o) {
+        try {
+            return equals((NodePath)o);
+        } catch (Exception e) {}
+        return false;
+    }
+
     public static List<NodePath> getPaths(ModelNode root) {
         PathExpression context=new PathExpression();
         return getPaths(context,root);

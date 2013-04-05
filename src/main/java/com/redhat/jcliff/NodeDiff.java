@@ -47,6 +47,23 @@ public class NodeDiff {
         this.serverPath=null;
     }
 
+    public boolean equals(NodeDiff n) {
+        if(n!=null)
+            try {
+                return action==n.action&&
+                    ( (configPath==null&&n.configPath==null)||(configPath.equals(n.configPath)) )&&
+                    ( (serverPath==null&&n.serverPath==null)||(serverPath.equals(n.serverPath)));
+            } catch (Exception e) {}
+        return false;
+    }
+
+    public boolean equals(Object o) {
+        try {
+            return equals( (NodeDiff)o);
+        } catch (Exception e) {}
+        return false;
+    }
+
     public String toString() {
         StringBuffer buf=new StringBuffer();
         buf.append(action.toString()).append(':');

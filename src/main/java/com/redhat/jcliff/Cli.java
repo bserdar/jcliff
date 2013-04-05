@@ -74,6 +74,10 @@ public class Cli {
         return run(new String[] {command});
     }
 
+    public String run(Script command) {
+        return run(command.cmds);
+    }
+
     public String run(String[] command) {
         Runtime runtime=Runtime.getRuntime();
         List<String> cmdArray=new ArrayList<String>();

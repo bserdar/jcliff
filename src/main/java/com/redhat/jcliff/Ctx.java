@@ -22,6 +22,7 @@ import java.io.PrintStream;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.jboss.dmr.ModelNode;
 
@@ -37,6 +38,7 @@ public class Ctx {
     public ModelNode currentServerNode;
     public List<NodePath> configPaths;
     public List<NodePath> serverPaths;
+    public Set<Script> cmdsRun;
 
     public void log(String s) {
         if(log)
@@ -47,7 +49,7 @@ public class Ctx {
         e.printStackTrace(out);
     }
 
-    public ModelNode[] runcmd(String[] cmds,Postprocessor p) {
+    public ModelNode[] runcmd(Script cmds,Postprocessor p) {
         if(!noop) {
             String s=cli.run(cmds);
             if(s==null)

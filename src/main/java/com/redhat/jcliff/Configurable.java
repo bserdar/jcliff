@@ -35,7 +35,7 @@ import org.jboss.dmr.ModelType;
 public class Configurable {
 
     private final String name;
-    private String contentsExpr[];
+    private Script contentsExpr;
     private Properties properties;
     private Postprocessor getContentPostprocessor=new DefaultPostprocessor();
     private Postprocessor scriptResultPostprocessor=new DefaultPostprocessor();
@@ -149,7 +149,7 @@ public class Configurable {
         return name;
     }
 
-    public String[] getContentsExpr() {
+    public Script getContentsExpr() {
         return contentsExpr;
     }
 
@@ -231,13 +231,13 @@ public class Configurable {
         return null;
     }
 
-    public String[] getScript(String ruleName,PathExpression matchedPath,List<NodePath> allPaths) {
+    public Script getScript(String ruleName,PathExpression matchedPath,List<NodePath> allPaths) {
         String[] script=getProperties(properties,ruleName+".rule");
         if(script!=null) {
             for(int i=0;i<script.length;i++)
                 script[i]=sanitizeScript(resolve(matchedPath,allPaths,script[i]));
         }
-        return script;
+        return new Script(script);
     }
 
     /**
@@ -363,12 +363,14 @@ public class Configurable {
         if(name==null)
             throw new RuntimeException("name required");
         Configurable c=new Configurable(name);
-        c.contentsExpr=getProperties(p,"getContents");
-        if(c.contentsExpr==null) {
-            c.contentsExpr=getProperties(p,"getContents.asList");
+        String[] contents;
+        contents=getProperties(p,"getContents");
+        if(contents==null) {
+            contents=getProperties(p,"getContents.asList");
             c.setGetContentPostprocessor(new ListPostprocessor());
             c.setScriptResultPostprocessor(new StringPostprocessor());
         } 
+        c.contentsExpr=new Script(contents);
             
         c.properties=p;
         return c;
