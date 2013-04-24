@@ -15,14 +15,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-configurable.1=system-properties
-configurable.2=logging
-configurable.3=jdbc-driver
-configurable.4=datasource
-configurable.5=xadatasource
-configurable.6=web
-configurable.8=webservices
-configurable.9=infinispan
-configurable.10=security
-configurable.11=deployments
+name=webservices
+getContents=/subsystem=webservices:read-resource(recursive=true)
+server.preprocess.prepend=/webservices
 
+match.modifyProp=modify:/webservice/*
+modifyProp.rule.1=/subsystem=webservices:write-attribute(name=${name(.)},value=${value(.)})
