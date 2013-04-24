@@ -25,3 +25,18 @@ modifyprop.rule.1=/subsystem=web/configuration=${name(..)}:write-attribute(name=
 match.addConfiguration=add:/web/configuration/*
 addConfiguration.rule=/subsystem=web/configuration=${name(.)}:add
 addConfiguration.refresh=true
+
+# Connectors
+match.addConnector=add:/web/connector/*
+addConnector.rule=/subsystem=web/connector=${name(.)}:add(protocol=${value(protocol)},scheme=${value(scheme)},socket-binding=${value(socket-binding)})
+addConnector.refresh=true
+
+match.modifyConnectorAttribute=modify:/web/connector/*/*
+modifyConnectorAttribute.rule=/subsystem=web/connector=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.removeConnector=remove:/web/connector/*
+removeConnector.rule=/subsystem=web/connector=${name(.)}:remove
+removeConnector.refresh=true
+
+match.undefineConnectorAttribute=undefine:/web/connector/*/*
+undefineConnectorAttribute.rule=/subsystem=web/connector=${name(..)}:undefine-attribute(name=${name(.)})
