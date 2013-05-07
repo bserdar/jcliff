@@ -24,5 +24,6 @@ configurable.6=web
 configurable.8=webservices
 configurable.9=infinispan
 configurable.10=security
-configurable.11=deployments
+configurable.11=scanner
+configurable.12=deployments
 

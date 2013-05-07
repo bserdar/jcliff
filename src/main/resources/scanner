@@ -19,5 +19,6 @@ name=scanner
 getContents=/subsystem=deployment-scanner/scanner=default:read-resource
 server.preprocess.prepend=/scanner
 
-match.modify=modify:/scanner/default/*
-modify.rule.1=
+match.modify=modify:/scanner/*
+modify.rule.1=/subsystem=deployment-scanner/scanner=default:write-attribute(name=${name(.)},value=${value(.)}
+
