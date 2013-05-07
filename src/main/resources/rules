@@ -21,9 +21,9 @@ configurable.3=jdbc-driver
 configurable.4=datasource
 configurable.5=xadatasource
 configurable.6=web
-configurable.8=webservices
-configurable.9=infinispan
-configurable.10=security
-configurable.11=scanner
-configurable.12=deployments
+configurable.7=webservices
+configurable.8=infinispan
+configurable.9=security
+configurable.10=scanner
+configurable.11=deployments
 
