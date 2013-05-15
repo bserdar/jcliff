@@ -1,0 +1,75 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=threads
+getContents=/subsystem=threads:read-resource(recursive-true)
+server.preprocess.prepend=/threads
+
+# Thread factory
+
+match.addThreadFactory=add:/threads/thread-factory/*
+addThreadFactory.rule.1=/subsysem=threads/thread-factory=${name(.)}:add
+addThreadFactory.refresh=true
+addThreadFactory.precedence=50
+
+
+# blocking-bounded-queue-thread-pool
+match.addBBQTPool=add:/threads/blocking-bounded-queue-thread-pool/*
+addBBQTPool.rule.1=/subsytem=threads/blocking-bounded-queue-thread-pool=${name(.)}:add(max-threads=${value(max-threads)},queue-length=${value(queue-length)})
+addBBQTPool.refresh=true
+addBBQTPool.precedence=60
+
+# blocking-queueless-thread-pool
+match.addBQTPool=add:/threads/blocking-queueless-thread-pool/*
+addBQTPool.rule.1=/subsystem=threads/blocking-queueless-thread-pool=${name(.)}:add(max-threads=${value(max-threads)})
+addBQTPool.refresh=true
+addBQTPool.precedence=70
+
+
+# bounded-queue-thread-pool
+match.addBoundedQTPool=add:/threads/bounded-queue-thread-pool/*
+addBoundedQTPool.rule.1=/subsystem=threads/bounded-queue-thread-pool=${name(.)}:add(max-threads=${value(max-threads)},queue-length=${value(queue-length)})
+addBoundedQTPool.refresh=true
+addBoundedQTPool.precedence=80
+
+# queueless-thread-pool
+match.addQueuelessTPool=add:/threads/queueless-thread-pool/*
+addQueuelessTPool.rule.1=/subsystem=threads/queueless-thread-pool=${name(.)}:add(max-threads=${value(max-threads)})
+addQueuelessTPool.refresh=true
+addQueuelessTPool.precedence=90
+
+# scheduled-thread-pool
+match.addScheduledTPool=add:/threads/scheduled-thread-pool/*
+addScheduledTPool.rule.1=/subsystem=threads/scheduled-thread-pool=${name(.)}:add(max-threads=${value(max-threads)})
+addScheduledTPool.refresh=true
+addScheduledTPool.precedence=90
+
+# unbounded-queue-thread-pool
+match.addUQTPool=add:/threads/unbounded-queue-thread-pool/*
+addUQTPool.rule.1=/subsystem=threads/unbounded-queue-thread-pool=${name(.)}:add(max-threads=${value(max-threads)})
+addUQTPool.refresh=true
+addUQTPool.precedence=100
+
+# generic rule to modify attrs
+match.modifyAttr=modify:/threads/*/*/*
+modifyAttr.rule.1=/subsystem=threads/${name(../..)=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAttr.precedence=200
+
+match.removeItem=remove:/threads/*/*
+removeItem.rule.1=/subsystem=threads/${name(..)}=${name(.)}:remove
+removeItem.refresh=true
+removeItem.precedence=500
