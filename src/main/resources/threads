@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 name=threads
-getContents=/subsystem=threads:read-resource(recursive-true)
+getContents=/subsystem=threads:read-resource(recursive=true)
 server.preprocess.prepend=/threads
 
 # Thread factory
@@ -66,7 +66,7 @@ addUQTPool.precedence=100
 
 # generic rule to modify attrs
 match.modifyAttr=modify:/threads/*/*/*
-modifyAttr.rule.1=/subsystem=threads/${name(../..)=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAttr.rule.1=/subsystem=threads/${name(../..)}=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 modifyAttr.precedence=200
 
 match.removeItem=remove:/threads/*/*
