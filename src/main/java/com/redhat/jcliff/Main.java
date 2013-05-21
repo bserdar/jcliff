@@ -28,6 +28,20 @@ import org.jboss.dmr.*;
  */
 public class Main {
 
+    private static final String HELP=
+        "Usage:\n"+
+        "    jcliff [options] file(s)\n"+
+        "where options are:\n"+
+        "  --cli=Path : jboss-cli.sh. Defaults to \n"+
+        "               /usr/share/jbossas/bin/jboss-cli.sh\n"+
+        "  --controller=host : EAP6 host. Defaults to localhost.\n"+
+        "  --user=username   : EAP6 admin user name\n"+
+        "  --password=pwd    : EAP6 admin password\n"+
+        "  --ruledir=Path    : Location of jcliff rules.\n"+
+        "  --noop            : Read-only mode\n"+
+        "  -v                : Verbose output\n"+
+        "  --output=Path     : Log output file\n";
+
     public static void println(int indent,String s) {
         for(int i=0;i<indent;i++)
             System.out.print("  ");
@@ -180,7 +194,8 @@ public class Main {
                 ctx.error(t);
                 throw t;
             }
-        }
+        } else
+            System.out.println(HELP);
     }
 
     private static boolean executeRules(Ctx ctx,Configurable cfg,List<NodeDiff> ldiff) {
