@@ -22,14 +22,14 @@ server.preprocess.prepend=/threads
 # Thread factory
 
 match.addThreadFactory=add:/threads/thread-factory/*
-addThreadFactory.rule.1=/subsysem=threads/thread-factory=${name(.)}:add
+addThreadFactory.rule.1=/subsystem=threads/thread-factory=${name(.)}:add
 addThreadFactory.refresh=true
 addThreadFactory.precedence=50
 
 
 # blocking-bounded-queue-thread-pool
 match.addBBQTPool=add:/threads/blocking-bounded-queue-thread-pool/*
-addBBQTPool.rule.1=/subsytem=threads/blocking-bounded-queue-thread-pool=${name(.)}:add(max-threads=${value(max-threads)},queue-length=${value(queue-length)})
+addBBQTPool.rule.1=/subsystem=threads/blocking-bounded-queue-thread-pool=${name(.)}:add(max-threads=${value(max-threads)},queue-length=${value(queue-length)})
 addBBQTPool.refresh=true
 addBBQTPool.precedence=60
 
