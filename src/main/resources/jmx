@@ -19,6 +19,10 @@ name=jmx
 getContents=/subsystem=jmx/remoting-connector=jmx:read-resource(recursive=true)
 server.preprocess.prepend=/jmx
 
+match.add=add:/jmx/*
+add.rule.1=/subsystem=jmx/remoting-connector=jmx:write-attribute(name=${name(.)},value=${value(.)}
+add.refresh=true
+
 match.modify=modify:/jmx/*
 modify.rule.1=/subsystem=jmx/remoting-connector=jmx:write-attribute(name=${name(.)},value=${value(.)}
 modify.refresh=true
