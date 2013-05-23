@@ -15,17 +15,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-configurable.1=system-properties
-configurable.2=jmx
-configurable.3=threads
-configurable.4=logging
-configurable.5=jdbc-driver
-configurable.6=datasource
-configurable.7=xadatasource
-configurable.8=web
-configurable.9=webservices
-configurable.10=infinispan
-configurable.11=security
-configurable.12=scanner
-configurable.13=deployments
+name=jmx
+getContents=/subsystem=jmx/remoting-connector=jmx:read-resource(recursive=true)
+server.preprocess.prepend=/jmx
 
+match.modify=modify:/jmx/*
+modify.rule.1=/subsystem=jmx/remoting-connector=jmx:write-attribute(name=${name(.)},value=${value(.)}
+modify.refresh=true
