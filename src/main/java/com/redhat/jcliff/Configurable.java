@@ -45,12 +45,15 @@ public class Configurable {
             String[] sarr=parseArray(output);
             ModelNode[] result=new ModelNode[sarr.length];
             for(int i=0;i<result.length;i++) {
-                result[i]=ModelNode.fromString(sarr[i]);
-                ModelNode outcome=result[i].get("outcome");
-                if(outcome!=null||outcome.asString().equals("success")) {
-                    result[i]=result[i].get("result");
-                } else
-                    throw new RuntimeException("Operation failed:"+result[i].asString());
+                if(sarr[i].startsWith("{") &&
+                   sarr[i].endsWith("}")) {
+                    result[i]=ModelNode.fromString(sarr[i]);
+                    ModelNode outcome=result[i].get("outcome");
+                    if(outcome!=null||outcome.asString().equals("success")) {
+                        result[i]=result[i].get("result");
+                    } else
+                        throw new RuntimeException("Operation failed:"+result[i].asString());
+                }
             }
             return result;
         }
@@ -60,21 +63,31 @@ public class Configurable {
         // into individual elements
         private String[] parseArray(String s) {
             int depth=0;
+            int state=0;
             boolean quote=false;
             List<String> output=new ArrayList<String>();
             StringBuffer buf=null;
             int n=s.length();
             for(int i=0;i<n;i++) {
                 char c=s.charAt(i);
-                if(depth==0) {
+                switch(state) {
+                case 0: // Beginning of line/object
                     if(c=='{') {
-                        depth++;
+                        state=1;
                         buf=new StringBuffer();
+                        buf.append(c);
+                        depth=1;
                     } else if(Character.isWhitespace(c))
                         ;
-                    else
-                        throw new RuntimeException("Unexpected output:"+s);
-                } else {
+                    else {
+                        state=2;
+                        buf=new StringBuffer();
+                        buf.append(c);
+                    }
+                    break;
+                    
+                case 1: // Parsing object, match {}
+                    buf.append(c);
                     if(c=='\"')
                         quote=!quote;
                     else if(c=='{'&&!quote)
@@ -82,14 +95,22 @@ public class Configurable {
                     else if(c=='}'&&!quote) {
                         depth--;
                         if(depth==0) {
-                            buf.append(c);
                             output.add(buf.toString());
                             buf=null;
+                            state=0;
                         }
                     }
+                    break;
+
+                case 2: // Parsing text, go until the end of line
+                    if(c=='\n') {
+                        output.add(buf.toString());
+                        buf=null;
+                        state=0;
+                    } else
+                        buf.append(c);
+                    break;
                 }
-                if(buf!=null)
-                    buf.append(c);
             }
             return output.toArray(new String[output.size()]);
         }

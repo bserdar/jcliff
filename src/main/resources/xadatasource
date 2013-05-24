@@ -21,7 +21,8 @@ server.preprocess.prepend=/xadatasource
 
 match.add=add:/xadatasource/*
 add.rule.1=xa-data-source add --name=${name(.)} --jndi-name=${value(jndi-name)} --driver-name=${value(driver-name)} 
-add.rule.2=xa-data-source enable --name=${name(.)}
+add.rule.2=/subsystem=datasources/xa-data-source=${name(.)}/xa-datasource-properties=URL:add(value=${value(xa-datasource-properties/URL/value)})
+add.rule.3=xa-data-source enable --name=${name(.)}
 add.precedence=50
 add.refresh=true
 

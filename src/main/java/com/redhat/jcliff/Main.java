@@ -40,7 +40,8 @@ public class Main {
         "  --ruledir=Path    : Location of jcliff rules.\n"+
         "  --noop            : Read-only mode\n"+
         "  -v                : Verbose output\n"+
-        "  --output=Path     : Log output file\n";
+        "  --output=Path     : Log output file\n"+
+        "  --reload          : Reload if required";
 
     public static void println(int indent,String s) {
         for(int i=0;i<indent;i++)
@@ -102,13 +103,14 @@ public class Main {
     public static void main(String[] args) throws Exception {
         boolean log=false;
         boolean noop=false;
-        String cli=null;
-        String controller=null;
+        String cli="/usr/share/jbossas/bin/jboss-cli.sh";
+        String controller="localhost";
         String user=null;
         String password=null;
         String logOutput=null;
         List<String> files=new ArrayList<String>();
         String ruleDir=null;
+        boolean reload=false;
         
         for(int i=0;i<args.length;i++) {
             if(args[i].startsWith("--cli="))
@@ -127,6 +129,8 @@ public class Main {
                 noop=true; 
             else if(args[i].startsWith("--ruledir="))
                 ruleDir=args[i].substring("--ruledir=".length());
+            else if(args[i].equals("--reload"))
+                reload=true;
             else
                 files.add(args[i]);
         }
@@ -190,12 +194,26 @@ public class Main {
                         }
                     }
                 }
+
+                if(reload)
+                    if(reloadRequired(ctx))
+                        reloadConf(ctx);
             } catch (Exception t) {
                 ctx.error(t);
                 throw t;
             }
         } else
             System.out.println(HELP);
+    }
+
+    private static boolean reloadRequired(Ctx ctx) {
+        Script script=new Script(new String[] {"ls"});
+        String output=ctx.cli.run(script);
+        return output.indexOf("server-state=reload-required")!=-1;
+    }
+
+    private static void reloadConf(Ctx ctx) {
+        ctx.cli.run(new Script(new String[] {":reload"}));
     }
 
     private static boolean executeRules(Ctx ctx,Configurable cfg,List<NodeDiff> ldiff) {

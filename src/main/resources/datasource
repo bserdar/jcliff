@@ -20,7 +20,7 @@ getContents=/subsystem=datasources:read-children-resources(child-type=data-sourc
 server.preprocess.prepend=/datasource
 
 match.add=add:/datasource/*
-add.rule.1=data-source add --name=${name(.)} --jndi-name=${value(jndi-name)} --driver-name=${value(driver-name)} --connection-url=${value(connection-url)}
+add.rule.1=/subsystem=datasources/data-source=${name(.)}:add(jndi-name=${value(jndi-name)} driver-name=${value(driver-name)} connection-url=${value(connection-url)})
 add.rule.2=data-source enable --name=${name(.)}
 add.refresh=true
 
