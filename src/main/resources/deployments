@@ -16,14 +16,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 name=deployments
-getContents.asList=deploy
+getContents.asColumnList=deploy -l
 server.preprocess.prepend=/deployments
 
 match.deployModule=add:/deployments/*
-deployModule.rule=deploy ${value(.)}
+deployModule.rule=deploy ${value(path)}
+
+match.undeployModule=remove:/deployments/*
+undeployModule.rule=undeploy ${name(.)}
 
 
 match.deployRoot=modify:/deployments
 match.deployMod=modify:/deployments/*
 match.undeployMod=remove:/deployments/*
+match.deployProp=modify:/deployments/*/*
 

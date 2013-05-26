@@ -41,7 +41,8 @@ public class Main {
         "  --noop            : Read-only mode\n"+
         "  -v                : Verbose output\n"+
         "  --output=Path     : Log output file\n"+
-        "  --reload          : Reload if required";
+        "  --reload          : Reload if required\n"+
+        "  --redeploy        : Redeploy all apps";
 
     public static void println(int indent,String s) {
         for(int i=0;i<indent;i++)
@@ -111,6 +112,7 @@ public class Main {
         List<String> files=new ArrayList<String>();
         String ruleDir=null;
         boolean reload=false;
+        boolean redeploy=false;
         
         for(int i=0;i<args.length;i++) {
             if(args[i].startsWith("--cli="))
@@ -131,6 +133,8 @@ public class Main {
                 ruleDir=args[i].substring("--ruledir=".length());
             else if(args[i].equals("--reload"))
                 reload=true;
+            else if(args[i].equals("--redeploy"))
+                redeploy=true;
             else
                 files.add(args[i]);
         }
@@ -170,6 +174,12 @@ public class Main {
                         refreshServerNode(ctx,system,rules);
                         for(ModelNode configNode:nodes) {
                             if(configNode.hasDefined(system)) {
+
+                                if(system.equals("deployments")&&redeploy) {
+                                    undeployApps(ctx,configNode.get(system));
+                                    refreshServerNode(ctx,system,rules);
+                                }
+
                                 ModelNode newNode=new ModelNode();
                                 newNode.setEmptyObject();
                                 newNode.get(system).set(configNode.get(system));
@@ -182,10 +192,10 @@ public class Main {
                                 do {
                                     refresh=false;
                                     ctx.serverPaths=NodePath.getPaths(ctx.currentServerNode);
-                                    List<NodeDiff> difference=NodeDiff.computeDifference(ctx,ctx.configPaths,ctx.serverPaths);
+                                    List<NodeDiff> difference=NodeDiff.computeDifference(ctx,ctx.configPaths,
+                                                                                         ctx.serverPaths);
                                     for(NodeDiff x:difference)
                                         ctx.log("Diff:"+x.toString());
-
                                     refresh=executeRules(ctx,cfg,difference);
                                     if(refresh)
                                         refreshServerNode(ctx,system,rules);
@@ -205,6 +215,33 @@ public class Main {
         } else
             System.out.println(HELP);
     }
+
+    private static void undeployApps(Ctx ctx,ModelNode deployApps) {
+        ctx.log("Undeploying apps");
+        ModelNode deployments=ctx.currentServerNode.get("deployments");
+        List<ModelNode> deployedApps=deployments.asList();
+        List<ModelNode> appsToDeploy=deployApps.asList();
+        for(ModelNode node:deployedApps) {
+            Set<String> serverApps=node.keys();
+            for(String serverApp:serverApps) {
+                // See if this serverApp is in the deploy apps list
+                if(exists(appsToDeploy,serverApp)) {
+                    ctx.log("Undeploying "+serverApp);
+                    ctx.cli.run(new Script(new String[] {"undeploy "+serverApp}));
+                }
+            }
+        }
+    }
+
+    private static boolean exists(List<ModelNode> appsToDeploy,String app) {
+        for(ModelNode node:appsToDeploy) {
+            Set<String> apps=node.keys();
+            if(apps.contains(app))
+                return true;
+        }
+        return false;
+    }
+
 
     private static boolean reloadRequired(Ctx ctx) {
         Script script=new Script(new String[] {"ls"});

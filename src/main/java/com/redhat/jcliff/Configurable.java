@@ -26,6 +26,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
+
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 
@@ -120,36 +123,38 @@ public class Configurable {
      * Returns an object containing elements of the list as members
      * that are assigned to themselves.
      */
-    private static final class ListPostprocessor implements Postprocessor {
+    private static final class ColumnListPostprocessor implements Postprocessor {
         public ModelNode[] process(String output) {
             ModelNode node=new ModelNode();
             node.setEmptyObject();
-            int n=output.length();
-            int state=0;
-            StringBuffer buf=null;
-            for(int i=0;i<n;i++) {
-                char c=output.charAt(i);
-                switch(state) {
-                    case 0: 
-                        if(!Character.isWhitespace(c)) {
-                            buf=new StringBuffer();
-                            buf.append(c);
-                            state=1;
-                        }
-                        break;
 
-                    case 1:
-                        if(Character.isWhitespace(c)) {
-                            node.get(buf.toString()).set(buf.toString());
-                            buf=null;
-                            state=0;
-                        } else
-                            buf.append(c);
-                        break;
+            BufferedReader reader=new BufferedReader(new StringReader(output));
+            String line;
+            List<String> columnNames=null;
+            
+            try {
+                while((line=reader.readLine())!=null) {
+                    StringTokenizer tok=new StringTokenizer(line," \t");
+                    List<String> values=new ArrayList<String>();
+                    while(tok.hasMoreTokens())
+                        values.add(tok.nextToken());
+                    if(!values.isEmpty()) {
+                        if(columnNames==null)
+                            columnNames=values;
+                        else {
+                            ModelNode child=node.get(values.get(0));
+                            for(String col:columnNames)
+                                child.get(col);
+                            int i=0;
+                            for(String val:values) {
+                                child.get(columnNames.get(i++)).set(val);
+                            }
+                        }
+                    }
                 }
+            } catch(Exception e) {
+                throw new RuntimeException(e);
             }
-            if(buf!=null)
-                node.add(buf.toString());
             return new ModelNode[] {node};
         }
     }
@@ -387,8 +392,8 @@ public class Configurable {
         String[] contents;
         contents=getProperties(p,"getContents");
         if(contents==null) {
-            contents=getProperties(p,"getContents.asList");
-            c.setGetContentPostprocessor(new ListPostprocessor());
+            contents=getProperties(p,"getContents.asColumnList");
+            c.setGetContentPostprocessor(new ColumnListPostprocessor());
             c.setScriptResultPostprocessor(new StringPostprocessor());
         } 
         c.contentsExpr=new Script(contents);

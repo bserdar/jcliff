@@ -124,12 +124,14 @@ public class Cli {
             ctx.log("stdout:"+outReader.toString());
             if(errReader.toString().length()>0)
                 throw new RuntimeException(errReader.toString());
-            if(returnCode==0) {
+            if(returnCode==0||returnCode==1) {
                 String s=outReader.toString();
                 ctx.log("Return:"+s);
                 return s;
-            } else
+            } else {
+                ctx.log("Return code="+returnCode);
                 return null;
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
