@@ -156,6 +156,21 @@ objects will leave them untouched. If you want to delete them, assign
 objects/values to "deleted", or undefine them, by assigning them to
 undefined.
 
+Deployments:
+
+Jcliff can be used to deploy applications. The configuration file to
+deploy an application looks like this:
+
+{ "deployments" => {
+     "myapp.ear" => {
+           "path" => "/tmp/myapp.ear"
+     }
+     "mywebapp.war" => {
+           "path" => "/tmp/mywebapp.war"
+     }
+  }
+}
+
 
 The delta and the rules:
 
