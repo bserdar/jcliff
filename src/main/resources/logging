@@ -32,8 +32,8 @@ modifyFileHandler.rule=/subsystem=logging/file-handler=${name(../)}:write-attrib
 
 match.modifyFileHandlerFile=modify:/file-handler/*/file
 modifyFileHandlerFile.rule=/subsystem=logging/file-handler=${name(..)}:change-file(file={"path"=>${value(path)},"relative-to=>${value(relative-to)}})
-modifyFileHandler.precedence=53
-modifyFileHandler.refresh=true
+modifyFileHandlerFile.precedence=53
+modifyFileHandlerFile.refresh=true
 
 match.removeFileHandler=remove:/file-handler/*
 removeFileHandler.precedence=50
@@ -87,8 +87,9 @@ addAsyncHandler.rule=/subsystem=logging/async-handler=${name(.)}:add(queue-lengt
 addAsyncHandler.refresh=true
 
 match.addSubhandler=add:/async-handler/*/subhandlers/*
-addSubhandler.precedence=110
+addSubhandler.precedence=105
 addSubhandler.rule=/subsystem=logging/async-handler=${name(../..)}:assign-subhandler(name=${name(.)})
+addSubhandler.refresh=true
 
 match.removeSubhandler=remove:/async-handler/*/subhandlers/*
 removeSubhandler.precedence=110
