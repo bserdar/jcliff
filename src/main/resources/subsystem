@@ -1,6 +1,6 @@
 #    Copyright 2013 Red Hat, Inc. and/or its affiliates.
 #
-#    This file is part of jcliff.
+#    This file is part of jcliff
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,17 +15,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-configurable.1=system-properties
-configurable.2=jmx
-configurable.3=threads
-configurable.4=logging
-configurable.5=jdbc-driver
-configurable.6=datasource
-configurable.7=xadatasource
-configurable.8=web
-configurable.9=webservices
-configurable.10=infinispan
-configurable.11=security
-configurable.12=scanner
-configurable.13=deployments
-configurable.13=subsystem
+name=subsystem
+getContents=:read-children-resources(child-type=subsystem)
+server.preprocess.prepend=/subsystem
+
+match.delete=remove:/subsystem/*
+delete.rule=/subsystem=${name(.)}:remove
+delete.refresh=true
