@@ -28,4 +28,4 @@ configurable.10=infinispan
 configurable.11=security
 configurable.12=scanner
 configurable.13=deployments
-configurable.13=subsystem
+configurable.14=subsystem
