@@ -53,12 +53,14 @@ public class Script {
     public String toString() {
         StringBuffer buf=new StringBuffer();
         boolean first=true;
-        for(String x:cmds) {
-            if(first) 
-                first=false;
-            else
-                buf.append('\n');
-            buf.append(x);
+        if (cmds != null) {
+            for(String x:cmds) {
+                if(first)
+                    first=false;
+                else
+                    buf.append('\n');
+                buf.append(x);
+            }
         }
         return buf.toString();
     }

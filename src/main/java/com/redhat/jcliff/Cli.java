@@ -79,6 +79,11 @@ public class Cli {
     }
 
     public String run(String[] command) {
+        if (command == null) {
+            ctx.log("cmds: null");
+            return "";
+        }
+
         Runtime runtime=Runtime.getRuntime();
         List<String> cmdArray=new ArrayList<String>();
         int ix=0;
