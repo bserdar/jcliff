@@ -40,3 +40,32 @@ removeConnector.refresh=true
 
 match.undefineConnectorAttribute=undefine:/web/connector/*/*
 undefineConnectorAttribute.rule=/subsystem=web/connector=${name(..)}:undefine-attribute(name=${name(.)})
+
+# virtual-servers
+match.addVirtualServer=add:/web/virtual-server/*
+addVirtualServer.rule=/subsystem=web/virtual-server=${name(.)}:add(alias=${value(alias)},default-web-module=${value(default-web-module)},enable-welcome-root=${value(enable-welcome-root)})
+addVirtualServer.refresh=true
+addVirtualServer.precedence=50
+
+match.modifyVirtualServer=modify:/web/virtual-server/*/*
+modifyVirtualServer.rule=/subsystem=web/virtual-server=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyVirtualServer.precedence=60
+
+match.removeVirtualServer=remove:/web/virtual-server/*
+removeVirtualServer.rule=/subsystem=web/virtual-server=${name(.)}:remove
+removeVirtualServer.refresh=true
+
+#access-log
+match.addAccessLog=add:/web/virtual-server/*/configuration/*
+addAccessLog.rule=/subsystem=web/virtual-server=${name(../..)}/access-log=configuration:add(pattern=${value(pattern)})
+addAccessLog.precedence=60
+addAccessLog.refresh=true
+
+match.modifyAccessLog=modify:/web/virtual-server/*/configuration/access-log/*
+modifyAccessLog.rule=/subsystem=web/virtual-server=${name(../../..)}/access-log=configuration:write-attribute(name=${name(.)},value=${value(.)})
+modifyAccessLog.precedence=70
+
+match.removeAccessLog=remove:/web/virtual-server/*/configuration/access-log/*
+removeAccessLog.rule=subsystem=web/virtual-server=${name(../..)}/access-log=configuration:remove
+removeAccessLog.precedence=60
+
