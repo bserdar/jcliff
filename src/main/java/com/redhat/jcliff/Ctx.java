@@ -39,10 +39,15 @@ public class Ctx {
     public List<NodePath> configPaths;
     public List<NodePath> serverPaths;
     public Set<Script> cmdsRun;
+    public final List<String> cmdQueue=new ArrayList<String>();
 
     public void log(String s) {
         if(log)
             out.println(s);
+    }
+
+    public void msg(String s) {
+        out.println(s);
     }
 
     public void error(Exception e) {
@@ -51,6 +56,7 @@ public class Ctx {
 
     public ModelNode[] runcmd(Script cmds,Postprocessor p) {
         if(!noop) {
+            msg(cmds.toString());
             String s=cli.run(cmds);
             if(s==null)
                 throw new RuntimeException("Operation failed");
@@ -59,4 +65,32 @@ public class Ctx {
             return null;
     }
 
+    public void queueCmd(Script s) {
+        for(String x:s.cmds)
+            queueCmd(x);
+    }
+
+    public void queueCmd(String s) {
+        cmdQueue.add(s);
+    }
+
+    public Script getQueuedCmds() {
+        if(cmdQueue.isEmpty())
+            return null;
+        else
+            return new Script(cmdQueue);
+    }
+
+    public boolean hasQueuedCmds() {
+        return !cmdQueue.isEmpty();
+    }
+
+    public ModelNode[] runQueuedCmds(Postprocessor p) {
+        if(!cmdQueue.isEmpty()) {
+            ModelNode[] ret=runcmd(getQueuedCmds(),p);
+            cmdQueue.clear();
+            return ret;
+        }  else
+            return new ModelNode[0];
+    }
 }

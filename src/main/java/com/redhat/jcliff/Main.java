@@ -198,8 +198,12 @@ public class Main {
                                         ctx.log("Diff:"+x.toString());
                                     refresh=executeRules(ctx,cfg,difference);
                                     if(refresh)
+                                        ctx.runQueuedCmds(cfg.getScriptResultPostprocessor());
+                                    if(refresh)
                                         refreshServerNode(ctx,system,rules);
                                 } while(refresh);
+                                if(ctx.hasQueuedCmds())
+                                    ctx.runQueuedCmds(cfg.getScriptResultPostprocessor());
                             }
                         }
                     }
@@ -274,7 +278,7 @@ public class Main {
                                     rerun=true;
                                     System.err.println("re-run:"+script);
                                 }
-                            ctx.runcmd(script,cfg.getScriptResultPostprocessor());
+                            ctx.queueCmd(script);
                         }
                         // Check if we need to refresh
                         if(!rerun&&cfg.needsRefresh(rule.name))

@@ -19,6 +19,7 @@
 package com.redhat.jcliff;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class Script {
     public final String[] cmds;
@@ -26,6 +27,11 @@ public class Script {
     public Script(String[] cmds) {
         this.cmds=cmds;
     }
+
+    public Script(List<String> cmds) {
+        this(cmds.toArray(new String[cmds.size()]));
+    }
+
 
     public boolean equals(Object o) {
         try {
