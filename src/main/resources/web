@@ -30,6 +30,7 @@ addConfiguration.refresh=true
 match.addConnector=add:/web/connector/*
 addConnector.rule=/subsystem=web/connector=${name(.)}:add(protocol=${value(protocol)},scheme=${value(scheme)},socket-binding=${value(socket-binding)})
 addConnector.refresh=true
+addConnector.precedence=40
 
 match.modifyConnectorAttribute=modify:/web/connector/*/*
 modifyConnectorAttribute.rule=/subsystem=web/connector=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
@@ -69,3 +70,11 @@ match.removeAccessLog=remove:/web/virtual-server/*/configuration/access-log/*
 removeAccessLog.rule=subsystem=web/virtual-server=${name(../..)}/access-log=configuration:remove
 removeAccessLog.precedence=60
 
+#SSL
+match.addSSL=add:/web/connector/HTTPS/configuration/ssl/*
+addSSL.rule=/subsystem=web/connector=HTTPS/ssl=configuration:add(certificate-key-file=${value(../certificate-key-file)},password=${value(../password)},key-alias=${value(../key-alias)})
+addSSL.refresh=true
+addSSL.precedence=60
+ 
+match.modifySSL=modify:/web/connector/HTTPS/configuration/ssl/*
+modifySSL.rule=/subsystem=web/connector=HTTPS/ssl=configuration:write-attribute(name=${name(.)},value=${value(.)})
