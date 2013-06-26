@@ -76,9 +76,22 @@ modifySizeRotatingFileHandlerAttr.precedence=77
 modifySizeRotatingFileHandlerAttr.rule=/subsystem=logging/size-rotating-file-handler=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 
 
+match.addPeriodicRotatingFileHandler=add:/periodic-rotating-file-handler/*
+addPeriodicRotatingFileHandler.precedence=70
+addPeriodicRotatingFileHandler.rule=/subsystem=logging/periodic-rotating-file-handler=${name(.)}:add(file={"path"=>${value(./file/path/.)},"relative-to"=>${value(./file/relative-to)}})
+addPeriodicRotatingFileHandler.refresh=true
 
+match.modifyPeriodicRotatingFileHandlerFile=modify:/periodic-rotating-file-handler/*/file
+modifyPeriodicRotatingFileHandlerFile.rule=/subsystem=logging/periodic-rotating-file-handler=${name(..)}:change-file(file={"path"=>${value(path)},"relative-to"=>${value(relative-to)}})
+modifyPeriodicRotatingFileHandlerFile.precedence=75
 
+match.modifyPeriodicRotatingFileHandlerAttr=modify:/periodic-rotating-file-handler/*/*
+modifyPeriodicRotatingFileHandlerAttr.precedence=77
+modifyPeriodicRotatingFileHandlerAttr.rule=/subsystem=logging/periodic-rotating-file-handler=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 
+match.removePeriodicRotatingFileHandler=remove:/periodic-rotating-file-handler/*
+removePeriodicRotatingFileHandler.precedence=70
+removePeriodicRotatingFileHandler.rule=/subsystem=logging/periodic-rotating-file-handler=${name(.)}:remove
 
 
 match.addAsyncHandler=add:/async-handler/*
