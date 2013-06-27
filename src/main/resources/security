@@ -39,11 +39,3 @@ modifyLoginModule.precedence=55
 modifyLoginModule.rule.1=/subsystem=security/security-domain=${name(../../..)}/authentication=classic:remove
 modifyLoginModule.rule.2=/subsystem=security/security-domain=${name(../../..)}/authentication=classic:add(login-modules=${value(.)})
 modifyLoginModule.refresh=true
-
-# Rules that don't do anything. They are here only to prevent "No rules for diffs" errors.
-match.addLoginModuleNoAction1=add:/*/authentication/classic
-match.addLoginModuleNoAction2=add:/*/authentication/classic/login-modules/*
-match.modifyLoginModuleNoAction1=modify:/*
-match.modifyLoginModuleNoAction2=modify:/*/authentication
-
-

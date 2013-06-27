@@ -19,5 +19,12 @@ name=system-property
 getContents=/core-service=platform-mbean/type=runtime:read-attribute(name=system-properties)
 server.preprocess.prepend=/system-property
 
+match.addProperty=add:/system-property/*
+addProperty.rule=/system-property=${name(.)}:add(value=${value(.)})
 
-match.addProperty=add:
+match.modifyProperty=modify:/system-property/*
+modifyProperty.rule.1=/system-property=${name(.)}:remove
+modifyProperty.rule.2=/system-property=${name(.)}:add(value=${value(.)})
+
+match.removeProperty=remove:/system-property/*
+removeProperty.rule=/system-property=${name(.)}:remove

@@ -182,3 +182,12 @@ match.removeLocCacheFileStore=remove:/cache-container/*/local-cache/*/file-store
 removeLocCacheFileStore.precedence=80
 removeLocCacheFileStore.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/file-store=${name(.)}:remove
 removeLocCacheFileStore.refresh=true
+
+match.addReplicatedCacheStore=add:/cache-container/*/replicated-cache/*/file-store/*
+addReplicatedCacheStore.precedence=80
+addReplicatedCacheStore.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/file-store=${name(.)}:add
+addReplicatedCacheStore.refresh=true
+
+match.modifyReplicatedCacheStore=modify:/cache-container/*/replicated-cache/*/file-store/*/*
+modifyReplicatedCacheStore.precedence=80
+modifyReplicatedCacheStore.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/replicated-cache=${name(../../..)}/file-store=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
