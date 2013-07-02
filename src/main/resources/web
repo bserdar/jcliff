@@ -78,3 +78,13 @@ addSSL.precedence=60
  
 match.modifySSL=modify:/web/connector/HTTPS/configuration/ssl/*
 modifySSL.rule=/subsystem=web/connector=HTTPS/ssl=configuration:write-attribute(name=${name(.)},value=${value(.)})
+
+# root level attributes
+match.addRootAttribute=add:/web/*
+addRootAttribute.rule=/subsystem=web:write-attribute(name=${name(.)},value=${value(.)})
+
+match.modifyRootAttribute=modify:/web/*
+modifyRootAttribute.rule=/subsystem=web:write-attribute(name=${name(.)},value=${value(.)})
+
+match.undefineRootAttribute=undefine:/web/*
+undefineRootAttribute.rule=/subsystem=web:undefine-attribute(name=${name(.)})
