@@ -21,6 +21,7 @@ package com.redhat.jcliff;
 import java.io.InputStream;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 
 import java.util.List;
@@ -36,27 +37,6 @@ public class Cli {
     private final String password;
     private final Ctx ctx;
 
-    private static final class ReaderThread extends Thread {
-        private final InputStream stream;
-        private final StringBuffer buf=new StringBuffer();
-
-        public ReaderThread(InputStream stream) {
-            this.stream=stream;
-        }
-
-        public void run() {
-            InputStreamReader reader=new InputStreamReader(stream);
-            int i;
-            try {
-                while((i=reader.read())!=-1)
-                    buf.append((char)i);
-            } catch (Exception e) {}
-        }
-
-        public String toString() {
-            return buf.toString();
-        }
-    }
 
     public Cli(String cli,
                String controller,
@@ -88,8 +68,15 @@ public class Cli {
         List<String> cmdArray=new ArrayList<String>();
         int ix=0;
         File tempFile;
+        File outFile;
+        File errFile;
+        File scriptFile;
         try {
-            tempFile=File.createTempFile("jbosscfgtmp",null);
+            tempFile=File.createTempFile("jcliff-in",null);
+            outFile=File.createTempFile("jcliff-out",null);
+            errFile=File.createTempFile("jcliff-err",null);
+            scriptFile=File.createTempFile("jcliff-script",null);
+
             cmdArray.add(cli);
             cmdArray.add("--controller="+controller);
             cmdArray.add("--connect");
@@ -115,24 +102,29 @@ public class Cli {
             ctx.log("cmds:"+x);
         }
         try {
-            Process p=runtime.exec(cmdArray.toArray(new String[cmdArray.size()]));
-            ReaderThread outReader=new ReaderThread(p.getInputStream());
-            outReader.start();
-            ReaderThread errReader=new ReaderThread(p.getErrorStream());
-            errReader.start();
+            StringBuffer buf=new StringBuffer();
+            for(String x:cmdArray)
+                buf.append(x).append(' ');
+            FileWriter scw=new FileWriter(scriptFile);
+            scw.write(buf.toString()+">"+outFile.getAbsolutePath()+" 2>"+errFile.getAbsolutePath());
+            scw.close();
+            
+            Process p=runtime.exec(new String[] {"/bin/sh",scriptFile.getAbsolutePath()});
+            scriptFile.delete();
+            tempFile.delete();
             
             int returnCode=p.waitFor();
-            outReader.join();
-            errReader.join();
-            tempFile.delete();
-            ctx.log("stderr:"+errReader.toString());
-            ctx.log("stdout:"+outReader.toString());
-            if(errReader.toString().length()>0)
-                throw new RuntimeException(errReader.toString());
+            String errString=read(errFile);
+            errFile.delete();
+            String outString=read(outFile);
+            outFile.delete();
+            ctx.log("stderr:"+errString);
+            ctx.log("stdout:"+outString);
+            if(errString.length()>0)
+                throw new RuntimeException(errString);
             if(returnCode==0||returnCode==1) {
-                String s=outReader.toString();
-                ctx.log("Return:"+s);
-                return s;
+                ctx.log("Return:"+outString);
+                return outString;
             } else {
                 ctx.log("Return code="+returnCode);
                 return null;
@@ -140,5 +132,15 @@ public class Cli {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String read(File f) throws Exception {
+        FileReader r=new FileReader(f);
+        StringBuffer buf=new StringBuffer();
+        int i;
+        while( (i=r.read()) !=-1 )
+            buf.append((char)i);
+        r.close();
+        return buf.toString().trim();
     }
 }
