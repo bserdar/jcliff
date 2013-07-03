@@ -1,0 +1,17 @@
+name=messaging
+getContents=/subsystem=messaging:read-resource(recursive=true)
+server.preprocess.prepend=/messaging
+
+match.add=add:/messaging/hornetq-server/*
+add.rule=/subsystem=messaging/hornetq-server=${name(.)}:add}
+add.refresh=true
+add.precedence=10
+
+match.modifyAddressSetting=modify:/messaging/hornetq-server/*/address-setting/*/*
+modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/address-setting=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+
+match.addQueue=add:/messaging/hornetq-server/*/jms-queue/*
+addQueue.rule=jms-queue add --queue-address=${name(.)} --entries=${value(entries)} --durable=${value(durable)}
+
+match.modifyProperty=modify:/messaging/hornetq-server/*/*
+modifyProperty.rule=/subsystem=messaging/hornetq-server=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}

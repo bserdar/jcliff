@@ -30,3 +30,4 @@ configurable.12=scanner
 configurable.13=deployments
 configurable.14=subsystem
 configurable.15=osgi
+configurable.16=messaging
