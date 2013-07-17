@@ -70,14 +70,14 @@ match.removeAccessLog=remove:/web/virtual-server/*/configuration/access-log/*
 removeAccessLog.rule=subsystem=web/virtual-server=${name(../..)}/access-log=configuration:remove
 removeAccessLog.precedence=60
 
-#SSL
-match.addSSL=add:/web/connector/HTTPS/configuration/ssl/*
-addSSL.rule=/subsystem=web/connector=HTTPS/ssl=configuration:add(certificate-key-file=${value(../certificate-key-file)},password=${value(../password)},key-alias=${value(../key-alias)})
+SSL
+match.addSSL=add:/web/connector/*/configuration/ssl/*
+addSSL.rule=/subsystem=web/connector=${name(../../..)}/ssl=configuration:add
 addSSL.refresh=true
 addSSL.precedence=60
  
-match.modifySSL=modify:/web/connector/HTTPS/configuration/ssl/*
-modifySSL.rule=/subsystem=web/connector=HTTPS/ssl=configuration:write-attribute(name=${name(.)},value=${value(.)})
+match.modifySSL=modify:/web/connector/*/configuration/ssl/*
+modifySSL.rule=/subsystem=web/connector=${name(../../..)}/ssl=configuration:write-attribute(name=${name(.)},value=${value(.)})
 
 # root level attributes
 match.addRootAttribute=add:/web/*
