@@ -30,4 +30,6 @@ match.deployRoot=modify:/deployments
 match.deployMod=modify:/deployments/*
 match.undeployMod=remove:/deployments/*
 match.deployProp=modify:/deployments/*/*
+match.addPath=add:/deployments/*/path
+
 

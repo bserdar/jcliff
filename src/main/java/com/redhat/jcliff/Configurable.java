@@ -43,7 +43,7 @@ public class Configurable {
     private Postprocessor getContentPostprocessor=new DefaultPostprocessor();
     private Postprocessor scriptResultPostprocessor=new DefaultPostprocessor();
 
-    private static final class DefaultPostprocessor implements Postprocessor {
+    public static final class DefaultPostprocessor implements Postprocessor {
         public ModelNode[] process(String output) {
             String[] sarr=parseArray(output);
             ModelNode[] result=new ModelNode[sarr.length];

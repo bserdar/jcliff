@@ -19,5 +19,5 @@ name=webservices
 getContents=/subsystem=webservices:read-resource(recursive=true)
 server.preprocess.prepend=/webservices
 
-match.modifyProp=modify:/webservice/*
+match.modifyProp=modify:/webservices/*
 modifyProp.rule.1=/subsystem=webservices:write-attribute(name=${name(.)},value=${value(.)})

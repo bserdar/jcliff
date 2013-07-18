@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 name=xadatasource
-getContents=/subsystem=datasources:read-children-resources(child-type=xa-data-source)
+getContents=/subsystem=datasources:read-children-resources(child-type=xa-data-source,recursive=true)
 server.preprocess.prepend=/xadatasource
 
 match.add=add:/xadatasource/*
@@ -54,3 +54,5 @@ delete.refresh=true
 
 match.undefine=undefine:/xadatasource/*/*
 undefine.rule.1=/subsystem=datasources/xa-data-source=${name(..)}:undefine-attribute(name=${name(.)})
+
+
