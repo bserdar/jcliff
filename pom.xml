@@ -44,6 +44,19 @@
       <email>brose@redhat.com</email>
     </contributor>
   </contributors>
+  <repositories>
+    <repository>
+        <id>nexus</id>
+        <name>JBoss repo</name>
+        <url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
+        <releases>
+          <enabled>true</enabled>
+        </releases>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+    </repository>
+  </repositories>
   <dependencies>
         <dependency>
             <groupId>com.google.code.cookcc</groupId>
