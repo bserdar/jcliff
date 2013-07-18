@@ -70,7 +70,7 @@ match.removeAccessLog=remove:/web/virtual-server/*/configuration/access-log/*
 removeAccessLog.rule=subsystem=web/virtual-server=${name(../..)}/access-log=configuration:remove
 removeAccessLog.precedence=60
 
-SSL
+#SSL
 match.addSSL=add:/web/connector/*/configuration/ssl/*
 addSSL.rule=/subsystem=web/connector=${name(../../..)}/ssl=configuration:add
 addSSL.refresh=true
