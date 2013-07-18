@@ -66,12 +66,14 @@ public class Ctx {
     }
 
     public void queueCmd(Script s) {
-        for(String x:s.cmds)
-            queueCmd(x);
+        if(s!=null)
+            for(String x:s.cmds)
+                queueCmd(x);
     }
 
     public void queueCmd(String s) {
-        cmdQueue.add(s);
+        if(s!=null)
+            cmdQueue.add(s);
     }
 
     public Script getQueuedCmds() {

@@ -25,7 +25,7 @@ public class Script {
     public final String[] cmds;
 
     public Script(String[] cmds) {
-        this.cmds=cmds;
+        this.cmds=cmds==null?new String[0]:cmds;
     }
 
     public Script(List<String> cmds) {
