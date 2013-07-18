@@ -148,7 +148,7 @@ removeLogger.precedence=1000
 
 
 
-match.modifyRootLoggerLevel=modify:/root-logger/ROOT/level/*
+match.modifyRootLoggerLevel=modify:/root-logger/ROOT/level
 modifyRootLoggerLevel.rule=/subsystem=logging/root-logger=ROOT:write-attribute(name="level",value=${value(.)})
 modifyRootLogger.precedence=10000
 
