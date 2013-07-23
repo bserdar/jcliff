@@ -78,7 +78,7 @@ modifySizeRotatingFileHandlerAttr.rule=/subsystem=logging/size-rotating-file-han
 
 match.addPeriodicRotatingFileHandler=add:/periodic-rotating-file-handler/*
 addPeriodicRotatingFileHandler.precedence=70
-addPeriodicRotatingFileHandler.rule=/subsystem=logging/periodic-rotating-file-handler=${name(.)}:add(file={"path"=>${value(./file/path/.)},"relative-to"=>${value(./file/relative-to)}})
+addPeriodicRotatingFileHandler.rule=/subsystem=logging/periodic-rotating-file-handler=${name(.)}:add(file={"path"=>${value(./file/path/.)},"relative-to"=>${value(./file/relative-to)}},suffix=>${value(./suffix)})
 addPeriodicRotatingFileHandler.refresh=true
 
 match.modifyPeriodicRotatingFileHandlerFile=modify:/periodic-rotating-file-handler/*/file
