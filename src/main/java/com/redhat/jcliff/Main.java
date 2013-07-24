@@ -28,6 +28,12 @@ import org.jboss.dmr.*;
  */
 public class Main {
 
+    private static final HashSet<String> specialRules=new HashSet<String>();
+
+    static {
+        specialRules.add(Deployment.NAME);
+    }
+
     private static final String HELP=
         "Usage:\n"+
         "    jcliff [options] file(s)\n"+
@@ -159,9 +165,9 @@ public class Main {
                     if(node.getType()!=ModelType.OBJECT)
                         throw new RuntimeException("Expecting an object in "+file);
                     for(String x:node.keys())
-                        if(rules.get(x)==null)
+                        if(specialRules.contains(x)==false&&rules.get(x)==null)
                             throw new RuntimeException("Unknown object:"+x+" in "+file);
-                        else
+                        else if(!specialRules.contains(x))
                             systemNames.add(x);
                     nodes.add(node);
                 }
@@ -174,11 +180,6 @@ public class Main {
                         refreshServerNode(ctx,system,rules);
                         for(ModelNode configNode:nodes) {
                             if(configNode.hasDefined(system)) {
-
-                                if(system.equals("deployments")&&redeploy) {
-                                    undeployApps(ctx,configNode.get(system));
-                                    refreshServerNode(ctx,system,rules);
-                                }
 
                                 ModelNode newNode=new ModelNode();
                                 newNode.setEmptyObject();
@@ -209,6 +210,39 @@ public class Main {
                     }
                 }
 
+                // Deal with deployments
+                ctx.log("Processing deployments");
+                Deployment deployment=new Deployment(ctx,redeploy);
+                ModelNode allRequestedDeployments=new ModelNode();
+                allRequestedDeployments.setEmptyObject();
+                boolean noDeployments=true;
+                for(ModelNode requestedDeployments:nodes) {
+                    if(requestedDeployments.hasDefined(Deployment.NAME)) {
+                        ModelNode root=requestedDeployments.get(Deployment.NAME);
+                        Set<String> deploymentNames=root.keys();
+                        for(String x:deploymentNames) {
+                            allRequestedDeployments.get(x).set(root.get(x)); 
+                            noDeployments=false;
+                        }
+                    }
+                }
+                ctx.log("All requested deployments:"+allRequestedDeployments);
+                if(!noDeployments) {
+                    ModelNode currentDeployments=deployment.getCurrentDeployments();
+                    ctx.log("Current deployments:"+currentDeployments);
+                    String[] replaceList=deployment.
+                        findDeploymentsToReplace(allRequestedDeployments,currentDeployments);
+                    if(replaceList!=null&&replaceList.length>0) {
+                        deployment.undeploy(replaceList);
+                        currentDeployments=deployment.getCurrentDeployments();
+                    }
+
+                    String[] names=deployment.getNewDeployments(allRequestedDeployments,
+                                                                currentDeployments);
+                    if(names!=null&&names.length>0)
+                        deployment.deploy(names,allRequestedDeployments);
+                }
+
                 if(reload)
                     if(reloadRequired(ctx))
                         reloadConf(ctx);
@@ -218,32 +252,6 @@ public class Main {
             }
         } else
             System.out.println(HELP);
-    }
-
-    private static void undeployApps(Ctx ctx,ModelNode deployApps) {
-        ctx.log("Undeploying apps");
-        ModelNode deployments=ctx.currentServerNode.get("deployments");
-        List<ModelNode> deployedApps=deployments.asList();
-        List<ModelNode> appsToDeploy=deployApps.asList();
-        for(ModelNode node:deployedApps) {
-            Set<String> serverApps=node.keys();
-            for(String serverApp:serverApps) {
-                // See if this serverApp is in the deploy apps list
-                if(exists(appsToDeploy,serverApp)) {
-                    ctx.log("Undeploying "+serverApp);
-                    ctx.cli.run(new Script(new String[] {"undeploy "+serverApp}));
-                }
-            }
-        }
-    }
-
-    private static boolean exists(List<ModelNode> appsToDeploy,String app) {
-        for(ModelNode node:appsToDeploy) {
-            Set<String> apps=node.keys();
-            if(apps.contains(app))
-                return true;
-        }
-        return false;
     }
 
 

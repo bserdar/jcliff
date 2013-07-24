@@ -119,45 +119,6 @@ public class Configurable {
         }
     }
 
-    /**
-     * Returns an object containing elements of the list as members
-     * that are assigned to themselves.
-     */
-    private static final class ColumnListPostprocessor implements Postprocessor {
-        public ModelNode[] process(String output) {
-            ModelNode node=new ModelNode();
-            node.setEmptyObject();
-
-            BufferedReader reader=new BufferedReader(new StringReader(output));
-            String line;
-            List<String> columnNames=null;
-            
-            try {
-                while((line=reader.readLine())!=null) {
-                    StringTokenizer tok=new StringTokenizer(line," \t");
-                    List<String> values=new ArrayList<String>();
-                    while(tok.hasMoreTokens())
-                        values.add(tok.nextToken());
-                    if(!values.isEmpty()) {
-                        if(columnNames==null)
-                            columnNames=values;
-                        else {
-                            ModelNode child=node.get(values.get(0));
-                            for(String col:columnNames)
-                                child.get(col);
-                            int i=0;
-                            for(String val:values) {
-                                child.get(columnNames.get(i++)).set(val);
-                            }
-                        }
-                    }
-                }
-            } catch(Exception e) {
-                throw new RuntimeException(e);
-            }
-            return new ModelNode[] {node};
-        }
-    }
 
     private static final class StringPostprocessor implements Postprocessor {
         public ModelNode[] process(String output) {
@@ -391,11 +352,6 @@ public class Configurable {
         Configurable c=new Configurable(name);
         String[] contents;
         contents=getProperties(p,"getContents");
-        if(contents==null) {
-            contents=getProperties(p,"getContents.asColumnList");
-            c.setGetContentPostprocessor(new ColumnListPostprocessor());
-            c.setScriptResultPostprocessor(new StringPostprocessor());
-        } 
         c.contentsExpr=new Script(contents);
             
         c.properties=p;

@@ -28,6 +28,10 @@ public class Script {
         this.cmds=cmds==null?new String[0]:cmds;
     }
 
+    public Script(String cmd) {
+        this(new String[] {cmd});
+    }
+
     public Script(List<String> cmds) {
         this(cmds.toArray(new String[cmds.size()]));
     }

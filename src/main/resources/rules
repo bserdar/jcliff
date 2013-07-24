@@ -27,7 +27,7 @@ configurable.9=webservices
 configurable.10=infinispan
 configurable.11=security
 configurable.12=scanner
-configurable.13=deployments
-configurable.14=subsystem
-configurable.15=osgi
-configurable.16=messaging
+configurable.13=subsystem
+configurable.14=osgi
+configurable.15=messaging
+
