@@ -152,7 +152,7 @@ public class Deployment {
             if(namePattern!=null)
                 for(String x:existingDeploymentNames) {
                     ctx.log("Checking "+x+" matches "+namePattern);
-                    if(Pattern.matches(namePattern,x))
+                    if(Pattern.matches(namePattern,x)&&!newDeploymentName.equals(x))
                         replaceSet.add(x);
                 }
             if(runtimeNamePattern!=null)
@@ -160,7 +160,7 @@ public class Deployment {
                     ModelNode node=existingDeployments.get(x);
                     String rt=node.get("RUNTIME-NAME").asString();
                     if(rt!=null&&rt.length()>0)
-                        if(Pattern.matches(runtimeNamePattern,rt))
+                        if(Pattern.matches(runtimeNamePattern,rt)&&!newDeploymentName.equals(x))
                             replaceSet.add(x);
                 }
             ctx.log("Apps to redeploy after checking regexes:"+replaceSet);
