@@ -56,8 +56,24 @@ match.removeVirtualServer=remove:/web/virtual-server/*
 removeVirtualServer.rule=/subsystem=web/virtual-server=${name(.)}:remove
 removeVirtualServer.refresh=true
 
+# sso
+match.addSSO=add:/web/virtual-server/*/configuration/sso
+addSSO.rule=/subsystem=web/virtual-server=${name(../..)}/sso=configuration:add(cache-container=${value(cache-container)},cache-name=${value(cache-name)},reauthenticate=${value(reauthenticate)},domain=${value(domain)})
+
+match.undefineSSO=undefine:/web/virtual-server/*/configuration/sso
+undefineSSO.rule=/subsystem=web/virtual-server=${name(../..)}/sso=configuration:remove
+
+match.removeSSO=remove:/web/virtual-server/*/configuration/sso
+removeSSO.rule=/subsystem=web/virtual-server=${name(../..)}/sso=configuration:remove
+
+match.modifySSO=modify:/web/virtual-server/*/configuration/sso/*
+modifySSO.rule.1=/subsystem=web/virtual-server=${name(../../..)}/sso=configuration:remove
+modifySSO.rule.2=/subsystem=web/virtual-server=${name(../../..)}/sso=configuration:add(cache-container=${value(../cache-container)},cache-name=${value(../cache-name)},reauthenticate=${value(../reauthenticate)},domain=${value(../domain)})
+
+match.addSSOIgnore=add:/web/virtual-server/*/configuration/sso/*
+
 #access-log
-match.addAccessLog=add:/web/virtual-server/*/configuration/*
+match.addAccessLog=add:/web/virtual-server/*/configuration/access-log
 addAccessLog.rule=/subsystem=web/virtual-server=${name(../..)}/access-log=configuration:add(pattern=${value(pattern)})
 addAccessLog.precedence=60
 addAccessLog.refresh=true
