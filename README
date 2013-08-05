@@ -158,19 +158,32 @@ undefined.
 
 Deployments:
 
-Jcliff can be used to deploy applications. The configuration file to
-deploy an application looks like this:
+Jcliff can be used to deploy applications. After applying all the
+configuration changes, Jcliff attempts to process deployments of the form:
 
 { "deployments" => {
-     "myapp.ear" => {
-           "path" => "/tmp/myapp.ear"
-     }
-     "mywebapp.war" => {
-           "path" => "/tmp/mywebapp.war"
+    "myApp-v2.1.ear" => {
+     "NAME" => "myApp-v2.1.ear",
+     "path" => "/var/lib/redhat/deploy/myApp-v2.1.ear",
+     "replace-name-regex" => "\\QmyApp-v\\E\\..*",
      }
   }
 }
 
+Jcliff runs "deploy -l" to retrieve the list of deployed packages. The
+idea is to have Jcliff first undeploy older versions of the same
+application, and then to redeploy the new version. The
+replace-name-regex and replace-runtime-name-regex regular expressions
+are used to locate applications that the new application will
+replace. Any applications whose name matches replace-name-regex, or
+whose runtime name matches replace-runtime-name-regex will be
+undeployed before redeploying the new application. In the above
+example, myApp-v2.1.ear would replace an existing mpApp-v2.0.ear.
+
+If myApp-v2.1.ear already is deployed, Jcliff will not attempt to
+redeploy it, unless --redeploy flag is passed. So, after deploying all
+the applications, running Jcliff without the --redeploy flag with the
+existing deployment list will not alter any of the deployments.
 
 The delta and the rules:
 
