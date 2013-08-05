@@ -47,7 +47,7 @@ match.ignoreListAddLoginModulesAttr=listAdd:/security-domain/*/authentication/*/
 match.ignoreListRemoveLoginModulesAttr=listRemove:/security-domain/*/authentication/*/login-modules/*
 
 match.addLoginModule=add:/security-domain/*/authentication/*/login-module/*
-addLoginModule.rule.1=/subsystem=security/security-domain=${name(../../../..)}/authentication=${name(../..)}/login-module=${name(.)}:add(code=${value(code),flag=${value(flag))
+addLoginModule.rule.1=/subsystem=security/security-domain=${name(../../../..)}/authentication=${name(../..)}/login-module=${name(.)}:add(code=${value(code)},flag=${value(flag)})
 addLoginModule.precedence=70
 addLoginMOdule.refresh=true
 
