@@ -13,5 +13,16 @@ modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/
 match.addQueue=add:/messaging/hornetq-server/*/jms-queue/*
 addQueue.rule=jms-queue add --queue-address=${name(.)} --entries=${value(entries)} --durable=${value(durable)}
 
+match.modifyConFactory=modify:/messaging/hornetq-server/*/connection-factory/*/*
+modifyConFactory.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/connection-factory=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+
 match.modifyProperty=modify:/messaging/hornetq-server/*/*
 modifyProperty.rule=/subsystem=messaging/hornetq-server=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+
+match.addBridge=add:/messaging/jms-bridge/*
+addBridge.rule=/subsystem=messaging/jms-bridge=${name(.)}:add(quality-of-service=${value(quality-of-service)}, failure-retry-interval=${value(failure-retry-interval)}, max-retries=${value(max-retries)}, max-batch-size=${value(max-batch-size)}, max-batch-time=${value(max-batch-time)}, target-connection-factory=${value(target-connection-factory)}, target-destination=${value(target-destination)}, source-connection-factory=${value(source-connection-factory)}, source-destination=${value(source-destination)}, source-context=${value(source-context)})
+#addBridge.refresh=true
+addBridge.precedence=10
+
+match.modifyBridgeProperty=modify:/messaging/jms-bridge/*/*
+modifyBridgeProperty.rule=/subsystem=messaging/jms-bridge=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
