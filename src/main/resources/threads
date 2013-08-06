@@ -64,10 +64,19 @@ addUQTPool.rule.1=/subsystem=threads/unbounded-queue-thread-pool=${name(.)}:add(
 addUQTPool.refresh=true
 addUQTPool.precedence=100
 
+# add keep alive
+match.addKeepAlive=add:/threads/*/*/keepalive-time/time
+addKeepAlive.rule.1=/subsystem=threads/${name(../../..)}=${name(../..)}:write-attribute(name=keepalive-time,value={time=${value(.)},unit="SECONDS"})
+addKeepAlive.precedence=150
+
+# catch keep alive unit to do nothing
+match.addKeepAliveUnit=add:/threads/*/*/keepalive-time/unit
+
 # generic rule to modify attrs
 match.modifyAttr=modify:/threads/*/*/*
 modifyAttr.rule.1=/subsystem=threads/${name(../..)}=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 modifyAttr.precedence=200
+
 
 match.removeItem=remove:/threads/*/*
 removeItem.rule.1=/subsystem=threads/${name(..)}=${name(.)}:remove
