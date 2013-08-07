@@ -23,6 +23,9 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Date;
+
+import java.text.SimpleDateFormat;
 
 import org.jboss.dmr.ModelNode;
 
@@ -30,6 +33,9 @@ import org.jboss.dmr.ModelNode;
  * @author bserdar@redhat.com
  */
 public class Ctx {
+
+    public static final SimpleDateFormat timestampFormat=
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSSS");
 
     public Cli cli;
     public boolean log=false;
@@ -43,14 +49,15 @@ public class Ctx {
 
     public void log(String s) {
         if(log)
-            out.println(s);
+            out.println(timestamp()+": "+s);
     }
 
     public void msg(String s) {
-        out.println(s);
+        out.println(timestamp()+": "+s);
     }
 
     public void error(Exception e) {
+        out.print(timestamp()+": ");
         e.printStackTrace(out);
     }
 
@@ -94,5 +101,9 @@ public class Ctx {
             return ret;
         }  else
             return new ModelNode[0];
+    }
+
+    public static String timestamp() {
+        return timestampFormat.format(new Date());
     }
 }
