@@ -48,14 +48,20 @@ public class Configurable {
             String[] sarr=parseArray(output);
             ModelNode[] result=new ModelNode[sarr.length];
             for(int i=0;i<result.length;i++) {
+                sarr[i]=sarr[i].trim();
                 if(sarr[i].startsWith("{") &&
                    sarr[i].endsWith("}")) {
                     result[i]=ModelNode.fromString(sarr[i]);
-                    ModelNode outcome=result[i].get("outcome");
-                    if(outcome!=null||outcome.asString().equals("success")) {
-                        result[i]=result[i].get("result");
-                    } else
-                        throw new RuntimeException("Operation failed:"+result[i].asString());
+                    if(result[i].has("outcome")) {
+                        ModelNode outcome=result[i].get("outcome");
+                        if(outcome!=null||outcome.asString().equals("success")) {
+                            ;
+                        } else
+                            throw new RuntimeException("Operation failed:"+result[i].asString());
+                    }
+                } else {
+                    result[i]=new ModelNode();
+                    result[i].set(sarr[i]);
                 }
             }
             return result;

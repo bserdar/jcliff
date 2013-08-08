@@ -181,7 +181,7 @@ public class Deployment {
             ctx.log("undeploy "+name);
             ctx.queueCmd("undeploy "+name);
         }
-        ctx.runQueuedCmds(new Configurable.DefaultPostprocessor());
+        checkError(ctx.runQueuedCmds(new Configurable.DefaultPostprocessor()));
     }
     
     public void deploy(String[] names, ModelNode newDeployments) {
@@ -196,7 +196,20 @@ public class Deployment {
                                                   " --name="+name+
                                                   (runtimeName==null?"":" --runtime-name="+runtimeName)}));
         }
-        ctx.runQueuedCmds(new Configurable.DefaultPostprocessor());
+        checkError(ctx.runQueuedCmds(new Configurable.DefaultPostprocessor()));
+    }
+
+    private void checkError(ModelNode[] ret) {
+        // Successful deployment should not return anything
+        for(ModelNode node:ret) {
+            if(node!=null) {
+                if(node.getType().equals(ModelType.STRING)) {
+                    if(node.asString().trim().length()>0)
+                        throw new RuntimeException(node.asString());
+                } else
+                    throw new RuntimeException(node.asString());
+            }
+        }
     }
 
     private static String getPattern(ModelNode node,String childName) {
