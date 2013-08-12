@@ -309,6 +309,10 @@ public class Main {
         Configurable cfg=rules.get(system);
         ModelNode[] nodearr=ctx.runcmd(cfg.getContentsExpr(),cfg.getGetContentPostprocessor());
         ModelNode node=nodearr[nodearr.length-1];
+        if(node.has("result"))
+            node=node.get("result");
+        else
+            throw new RuntimeException("Cannot get node result from "+node);
         ctx.log("Node from server:"+node);
         ctx.currentServerNode=cfg.applyServerPreprocessingRules(node);
         ctx.log("After preprocessing:"+ctx.currentServerNode);
