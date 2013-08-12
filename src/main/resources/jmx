@@ -16,13 +16,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 name=jmx
-getContents=/subsystem=jmx/remoting-connector=jmx:read-resource(recursive=true)
-server.preprocess.prepend=/jmx
+getContents=/subsystem=jmx:read-resource(recursive=true)
+client.preprocess.strip=/jmx
 
-match.add=add:/jmx/*
-add.rule.1=/subsystem=jmx/remoting-connector=jmx:write-attribute(name=${name(.)},value=${value(.)}
-add.refresh=true
+match.addConnector=add:/remoting-connector/*
+addConnector.rule.1=/subsystem=jmx/remoting-connector=${name}
+addConnector.refresh=true
+addConnector.precedence=50
 
-match.modify=modify:/jmx/*
-modify.rule.1=/subsystem=jmx/remoting-connector=jmx:write-attribute(name=${name(.)},value=${value(.)}
-modify.refresh=true
+match.modConnector=modify:/remoting-connector/*/*
+modConnector.rule.1=/subsystem=jmx/remoting-connector=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modConnector.precedence=60
+
