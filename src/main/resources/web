@@ -42,6 +42,18 @@ removeConnector.refresh=true
 match.undefineConnectorAttribute=undefine:/web/connector/*/*
 undefineConnectorAttribute.rule=/subsystem=web/connector=${name(..)}:undefine-attribute(name=${name(.)})
 
+# Valves
+match.addValve=add:/web/valve/*
+addValve.rule=/subsystem=web/valve=${name(.)}:add(class-name=${value(class-name)},module=${value(module)},enabled=${value(enabled)})
+
+match.removeValve=remove:/web/valve/*
+removeValve.rule=/subsystem=web/valve=${name(.)}:remove
+
+match.modifyValve=modify:/web/valve/*/*
+modifyValve.rule=/subsystem=web/valve=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.valveIgnoreRule=add:/web/valve/*/*
+
 # virtual-servers
 match.addVirtualServer=add:/web/virtual-server/*
 addVirtualServer.rule=/subsystem=web/virtual-server=${name(.)}:add(alias=${value(alias)},default-web-module=${value(default-web-module)},enable-welcome-root=${value(enable-welcome-root)})
