@@ -44,7 +44,7 @@ public class NodePath {
     }
 
     public String toString() {
-        return path.toString()+ " => "+ node.toString();
+        return path.toString()+ " value="+ node.toString();
     }
 
     public boolean equals(NodePath p) {

@@ -81,8 +81,10 @@ public class NodeDiff {
         // modifications, and leave only leaf levels
         List<NodeDiff> modifyList=new ArrayList<NodeDiff>();
         ctx.log("computeDiff");
-        ctx.log("Config paths:"+config);
-        ctx.log("server paths:"+server);
+        for(NodePath x:config)
+            ctx.log("Config path:"+x);
+        for(NodePath x:server)
+            ctx.log("Server path:"+x);
         for(NodePath x:config) {
             boolean found=false;
             for(NodePath s:server)

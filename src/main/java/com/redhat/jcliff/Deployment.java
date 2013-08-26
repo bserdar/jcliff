@@ -20,6 +20,8 @@ package com.redhat.jcliff;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -131,18 +133,23 @@ public class Deployment {
      * 
      * @param newDeployments Object with keys containing the deployment names, and its children
      * @param existingDeployments Object with keys,each of which are existing deployments
+     *
+     * @return A map (newDeploymentName->eixstingDeployments),
+     * meaining the new deployment will replace the given existing
+     * deployments
      */
-    public String[] findDeploymentsToReplace(ModelNode newDeployments,
-                                             ModelNode existingDeployments) {
-        Set<String> replaceSet=new HashSet<String>();
-        
+    public Map<String,Set<String>> findDeploymentsToReplace(ModelNode newDeployments,
+                                                            ModelNode existingDeployments) {
+        Map<String,Set<String>> ret=new HashMap<String,Set<String>>();
+
         Set<String> existingDeploymentNames=existingDeployments.keys();
         Set<String> newDeploymentNames=newDeployments.keys();
         if(redeploy) {
             for(String newDeployment:newDeploymentNames)
-                if(existingDeploymentNames.contains(newDeployment))
-                    replaceSet.add(newDeployment);
-            ctx.log("Apps to redeploy:"+replaceSet);
+                if(existingDeploymentNames.contains(newDeployment)) {
+                    addDeployment(ret,newDeployment,newDeployment);
+                }
+            ctx.log("Apps to redeploy:"+ret);
         }
 
         for(String newDeploymentName:newDeploymentNames) {
@@ -152,49 +159,75 @@ public class Deployment {
             if(namePattern!=null)
                 for(String x:existingDeploymentNames) {
                     ctx.log("Checking "+x+" matches "+namePattern);
-                    if(Pattern.matches(namePattern,x)&&!newDeploymentName.equals(x))
-                        replaceSet.add(x);
+                    if(Pattern.matches(namePattern,x)&&!newDeploymentName.equals(x)) {
+                        addDeployment(ret,newDeploymentName,x);
+                    }
                 }
             if(runtimeNamePattern!=null)
                 for(String x:existingDeploymentNames) {
                     ModelNode node=existingDeployments.get(x);
                     String rt=node.get("RUNTIME-NAME").asString();
                     if(rt!=null&&rt.length()>0)
-                        if(Pattern.matches(runtimeNamePattern,rt)&&!newDeploymentName.equals(x))
-                            replaceSet.add(x);
+                        if(Pattern.matches(runtimeNamePattern,rt)&&!newDeploymentName.equals(x)) {
+                            addDeployment(ret,newDeploymentName,x);
+                        }
                 }
-            ctx.log("Apps to redeploy after checking regexes:"+replaceSet);
+            ctx.log("Apps to redeploy after checking regexes:"+ret);
         }
-        return replaceSet.toArray(new String[replaceSet.size()]);
+        return ret;
+    }
+
+    private void addDeployment(Map<String,Set<String>> map,String key,String value) {
+        Set<String> s=map.get(key);
+        if(s==null)
+            map.put(key,s=new HashSet<String>());
+        s.add(value);
     }
 
     public String[] getNewDeployments(ModelNode newDeployments,
-                                      ModelNode existingDeployments) {
+                                      Set<String> existingDeploymentNames) {
         Set<String> newNames=newDeployments.keys();
-        Set<String> existingNames=existingDeployments.keys();
-        newNames.removeAll(existingNames);
+        newNames.removeAll(existingDeploymentNames);
         return newNames.toArray(new String[newNames.size()]);
     }
     
     public void undeploy(String[] names) {
+        queueUndeploy(names);
+        checkError(ctx.runQueuedCmds(new Configurable.DefaultPostprocessor()));
+    }
+
+    public void queueUndeploy(String[] names) {
         for(String name:names) {
             ctx.log("undeploy "+name);
             ctx.queueCmd("undeploy "+name);
         }
+    }        
+
+    public void deployUpdate(Map<String,Set<String>> updates,ModelNode requestedDeployments) {
+        for(Map.Entry<String,Set<String>> entry:updates.entrySet()) {
+            Set<String> undeploys=entry.getValue();
+            if(undeploys!=null)
+                queueUndeploy(undeploys.toArray(new String[undeploys.size()]));
+            queueDeploy(entry.getKey(),requestedDeployments);
+        }
         checkError(ctx.runQueuedCmds(new Configurable.DefaultPostprocessor()));
+    }
+
+    public void queueDeploy(String name,ModelNode newDeployments) {
+        ModelNode deployment=newDeployments.get(name);
+        String path=deployment.has("path")?deployment.get("path").asString():null;
+        String runtimeName=deployment.has("RUNTIME-NAME")?deployment.get("RUNTIME-NAME").asString():null;
+        if(path==null)
+            throw new RuntimeException("path is required in "+deployment);
+        ctx.log("deploy "+path+" runtime-name="+runtimeName);
+        ctx.queueCmd(new Script(new String[] {"deploy "+path+
+                                              " --name="+name+
+                                              (runtimeName==null?"":" --runtime-name="+runtimeName)}));
     }
     
     public void deploy(String[] names, ModelNode newDeployments) {
         for(String name:names) {
-            ModelNode deployment=newDeployments.get(name);
-            String path=deployment.has("path")?deployment.get("path").asString():null;
-            String runtimeName=deployment.has("RUNTIME-NAME")?deployment.get("RUNTIME-NAME").asString():null;
-            if(path==null)
-                throw new RuntimeException("path is required in "+deployment);
-            ctx.log("deploy "+path+" runtime-name="+runtimeName);
-            ctx.queueCmd(new Script(new String[] {"deploy "+path+
-                                                  " --name="+name+
-                                                  (runtimeName==null?"":" --runtime-name="+runtimeName)}));
+            queueDeploy(name,newDeployments);
         }
         checkError(ctx.runQueuedCmds(new Configurable.DefaultPostprocessor()));
     }

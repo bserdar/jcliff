@@ -229,18 +229,22 @@ public class Main {
                 ctx.log("All requested deployments:"+allRequestedDeployments);
                 if(!noDeployments) {
                     ModelNode currentDeployments=deployment.getCurrentDeployments();
+                    Set<String> currentDeploymentNames=currentDeployments.keys();
                     ctx.log("Current deployments:"+currentDeployments);
-                    String[] replaceList=deployment.
+                    Map<String,Set<String>> replaceList=deployment.
                         findDeploymentsToReplace(allRequestedDeployments,currentDeployments);
-                    if(replaceList!=null&&replaceList.length>0) {
-                        deployment.undeploy(replaceList);
-                        currentDeployments=deployment.getCurrentDeployments();
+                    if(replaceList!=null&&replaceList.size()>0) {
+                        for(Set<String> x:replaceList.values())
+                            currentDeploymentNames.removeAll(x);
                     }
 
                     String[] names=deployment.getNewDeployments(allRequestedDeployments,
-                                                                currentDeployments);
-                    if(names!=null&&names.length>0)
-                        deployment.deploy(names,allRequestedDeployments);
+                                                                currentDeploymentNames);
+                    for(String x:names)
+                        if(!replaceList.containsKey(x))
+                            replaceList.put(x,null);
+                    if(replaceList.size()>0)
+                        deployment.deployUpdate(replaceList,allRequestedDeployments);
                 }
 
                 if(reload)
