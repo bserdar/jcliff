@@ -1,0 +1,40 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=standard-sockets
+getContents=/socket-binding-group=standard-sockets:read-resource(recursive=true)
+server.preprocess.prepend=/standard-sockets
+
+match.addSocketBinding=add:/standard-sockets/socket-binding/*
+addSocketBinding.rule=/socket-binding-group=standard-sockets/socket-binding=${name(.)}:add
+addSocketBinding.precedence=40
+
+match.addSocketBindingAttr=add:/standard-sockets/socket-binding/*/*
+addSocketBindingAttr.rule=/socket-binding-group=standard-sockets/socket-binding=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+addSocketBindingAttr.precedence=60
+
+match.modifySocketBindingAttr=modify:/standard-sockets/socket-binding/*/*
+modifySocketBindingAttr.rule=/socket-binding-group=standard-sockets/socket-binding=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifySocketBindingAttr.precedence=60
+
+match.undefineSocketBindingAttr=undefine:/standard-sockets/socket-binding/*/*
+undefineSocketBindingAttr.rule=/socket-binding-group=standard-sockets/socket-binding=${name(..)}:undefine-attribute(name=${name(.)})
+undefineSocketBindingAttr.precedence=60
+
+match.deleteSocketBinding=remove:/standard-sockets/socket-binding/*
+deleteSocketBinding.rule=/socket-binding-group=standard-sockets/socket-binding=${name(.)}:remove
+deleteSocketBinding.precedence=80

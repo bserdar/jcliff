@@ -30,4 +30,5 @@ configurable.12=scanner
 configurable.13=subsystem
 configurable.14=osgi
 configurable.15=messaging
+configurable.16=standard-sockets
 
