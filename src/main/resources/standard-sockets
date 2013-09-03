@@ -21,6 +21,7 @@ server.preprocess.prepend=/standard-sockets
 
 match.addSocketBinding=add:/standard-sockets/socket-binding/*
 addSocketBinding.rule=/socket-binding-group=standard-sockets/socket-binding=${name(.)}:add
+addSocketBinding.refresh=true
 addSocketBinding.precedence=40
 
 match.addSocketBindingAttr=add:/standard-sockets/socket-binding/*/*
