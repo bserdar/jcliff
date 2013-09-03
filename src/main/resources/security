@@ -61,13 +61,18 @@ updateLoginModuleAttr.rule.1=/subsystem=security/security-domain=${name(../../..
 updateLoginModuleAttr.precedence=75
 
 
-match.updateLoginModuleOptions=listAdd:/security-domain/*/authentication/*/login-module/*/module-options
-updateLoginModuleOptions.rule.1=/subsystem=security/security-domain=${name(../../../../..)}/authentication=${name(../../..)}/login-module=${name(..)}:write-attribute(name=module-options,value=${value(.)})
+match.updateLoginModuleOptions=add:/security-domain/*/authentication/*/login-module/*/module-options/*
+updateLoginModuleOptions.rule.1=/subsystem=security/security-domain=${name(../../../../../..)}/authentication=${name(../../../..)}/login-module=${name(../..)}:write-attribute(name=module-options,value=${value(..)})
 updateLoginModuleOptions.precedence=80
 updateLoginModuleOptions.refresh=true
 
-match.updateLoginModuleOptions2=listRemove:/security-domain/*/authentication/*/login-module/*/module-options
-updateLoginModuleOptions2.rule.1=/subsystem=security/security-domain=${name(../../../../..)}/authentication=${name(../../..)}/login-module=${name(..)}:write-attribute(name=module-options,value=${value(.)})
+match.updateLoginModuleOptions2=remove:/security-domain/*/authentication/*/login-module/*/module-options/*
+updateLoginModuleOptions2.rule.1=/subsystem=security/security-domain=${name(../../../../../..)}/authentication=${name(../../../..)}/login-module=${name(../..)}:write-attribute(name=module-options,value=${value(..)})
+updateLoginModuleOptions2.precedence=80
+updateLoginModuleOptions2.refresh=true
+
+match.updateLoginModuleOptions3=modify:/security-domain/*/authentication/*/login-module/*/module-options/*
+updateLoginModuleOptions2.rule.1=/subsystem=security/security-domain=${name(../../../../../..)}/authentication=${name(../../../..)}/login-module=${name(../..)}:write-attribute(name=module-options,value=${value(..)})
 updateLoginModuleOptions2.precedence=80
 updateLoginModuleOptions2.refresh=true
 
