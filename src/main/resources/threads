@@ -65,9 +65,14 @@ addUQTPool.refresh=true
 addUQTPool.precedence=100
 
 # add keep alive
-match.addKeepAlive=add:/threads/*/*/keepalive-time/time
-addKeepAlive.rule.1=/subsystem=threads/${name(../../..)}=${name(../..)}:write-attribute(name=keepalive-time,value={time=${value(.)},unit="SECONDS"})
+match.keepAlive=add:/threads/*/*/keepalive-time/time
+keepAlive.rule.1=/subsystem=threads/${name(../../..)}=${name(../..)}:write-attribute(name=keepalive-time,value={time=${value(.)},unit="SECONDS"})
 addKeepAlive.precedence=150
+
+# modify keep alive
+match.modifyKeepAlive=modify:/threads/*/*/keepalive-time/time
+modifyKeepAlive.rule.1=/subsystem=threads/${name(../../..)}=${name(../..)}:write-attribute(name=keepalive-time,value={time=${value(.)},unit="SECONDS"})
+modifyKeepAlive.precedence=150
 
 # catch keep alive unit to do nothing
 match.addKeepAliveUnit=add:/threads/*/*/keepalive-time/unit
