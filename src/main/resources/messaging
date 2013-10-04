@@ -12,6 +12,7 @@ modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/
 
 match.addQueue=add:/messaging/hornetq-server/*/jms-queue/*
 addQueue.rule=jms-queue add --queue-address=${name(.)} --entries=${value(entries)} --durable=${value(durable)}
+addQueue.precedence=20
 
 match.modifyConFactory=modify:/messaging/hornetq-server/*/connection-factory/*/*
 modifyConFactory.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/connection-factory=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
@@ -26,3 +27,25 @@ addBridge.precedence=10
 
 match.modifyBridgeProperty=modify:/messaging/jms-bridge/*/*
 modifyBridgeProperty.rule=/subsystem=messaging/jms-bridge=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+
+match.addConnector=add:/messaging/hornetq-server/*/connector/*
+addConnector.rule=/subsystem=messaging/hornetq-server=${name(../..)}/connector=${name(.)}:add(factory-class=${value(factory-class)})
+addConnector.refresh=true
+addConnector.precedence=10
+
+match.AddConnectorParam=add:/messaging/hornetq-server/*/connector/*/param/*/value
+AddConnectorParam.rule=/subsystem=messaging/hornetq-server=${name(../../../../..)}/connector=${name(../../..)}/param=${name(..)}:add(value=${value(.)})
+
+match.modifyConnectorParam=modify:/messaging/hornetq-server/*/connector/*/param/*/value
+modifyConnectorParam.rule.1=/subsystem=messaging/hornetq-server=${name(../../../../..)}/connector=${name(../../..)}/param=${name(..)}:remove
+modifyConnectorParam.rule.2=/subsystem=messaging/hornetq-server=${name(../../../../..)}/connector=${name(../../..)}/param=${name(..)}:add(value=${value(.)})
+
+
+match.addCoreBridge=add:/messaging/hornetq-server/*/bridge/*
+addCoreBridge.rule=/subsystem=messaging/hornetq-server=${name(../..)}/bridge=${name(.)}:add(static-connectors=${value(static-connectors)}, queue-name=${value(queue-name)})
+addCoreBridge.refresh=true
+addCoreBridge.precedence=50
+
+match.modifyCoreBridge=modify:/messaging/hornetq-server/*/bridge/*/*
+modifyCoreBridge.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/bridge=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyCoreBridge.precedence=60
