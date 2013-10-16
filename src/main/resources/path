@@ -15,21 +15,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-configurable.1=system-properties
-configurable.2=path
-configurable.3=jmx
-configurable.4=threads
-configurable.5=logging
-configurable.6=jdbc-driver
-configurable.7=datasource
-configurable.8=xadatasource
-configurable.9=standard-sockets
-configurable.10=web
-configurable.11=webservices
-configurable.12=infinispan
-configurable.13=security
-configurable.14=scanner
-configurable.15=subsystem
-configurable.16=osgi
-configurable.17=messaging
+name=path
+getContents=/:read-children-resources(child-type=path)
+server.preprocess.prepend=/path
 
+match.addPath=add:/path/*
+addPath.rule=/path=${name(.)}:add(path=${value(path)})
+addPath.refresh=true
+
+match.modifyPath=modify:/path/*/*
+modifyPath.rule.1=/path=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.removePath=remove:/path/*
+removePath.rule=/path=${name(.)}:remove
