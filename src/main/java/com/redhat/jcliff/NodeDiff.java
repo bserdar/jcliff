@@ -167,6 +167,88 @@ public class NodeDiff {
         return diff;
     }
 
+    
+    /**
+     * JBoss DMR library does not take into account escape sequences when comparing two strings.
+     * So, we manually compare
+     */
+    private static boolean valueEquals(ModelNode n1,ModelNode n2) {
+        if(n1.getType().equals(ModelType.STRING)&&
+           n2.getType().equals(ModelType.STRING))
+            return stringCompare(n1.asString(),n2.asString());
+        else
+            return n1.equals(n2);
+    }
+
+    private static boolean stringCompare(String s1,String s2) {
+        return unescape(s1).equals(unescape(s2));
+    }
+
+    public static String unescape(String s) {
+        StringBuilder ret=new StringBuilder();
+        int num=0;
+        int n=s.length();
+        int state=0;
+        // Code copied/modified from jboss dmr ModelNodeParser.java
+        for (int i = 0; i < n; i++) {
+            char ch = s.charAt(i);
+            switch(state) {
+            case 0: 
+                if(ch=='\\')
+                    state=1;
+                else
+                    ret.append(ch);
+                break;
+
+            case 1:
+                if(ch=='n')
+                    ret.append('\n');
+                else if(ch=='r')
+                    ret.append('\r');
+                else if(ch=='b')
+                    ret.append('\b');
+                else if(ch=='f')
+                    ret.append('\f');
+                else if(ch=='u')
+                    state=2;
+                else {
+                    ret.append(ch);
+                    state=0;
+                }
+                break;
+                
+            case 2:
+                if(Character.isDigit(ch)) {
+                    num=Character.digit(ch,10);
+                    state=3;
+                } else {
+                    ret.append(ch);
+                    state=0;
+                }
+                break;
+                
+            case 3:
+            case 4:
+            case 5:
+                if(Character.isDigit(ch)) {
+                    num*=10;
+                    num+=Character.digit(ch,10);
+                    state++;
+                    if(state>5) {
+                        ret.append((char)num);
+                        state=0;
+                    }
+                } else {
+                    ret.append(ch);
+                    state=0;
+                }
+                break;
+
+            }
+        }
+        return ret.toString();
+    }
+    
     /**
      * Checks if everything that is set in subset is also so in the superset.
      */
@@ -179,7 +261,7 @@ public class NodeDiff {
                 return false;
         else if(superset==null)
             return subset.asString().equals("deleted");
-        else if(!subset.equals(superset)) {
+        else if(!valueEquals(subset,superset)) {
             if(subset.asString().equals("deleted")&&superset.getType().equals(ModelType.UNDEFINED))
                 return true;
             if(subset.getType()==superset.getType()) {
