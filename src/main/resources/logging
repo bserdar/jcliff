@@ -126,11 +126,11 @@ addLogger.rule=/subsystem=logging/logger=${name(.)}:add
 addLogger.refresh=true
 addLogger.precedence=1000
 
-match.assignLoggerHandler=add:/logger/*/handler/*
+match.assignLoggerHandler=add:/logger/*/handlers/*
 assignLoggerHandler.rule=/subsystem=logging/logger=${name(../..)}:assign-handler(name=${value(.)})
 assignLoggerHandler.precedence=1100
 
-match.removeLoggerHandler=remove:/logger/*/handler/*
+match.removeLoggerHandler=remove:/logger/*/handlers/*
 removeLoggerHandler.rule=/subsytem=logging/logger=${name(../..)}:unassign-handler(name=${value(.)})
 removeLoggerHandler.precedence=1100
 
