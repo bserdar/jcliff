@@ -49,3 +49,12 @@ addCoreBridge.precedence=50
 match.modifyCoreBridge=modify:/messaging/hornetq-server/*/bridge/*/*
 modifyCoreBridge.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/bridge=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 modifyCoreBridge.precedence=60
+
+match.addAddressSetting=add:/messaging/hornetq-server/*/address-setting/*
+addAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../..)}/address-setting=${name(.)}:add()
+addAddressSetting.refresh=true
+addAddressSetting.precendence=50
+
+match.modifyAddressSetting=modify:/messaging/hornetq-server/*/address-setting/*/*
+modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/address-setting=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+
