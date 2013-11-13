@@ -22,7 +22,7 @@
   <groupId>com.redhat.util</groupId>
   <artifactId>jcliff</artifactId>
   <packaging>jar</packaging>
-  <version>1.26</version>
+  <version>1.27</version>
   <name>JBoss configuration client front-end</name>
   <developers>
     <developer>
