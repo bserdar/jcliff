@@ -15,21 +15,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-configurable.1=system-properties
-configurable.2=path
-configurable.3=jmx
-configurable.4=threads
-configurable.5=logging
-configurable.6=jdbc-driver
-configurable.7=datasource
-configurable.8=xadatasource
-configurable.9=standard-sockets
-configurable.10=web
-configurable.11=webservices
-configurable.12=infinispan
-configurable.13=security
-configurable.14=scanner
-configurable.15=subsystem
-configurable.16=osgi
-configurable.17=messaging
-configurable.18=ejb3
+name=ejb3
+getContents=/subsystem=ejb3:read-resource(recursive=true)
+client.preprocess.strip=/ejb3
+
+match.addStrictMaxBeanInstancePool=add:/strict-max-bean-instance-pool/*
+addStrictMaxBeanInstancePool.rule.1=/subsystem=ejb3/strict-max-bean-instance-pool=${name(.)}:add
+addStrictMaxBeanInstancePool.precedence=10
+addStrictMaxBeanInstancePool.refresh=true
+
+match.set3rdLevelProperty=modify:/*/*/*
+set3rdLevelProperty.rule.1=/subsystem=ejb3/${name(../..)}=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+set3rdLevelProperty.precedence-990
+
+match.setRootProperty=modify:/*
+setRootProperty.rule.1=/subsystem=ejb3:write-attribute(name=${name(.)},value=${value(.)})
+setRootProperty.precedence=1000
+
