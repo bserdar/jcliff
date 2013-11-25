@@ -91,12 +91,14 @@ public class Main {
         private final File ruleDir;
 
         public RuleLoader(String dir) {
+            System.out.println("Setting ruledir to:"+dir);
             ruleDir=new File(dir);
         }
 
         public Properties loadProperties(String name) {
             Properties p=new Properties();
             try {
+                System.out.println("Reading properties from file: " + new File(ruleDir,name).toString());
                 InputStream stream=new FileInputStream(new File(ruleDir,name));
                 p.load(stream);
                 stream.close();

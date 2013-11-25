@@ -33,3 +33,4 @@ configurable.15=subsystem
 configurable.16=osgi
 configurable.17=messaging
 configurable.18=ejb3
+configurable.19=resource-adapter

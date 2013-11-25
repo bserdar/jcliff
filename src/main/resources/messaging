@@ -1,4 +1,4 @@
-name=messaging
+iname=messaging
 getContents=/subsystem=messaging:read-resource(recursive=true)
 server.preprocess.prepend=/messaging
 
@@ -57,4 +57,3 @@ addAddressSetting.precendence=50
 
 match.modifyAddressSetting=modify:/messaging/hornetq-server/*/address-setting/*/*
 modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/address-setting=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
-
