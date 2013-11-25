@@ -1,0 +1,49 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=resource-adapter
+#below version is resource adapters
+getContents=/subsystem=resource-adapters:read-resource(recursive=true)
+#server.preprocess.prepend=/resource-adapters   #not sure if should be resource-adapter or resource-adapters
+
+#first add/modify/delete resource adapter, then enable it
+#match.add=add:/resource-adapters/resource-adapter/*
+#add.rule=/subsystem=resource-adapters/resource-adapter=${id(.)}:add(archive=${archive(.)})
+
+#remove resource adapter
+#match.delete=remove:/resource-adapters/resource-adapter/*
+#delete.rule=/subsystem=resource-adapters/resource-adapter=${id(.)}:remove
+
+#match.listAddAdminObject=listAdd:/resource-adapters/resource-adapter/*/admin-objects/*
+#match.listRemoveAdminObject=listRemove:/resource-adapters/resource-adapter/*/admin-objects/*
+#match.modifyAdminObject=modify:/resource-adapters/resource-adapter/*/admin-objects/*
+
+#match.modify=modify:/datasource/*/*
+#modify.rule=subsystem=resource-adapters/resource-adapter=${id(.)}:remove
+
+#Configure
+#match.addAdminObject=add/resource-adapter/admin-object/*
+#addAdminObject.rule.1=
+#addAdminObject.rule.2=
+#addAdminObject.refresh=true
+
+# next add the queues as admin objects
+#rule to add
+#match.addAdminObject=add/resource-adapter/admin-object/*
+#addAdminObject.rule.1=
+#addAdminObject.rule.2=
+#addAdminObject.refresh=true

@@ -1,4 +1,4 @@
-iname=messaging
+name=messaging
 getContents=/subsystem=messaging:read-resource(recursive=true)
 server.preprocess.prepend=/messaging
 
