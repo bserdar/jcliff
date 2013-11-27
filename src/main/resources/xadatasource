@@ -32,12 +32,12 @@ addXAProperty.rule.1=/subsystem=datasources/xa-data-source=${name(../..)}/xa-dat
 addXAProperty.precedence=70
 
 match.setXAProperty=modify:/xadatasource/*/xa-datasource-properties/*/value
-setXAProperty.rule.1=/subsystem=datasources/xa-datasource=${name(../../..)}/xa-datasource-properties=${name(..)}:remove
-setXAProperty.rule.2=/subsystem=datasources/xa-datasource=${name(../../..)}/xa-datasource-properties=${name(..)}:add(value=${value(..)})
+setXAProperty.rule.1=/subsystem=datasources/xa-data-source=${name(../../..)}/xa-datasource-properties=${name(..)}:remove
+setXAProperty.rule.2=/subsystem=datasources/xa-data-source=${name(../../..)}/xa-datasource-properties=${name(..)}:add(value=${value(..)})
 setXAProperty.precedence=70
 
 match.removeXAProperty=remove:/xadatasource/*/xa-datasource-properties/*
-removeXAProperty.rule.1=/subsystem=datasources/xa-datasource=${name(../..)}/xa-datasource-properties=${name(.)}:remove
+removeXAProperty.rule.1=/subsystem=datasources/xa-data-source=${name(../..)}/xa-datasource-properties=${name(.)}:remove
 removeXAProperty.precedence=80
 
 
