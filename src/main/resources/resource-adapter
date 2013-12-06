@@ -16,34 +16,79 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 name=resource-adapter
-#below version is resource adapters
 getContents=/subsystem=resource-adapters:read-resource(recursive=true)
-#server.preprocess.prepend=/resource-adapters   #not sure if should be resource-adapter or resource-adapters
 
 #first add/modify/delete resource adapter, then enable it
-#match.add=add:/resource-adapters/resource-adapter/*
-#add.rule=/subsystem=resource-adapters/resource-adapter=${id(.)}:add(archive=${archive(.)})
+match.addAdapter=add:/resource-adapter/*
+addAdapter.rule.1=/subsystem=resource-adapters/resource-adapter=${name(.)}:add(archive=${value(archive)})
+addAdapter.rule.2=/subsystem=resource-adapters/resource-adapter=${name(.)}:activate
+addAdapter.precedence=10
+addAdapter.refresh=true
 
-#remove resource adapter
-#match.delete=remove:/resource-adapters/resource-adapter/*
-#delete.rule=/subsystem=resource-adapters/resource-adapter=${id(.)}:remove
+match.removeAdapter=remove:/resource-adapter/*
+removeAdapter.rule=/subsystem=resource-adapters/resource-adapter=${name(.)}:remove
 
-#match.listAddAdminObject=listAdd:/resource-adapters/resource-adapter/*/admin-objects/*
-#match.listRemoveAdminObject=listRemove:/resource-adapters/resource-adapter/*/admin-objects/*
-#match.modifyAdminObject=modify:/resource-adapters/resource-adapter/*/admin-objects/*
 
-#match.modify=modify:/datasource/*/*
-#modify.rule=subsystem=resource-adapters/resource-adapter=${id(.)}:remove
+match.addCnxnDefinition=add:/resource-adapter/*/connection-definitions/*
+addCnxnDefinition.rule=/subsystem=resource-adapters/resource-adapter=${name(../..)}/connection-definitions=${name(.)}:add(class-name=${value(class-name)}, jndi-name=${value(jndi-name)})
+addCnxnDefinition.refresh=true
+addCnxnDefinition.precedence=20
 
-#Configure
-#match.addAdminObject=add/resource-adapter/admin-object/*
-#addAdminObject.rule.1=
-#addAdminObject.rule.2=
-#addAdminObject.refresh=true
+match.removeCnxnDefinition=remove:/resource-adapter/*/connection-definitions/*
+removeCnxnDefinition.rule=/subsystem=resource-adapters/resource-adapter=${name(../..)}/connection-definitions=${name(.)}:remove
 
-# next add the queues as admin objects
-#rule to add
-#match.addAdminObject=add/resource-adapter/admin-object/*
-#addAdminObject.rule.1=
-#addAdminObject.rule.2=
-#addAdminObject.refresh=true
+match.addCnxnDefinitionConfig=add:/resource-adapter/*/connection-definitions/*/*
+addCnxnDefinitionConfig.rule=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/connection-definitions=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+addCnxnDefinitionConfig.precedence=25
+
+match.modifyCnxnDefinitionConfig=modify:/resource-adapter/*/connection-definitions/*/*
+modifyCnxnDefinitionConfig.rule=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/connection-definitions=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+modifyCnxnDefinitionConfig.precedence=26
+
+#admin objects = JMS queues, for example
+match.addAdminObjects=add:/resource-adapter/*/admin-objects/*
+addAdminObjects.rule=/subsystem=resource-adapters/resource-adapter=${name(../..)}/admin-objects=${name(.)}:add(class-name=${value(class-name)}, jndi-name=${value(jndi-name)})
+addAdminObjects.refresh=true
+addAdminObjects.precedence=20
+
+#admin object config properties
+match.addAdminObjectsConfig=add:/resource-adapter/*/admin-objects/*/config-properties/*
+addAdminObjectsConfig.rule=/subsystem=resource-adapters/resource-adapter=${name(../../../..)}/admin-objects=${name(../..)}/config-properties=${name(.)}:add(value=${value(value)})
+addAdminObjectsConfig.precedence=30
+
+#Due to a JBoss bug, this will fail the first time, and you will have to run again after restarting jboss
+#This is because it fails to unregister the removed config
+match.modifyAdminObjectsConfig=modify:/resource-adapter/*/admin-objects/*/config-properties/*/value
+modifyAdminObjectsConfig.rule.1=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/admin-objects=${name(../../..)}/config-properties=${name(..)}:remove
+modifyAdminObjectsConfig.rule.2=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/admin-objects=${name(../../..)}/config-properties=${name(..)}:add(value=${value(.)})
+modifyAdminObjectsConfig=30
+
+match.removeAdminObjects=remove:/resource-adapter/*/admin-objects/*
+removeAdminObjects.rule=/subsystem=resource-adapters/resource-adapter=${name(../..)}/admin-objects=${name(.)}:remove
+
+#Config properties
+match.addConfigProps=add:/resource-adapter/*/config-properties/*
+addConfigProps.rule=/subsystem=resource-adapters/resource-adapter=${name(../..)}/config-properties=${name(.)}:add(value=${value(value)})
+addConfigProps.precedence=20
+
+#Due to a bug in jboss, this will fail the first time, because it won't unregister the config property
+#It has to be run a second time to land
+match.modifyConfigProps=modify:/resource-adapter/*/config-properties/*/value
+modifyConfigProps.rule.1=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/config-properties=${name(..)}:remove
+modifyConfigProps.rule.2=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/config-properties=${name(..)}:add(value=${value(.)})
+modifyConfigProps.precedence=20
+
+match.removeConfigProps=remove:/resource-adapter/*/config-properties/*/value
+removeConfigProps.rule=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/config-properties=${name(..)}:remove
+
+#basic properties
+match.addProperty=add:/resource-adapter/*/*
+addProperty.rule=/subsystem=resource-adapters/resource-adapter=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+addProperty.precedence=20
+
+match.modifyProperty=modify:/resource-adapter/*/*
+modifyProperty.rule=/subsystem=resource-adapters/resource-adapter=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+modifyProperty.precedence=20
+
+match.removeProperty=undefine:/resource-adapter/*/*
+removeProperty.rule=/subsystem=resource-adapters/resource-adapter=${name(..)}:undefine-attribute(name=${name(.)})
