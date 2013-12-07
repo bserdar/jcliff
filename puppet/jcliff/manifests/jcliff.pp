@@ -26,6 +26,7 @@ class jcliff::jcliff {
 
   exec { 'configure-eap6' :
     command   => "/usr/bin/jcliff --cli=${eap6_home}/bin/jboss-cli.sh -v --controller=${management_host}:${management_port} --output=${log_dir}/jcliff.log ${eap6_config_dir}/*",
+    onlyif    => "[ $(/usr/bin/find ${eap6_config_dir} -type f | /usr/bin/wc -l) -gt 0 ]",
     logoutput => true,
     timeout   => 0,
     require   => [ Package['jcliff'], Package["jbossas-${config}"], Service['jbossas'] ],
