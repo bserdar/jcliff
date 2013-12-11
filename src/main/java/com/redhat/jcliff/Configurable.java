@@ -20,6 +20,7 @@ package com.redhat.jcliff;
 
 import java.util.Properties;
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Collections;
@@ -54,10 +55,13 @@ public class Configurable {
                     result[i]=ModelNode.fromString(sarr[i]);
                     if(result[i].has("outcome")) {
                         ModelNode outcome=result[i].get("outcome");
-                        if(outcome!=null||outcome.asString().equals("success")) {
-                            ;
-                        } else
+                        if(outcome.asString().equals("failed")) 
                             throw new RuntimeException("Operation failed:"+result[i].asString());
+                    } else {
+                        Set<String> keys=result[i].keys();
+                        for(String x:keys) 
+                            if(x.startsWith("JBAS"))
+                                throw new RuntimeException("Operation failed:"+result[i].asString());
                     }
                 } else {
                     result[i]=new ModelNode();
