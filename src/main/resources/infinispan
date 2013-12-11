@@ -132,6 +132,19 @@ removeRepCacheEviction.precedence=65
 removeRepCacheEviction.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/eviction=${name(.)}:remove
 removeRepCacheEviction.refresh=true
 
+match.addRepCacheExpiration=add:/cache-container/*/replicated-cache/*/expiration/*
+addRepCacheExpiration.precedence=46
+addRepCacheExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/expiration=${name(.)}:add
+addRepCacheExpiration.refresh=true
+
+match.modifyRepCacheExpiration=modify:/cache-container/*/replicated-cache/*/expiration/*/*
+modifyRepCacheExpiration.precedence=47
+modifyRepCacheExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/replicated-cache=${name(../../..)}/expiration=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.removeRepCacheExpiration=remove:/cache-container/*/replicated-cache/*/expiration/*
+removeRepCacheExpiration.precedence=44
+removeRepCacheExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/expiration=${name(.)}:remove
+
 match.addExpiration=add:/cache-container/*/local-cache/*/expiration/*
 addExpiration.precedence=46
 addExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/expiration=${name(.)}:add
@@ -191,3 +204,16 @@ addReplicatedCacheStore.refresh=true
 match.modifyReplicatedCacheStore=modify:/cache-container/*/replicated-cache/*/file-store/*/*
 modifyReplicatedCacheStore.precedence=80
 modifyReplicatedCacheStore.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/replicated-cache=${name(../../..)}/file-store=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.addRepCacheLocking=add:/cache-container/*/replicated-cache/*/locking/*
+addRepCacheLocking.precedence=46
+addRepCacheLocking.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/locking=${name(.)}:add
+addRepCacheLocking.refresh=true
+
+match.modifyRepCacheLocking=modify:/cache-container/*/replicated-cache/*/locking/*/*
+modifyRepCacheLocking.precedence=47
+modifyRepCacheLocking.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/replicated-cache=${name(../../..)}/locking=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.removeRepCacheLocking=remove:/cache-container/*/replicated-cache/*/locking/*
+removeRepCacheLocking.precedence=44
+removeRepCacheLocking.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/locking=${name(.)}:remove
