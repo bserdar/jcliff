@@ -1,0 +1,31 @@
+{ "threads" =>
+  {
+    "<%= pool_type %>" => 
+	  { "<%= name %>" => {
+          <% if core_thread_count and core_thread_count != '' %>
+              "core-threads" => <%= core_thread_count %>,
+              "allow-core-timeout" => false,
+          <% end %>
+          <% if handoff_executor and handoff_executor != '' %>
+              "handoff-executor" => <%= handoff_executor %>,
+          <% end %>
+          <% if keepalive_time and keepalive_time != '' %>
+              "keepalive-time" => <%= keepalive_time %>,
+          <% end %>
+              "max-threads" => <%= max_thread_count %> ,
+          <% if queue_length and queue_length != '' %>
+              "queue-length" => <%= queue_length %>,
+          <% end %>
+		  <% if thread_factory and thread_factory != '' %>
+              "thread-factory" => "<%= thread_factory %>",
+		  <% end %>
+          <% if keepalive_time and keepalive_time != '' %>
+              "keepalive-time" => {
+                  "time" => "<%= keepalive_time %>",
+                  "unit" => "SECONDS"
+              },
+          <% end %>
+        }
+      }
+  }
+}

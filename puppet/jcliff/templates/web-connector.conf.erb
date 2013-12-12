@@ -1,0 +1,94 @@
+{
+  "web" => {
+    "connector" => {
+       "<%=name%>" => {
+
+<% if ssl and ssl != '' %>
+	"configuration" => { "<%=ssl%>" => { 
+	  <% if password and password != '' %>
+	     "password" => "<%=password%>",
+	  <% end %>
+	   <% if certificate_key_file and certificate_key_file != '' %>
+	     "certificate-key-file" => "<%=certificate_key_file%>",
+	  <% end %>
+	   <% if key_alias and key_alias != '' %>
+	     "key-alias" => "<%=key_alias%>",
+	  <% end %>
+	  <% if ca_certificate_file and ca_certificate_file != '' %>
+	     "ca-certificate-file" => "<%=ca_certificate_file%>",
+	  <% end %>
+	  <% if ca_certificate_password and ca_certificate_password != '' %>
+	     "ca-certificate-password" => "<%=ca_certificate_password%>",
+	  <% end %>
+	}},
+	
+<% end %>
+
+<% if enable_lookups and enable_lookups != '' %>
+                "enable-lookups" => "<%=enable_lookups%>",
+<% end %>
+<% if enabled and enabled != '' %>
+                "enabled" => <%=enabled%>,
+<% end %>
+<% if executor and executor != '' %>
+                "executor" => "<%=executor%>",
+<% end %>
+<% if max_connections and max_connections != '' %>
+                "max-connections" => <%=max_connections%>,
+<% end %>
+<% if max_post_size and max_post_size != '' %>
+                "max-post-size" => <%=max_post_size%>,
+<% end %>
+<% if max_save_post_size and max_save_post_size != '' %>
+                "max-save-post-size" => <%=max_save_post_size%>,
+<% end %>
+<% if protocol and protocol != '' %>
+                "protocol" => "<%=protocol%>",
+<% end %>
+<% if proxy_name and proxy_name != '' %>
+                "proxy-name" => "<%=proxy_name%>",
+<% end %>
+<% if proxy_port and proxy_port != '' %>
+                "proxy-port" => <%=proxy_port%>,
+<% end %>
+<% if redirect_port and redirect_port != '' %>
+                "redirect-port" => <%=redirect_port%>,
+<% end %>
+<% if scheme and scheme != '' %>
+                "scheme" => "<%=scheme%>",
+<% end %>
+<% if secure and secure != '' %>
+                "secure" => <%=secure%>,
+<% end %>
+<% if socket_binding and socket_binding != '' %>
+                "socket-binding" => "<%=socket_binding%>",
+<% end %>
+
+<% if virtual_server and virtual_server != '' %>
+                "virtual-server" => "<%=virtual_server%>",
+<% end %>
+
+       }
+    },
+   <% if access_log and access_log != '' %>
+		"virtual-server" => {"default-host" =>{
+		"configuration" => {"access-log" => {
+
+                  <% if pattern and pattern != '' %>
+                    "pattern"  => "<%=pattern%>",
+		  <% end %>
+		  <% if rotate and rotate != '' %>
+                    "rotate"  => <%=rotate%>,
+		  <% end %>
+		  <% if prefix and prefix != '' %>
+                    "prefix"  => "<%=prefix%>",
+		  <% end %>
+                  <% if resolve_hosts and resolve_hosts != '' %>
+                    "resolve-hosts"  => <%=resolve_hosts%>,
+		  <% end %>
+		  }}
+		}}
+	
+    <% end %>
+  }
+}

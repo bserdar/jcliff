@@ -1,0 +1,46 @@
+{ "datasource" => {
+  "<%= name %>" => {
+        "jndi-name" => "<%= jndi_name %>",
+<% if driver_name and driver_name != '' %>
+        "driver-name" => "<%= driver_name %>",
+<% end %>
+<% if username and username != '' %>
+        "user-name" => "<%= username %>",
+<% end %>
+<% if password and password != '' %>
+        "password" => "<%= password %>",
+<% end %>
+<% if transaction_isolation and transaction_isolation != '' %>
+        "transaction-isolation" => "<%= transaction_isolation %>",
+<% end %>
+<% if min_conn and min_conn != '' %>
+        "min-pool-size" => <%= min_conn %>,
+<% end %>
+<% if max_conn and max_conn != '' %>
+        "max-pool-size" => <%= max_conn %>,
+<% end %>
+<% if new_connection_sql and new_connection_sql != '' %>
+        "new-connection-sql" => "<%= new_connection_sql %>",
+<% end %>
+<% if check_valid_connection_sql and check_valid_connection_sql != '' %>
+        "check-valid-connection-sql" => "<%= check_valid_connection_sql %>",
+<% end %>
+        "connection-url" => "<%= url %>",
+<% if valid_connection_checker_class_name and valid_connection_checker_class_name != '' %>
+         "valid-connection-checker-class-name" => "<%= valid_connection_checker_class_name %>",
+<% end %>
+<% if exception_sorter_class_name and exception_sorter_class_name != '' %>
+         "exception-sorter-class-name" => "<%=exception_sorter_class_name %>",
+<% end %>
+<%- if validate_on_match and validate_on_match != '' -%>
+         "validate-on-match" => <%=validate_on_match %>,
+<%- end -%>
+<%- if background_validation and background_validation != '' -%>
+         "background-validation" => <%=background_validation %>,
+<%- end -%>
+<%- if background_validation_millis and background_validation_millis != '' -%>
+         "background-validation-millis" => <%=background_validation_millis %>,
+<%- end -%>
+        }
+  }
+}
