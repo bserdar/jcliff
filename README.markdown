@@ -310,16 +310,16 @@ server configuration tree.
 After the preprocessing, the paths are built, and a difference is
 computed. The differences are:
 
-   - add: Add a new configuration item to JBoss tree
-   - modify: Modify an existing item in JBoss tree. Only the leaf
+   - `add`: Add a new configuration item to JBoss tree
+   - `modify`: Modify an existing item in JBoss tree. Only the leaf
    modified paths appear in the delta. That is, if a datasource
    attribute is modified, the datasource node itself is not in the
    delta, only the modified attribute is.
-   - remove: Remove an item from JBoss tree. This is done by assigning
+   - `remove`: Remove an item from JBoss tree. This is done by assigning
    the value of an object to `"deleted"`.
-   - undefine: Undefine item in JBoss tree.
-   - listAdd: Add a new element in a list in JBoss tree.
-   - listRemove: Remove an element from a JBoss list.
+   - `undefine`: Undefine item in JBoss tree.
+   - `listAdd`: Add a new element in a list in JBoss tree.
+   - `listRemove`: Remove an element from a JBoss list.
 
 Hack: you can't add a nontrivial object, and set its attributes. The
 attributes of the nontrivial object don't exist until the object is
@@ -358,11 +358,11 @@ Now the rules themselves:
 
  - The configurable subsytems are defined in the rules file:
 
-    configurable.1=system-properties
-    configurable.2=logging
-    configurable.3=jdbc-driver
-    configurable.4=datasource
-    configurable.5=xadatasource
+        configurable.1=system-properties
+        configurable.2=logging
+        configurable.3=jdbc-driver
+        configurable.4=datasource
+        configurable.5=xadatasource
 
 Each configurable defines a rule file defining the rules to deal with
 that particular configurable. The explicit ordering defines the order
