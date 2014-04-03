@@ -217,3 +217,8 @@ modifyRepCacheLocking.rule=/subsystem=infinispan/cache-container=${name(../../..
 match.removeRepCacheLocking=remove:/cache-container/*/replicated-cache/*/locking/*
 removeRepCacheLocking.precedence=44
 removeRepCacheLocking.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/locking=${name(.)}:remove
+
+match.removeReplicatedCacheFileStore=remove:/cache-container/*/replicated-cache/*/file-store/*
+removeReplicatedCacheFileStore.precedence=80
+removeReplicatedCacheFileStore.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/file-store=${name(.)}:remove
+removeReplicatedCacheFileStore.refresh=true
