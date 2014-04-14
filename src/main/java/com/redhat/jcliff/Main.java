@@ -273,10 +273,28 @@ public class Main {
 
     private static boolean executeRules(Ctx ctx,Configurable cfg,List<NodeDiff> ldiff) {
         List<MatchRule> matchRules=cfg.getMatchRules(null);
+        List<MatchRule> prefixRules=cfg.getPrefixRules(null);
         List<NodeDiff> norule=new ArrayList<NodeDiff>();
         for(NodeDiff diff:ldiff)
             norule.add(diff);
-        for(MatchRule rule:matchRules) {
+
+        if(execute(ctx,cfg,ldiff,matchRules,norule))
+            return true;
+        if(!norule.isEmpty()) {
+            if(execute(ctx,cfg,ldiff,prefixRules,norule))
+                return true;
+        }
+        if(!norule.isEmpty()) {
+            StringBuffer buf=new StringBuffer();
+            for(NodeDiff x:norule)
+                buf.append(x.toString()).append('\n');
+            System.err.println("No rules for diffs:"+buf.toString());
+        }
+        return false;
+    }
+
+    private static boolean execute(Ctx ctx,Configurable cfg,List<NodeDiff> ldiff,List<MatchRule> rules,List<NodeDiff> norule) {
+        for(MatchRule rule:rules) {
             ctx.log("Checking rule "+rule.name);
             for(NodeDiff diff:ldiff) {
                 if(diff.action==rule.action) {
@@ -300,12 +318,6 @@ public class Main {
                     } 
                 }
             }
-        }
-        if(!norule.isEmpty()) {
-            StringBuffer buf=new StringBuffer();
-            for(NodeDiff x:norule)
-                buf.append(x.toString()).append('\n');
-            System.err.println("No rules for diffs:"+buf.toString());
         }
         return false;
     }

@@ -173,6 +173,31 @@ public class Configurable {
         this.scriptResultPostprocessor=p;
     }
 
+
+    /**
+     * Return the prefix rules for the given action. If action is
+     * null, all rules are returned.
+     *
+     * Rules are of the form:
+     *  prefix.<ruleName>=<action>:<mask>
+     */
+    public List<MatchRule> getPrefixRules(Action action) {
+        List<MatchRule> rules=new ArrayList<MatchRule>();
+        for(Iterator itr=properties.keySet().iterator();itr.hasNext();) {
+            String key=(String)itr.next();
+            if(key.startsWith("prefix.")) {
+                String ruleName=key.substring("prefix.".length());
+                String value=properties.getProperty(key);
+                String[] str=splitMatchString(value);
+                if(str!=null)
+                    if(action==null||action.toString().equals(str[0])) {
+                        rules.add(new MatchRule(Action.valueOf(str[0]),ruleName,0,str[1]));
+                    }
+            }
+        }
+        return rules;
+    }
+
     /**
      * Return the match rules for the given action, ordered by
      * precedence. If action is null, all rules are returned.
@@ -247,11 +272,14 @@ public class Configurable {
 	    return script.replaceAll("\\n", "\\\\\n");
     }
 
-    private String resolve(PathExpression matchedPath,List<NodePath> allPaths,String str) {
+    
+
+    public static String resolve(PathExpression matchedPath,List<NodePath> allPaths,String str) {
         StringBuffer output=new StringBuffer();
         StringBuffer buf=null;
         int state=0;
         int n=str.length();
+        int depth=0;
         for(int i=0;i<n;i++) {
             char c=str.charAt(i);
             switch(state) {
@@ -268,19 +296,27 @@ public class Configurable {
                     state=0;
                 } else if(c=='{') {
                     state=2;
+                    depth=1;
                     buf=new StringBuffer();
                 } else
                     throw new RuntimeException("Syntax error near offset "+i+":"+str);
                 break;
 
             case 2:
-                if(c=='}') {
-                    String s=lookup(buf.toString(),matchedPath,allPaths);
-                    if(s==null)
-                        throw new RuntimeException("Cannot resolve "+buf.toString()+" in "+str);
-                    output.append(s);
-                    state=0;
-                    buf=null;
+                if(c=='{') {
+                    depth++;
+                    buf.append(c);
+                } else if(c=='}') {
+                    depth--;
+                    if(depth==0) {
+                        String s=func(buf.toString(),matchedPath,allPaths);
+                        if(s==null)
+                            throw new RuntimeException("Cannot resolve "+buf.toString()+" in "+str);
+                        output.append(s);
+                        state=0;
+                        buf=null;
+                    } else
+                        buf.append(c);
                 } else
                     buf.append(c);
                 break;
@@ -295,7 +331,10 @@ public class Configurable {
         return "true".equals(properties.get(ruleName+".refresh"));
     }
 
-    private String lookup(String str,PathExpression matchedPath,List<NodePath> allPaths) {
+    /**
+     * str is of the form funcName(expr)
+     */
+    private static String func(String str,PathExpression matchedPath,List<NodePath> allPaths) {
         int index=str.indexOf('(');
         int lastIndex=str.lastIndexOf(')');
         if(index==-1||lastIndex==-1)
@@ -303,18 +342,102 @@ public class Configurable {
         String function=str.substring(0,index).trim();
         String pathExpr=str.substring(index+1,lastIndex).trim();
 
-        PathExpression expr=PathExpression.parse(pathExpr);
-        PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
         String ret;
-        if(function.equals("name")) 
+        if(function.equals("name")) {
+            pathExpr=resolve(matchedPath,allPaths,pathExpr);
+            PathExpression expr=PathExpression.parse(pathExpr);
+            PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
             ret=absolute.last();
-        else if(function.equals("value")) {
+        } else if(function.equals("value")) {
+            pathExpr=resolve(matchedPath,allPaths,pathExpr);
+            PathExpression expr=PathExpression.parse(pathExpr);
+            PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
             NodePath p=NodePath.find(allPaths,absolute);
             if(p==null)
                 throw new RuntimeException("Cannot resolve "+str+" with respect to "+matchedPath);
             ret=p.node.toString();
+        } else if(function.equals("path")) {
+            pathExpr=resolve(matchedPath,allPaths,pathExpr);
+            PathExpression expr=PathExpression.parse(pathExpr);
+            PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
+            ret=absolute.toString();
+        } else if(function.equals("cmdpath")) {
+            String arg=resolve(matchedPath,allPaths,pathExpr);
+            PathExpression p=PathExpression.parse(arg);
+            boolean name=true;
+            int n=p.size();
+            StringBuilder buf=new StringBuilder();
+            for(int i=0;i<n;i++) {
+                if(name)  {
+                    buf.append('/').append(p.get(i));
+                } else {
+                    buf.append('=').append(p.get(i));
+                }
+                name=!name;
+            }
+            ret=buf.toString();
         } else
             throw new RuntimeException("Cannot process "+function);
+        return ret;
+    }
+
+    private static char closing(char c) {
+        switch(c) {
+        case '{': return '}';
+        case '(': return ')';
+        default: return 0;
+        }
+    }
+
+    private static List<String> split(String s) {
+        int state=0;
+        List<Character> stack=new ArrayList<Character>();
+        int n=s.length();
+        List<String> ret=new ArrayList<String>();
+        StringBuffer buf=null;
+        for(int i=0;i<n;i++) {
+            char c=s.charAt(i);
+            switch(state) {
+            case 0:
+                buf=new StringBuffer();
+                if(c==',') {
+                    ret.add(buf.toString());
+                } else {
+                    if(c=='('||c=='{') {
+                        stack.add(c);
+                        buf.append(c);
+                        state=1;
+                    } else if(c==')'||c=='}')
+                        throw new RuntimeException("Mismatched "+c+":"+s);
+                    else {
+                        state=1;
+                        buf.append(c);
+                    }
+                }
+                break;
+
+            case 1:
+                if(c=='('||c=='{') {
+                    stack.add(c);
+                    buf.append(c);
+                } else if(c==')'||c=='}') {
+                    if(!stack.isEmpty()) {
+                        if(closing(stack.get(stack.size()-1))==c) {
+                            stack.remove(stack.size()-1);
+                            buf.append(c);
+                        } else
+                            throw new RuntimeException("Mismatched "+c+":"+s);
+                    } else
+                        throw new RuntimeException("Mismatched "+c+":"+s);
+                } else if(stack.isEmpty()&&c==',') {
+                    ret.add(buf.toString());
+                    state=0;
+                } else
+                    buf.append(c);
+                break;
+            }
+        }
+        ret.add(buf.toString());
         return ret;
     }
 

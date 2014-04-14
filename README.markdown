@@ -9,7 +9,7 @@ to retrieve the current state, derive deltas, and apply them. What
 kind of delta results in what kind of action is defined using a
 property file based rule language.
 
-JBoss configuration model:
+## JBoss configuration model:
 
 The JBoss DMR library is used to represent jboss configuration in a
 hierarchical markup language. 
@@ -90,7 +90,7 @@ instance, to get system properties:
 
     /core-service=platform-mbean/type=runtime:read-attribute(name=system-properties)
 
-Puppet configuration model:
+## Puppet configuration model:
 
 The idea is to have puppet lay configuration files to a given
 directory, and then run jcliff on those files. Jcliff loads the
@@ -153,7 +153,7 @@ objects will leave them untouched. If you want to delete them, assign
 objects/values to `"deleted"`, or undefine them, by assigning them to
 `undefined`.
 
-Deployments:
+## Deployments:
 
 Jcliff can be used to deploy applications. After applying all the
 configuration changes, Jcliff attempts to process deployments of the form:
@@ -182,7 +182,7 @@ redeploy it, unless `--redeploy` flag is passed. So, after deploying all
 the applications, running Jcliff without the `--redeploy` flag with the
 existing deployment list will not alter any of the deployments.
 
-The delta and the rules:
+## The delta and the rules:
 
 Jcliff reads all configuration files, and builds a list of
 paths. Every value in the configuration tree is represented by a path
@@ -417,3 +417,25 @@ datasources. This is required after an add operation. The refresh
 configuration will have all the datasource attributes initialized to
 their default values, and any datasource attribute modification rule
 will match after a refresh.
+
+## Prefix Rules
+
+It is inefficient and error prone to keep writing rules of the form:
+
+  match.modifyProp=modify:/webservices/*
+  modifyProp.rule.1=/subsystem=webservices:write-attribute(name=${name(.)},value=${value(.)})
+
+Changing an attribute is done the same way for all configuration
+levels. So, instead of repeating this rule for every configuration
+level, it can be written as a prefix rule that applies to a set of
+nodes:
+
+  prefix.modifyProp=modify:/webservices
+
+The above rule declaration will make modifyProp match any
+modifications of a path with prefix '/webservices'.
+
+  modifyProp.rule.1=/subsystem=webservices${cmdpath(${path(..)})}:write-attribute(name=${name(.)},value=${value(.)})
+
+The above rule will rewrite the matching path in the form of a path
+that can be used in a command.
