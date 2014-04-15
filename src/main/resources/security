@@ -19,66 +19,43 @@ name=security
 getContents=/subsystem=security:read-resource(recursive=true)
 client.preprocess.strip=/security
 
+prefix.modify=modify:/
+modify.rule.1=/subsystem=security${cmdpath(${path(..)})}:write-attribute(name=${name(.)},value=${value(.)})
+
+prefix.remove=remove:/
+remove.rule.1=/subsystem=security${cmdpath(${path(.)})}:remove
+remove.refresh=true
+
+
 match.addSecurityDomain=add:/security-domain/*
 addSecurityDomain.precedence=50
 addSecurityDomain.rule.1=/subsystem=security/security-domain=${name(.)}:add
 addSecurityDomain.refresh=true
-
-match.removeSecurityDomain=remove:/security-domain/*
-removeSecurityDomain.precedence=50
-removeSecurityDomain.rule.1=/subsystem=security/security-domain=${name(.)}:remove
-removeSecurityDomain.refresh=true
 
 match.addAuth=add:/security-domain/*/authentication/*
 addAuth.rule.1=/subsystem=security/security-domain=${name(../..)}/authentication=${name(.)}:add
 addAuth.precedence=60
 addAuth.refresh=true
 
-match.removeAuth=remove:/security-domain/*/authentication/*
-removeAuth.rule.1=/subsystem=security/security-domain=${name(../..)}/authentication=${name(.)}:remove
-removeAuth.precedence=60
-removeAuth.refresh=true
-
 match.addAudit=add:/security-domain/*/audit/*
 addAudit.rule.1=/subsystem=security/security-domain=${name(../..)}/audit=${name(.)}:add
 addAudit.precedence=70
 addAudit.refresh=true
-
-match.removeAudit=remove:/security-domain/*/audit/*
-removeAudit.rule.1=/subsystem=security/security-domain=${name(../..)}/audit=${name(.)}:remove
-removeAudit.precedence=70
-removeAudit.refresh=true
 
 match.addAuditProvider=add:/security-domain/*/audit/*/provider-module/*
 addAuditProvider.rule.1=/subsystem=security/security-domain=${name(../../../..)}/audit=${name(../..)}/provider-module=${name(.)}:add(code=${value(code)})
 addAuditProvider.precedence=80
 addAuditProvider.refresh=true
 
-match.removeAuditProvider=remove:/security-domain/*/audit/*/provider-module/*
-removeAuditProvider.rule.1=/subsystem=security/security-domain=${name(../../../..)}/audit=${name(../..)}/provider-module=${name(.)}:remove
-removeAuditProvider.precedence=80
-removeAuditProvider.refresh=true
-
 match.addMapping=add:/security-domain/*/mapping/*
 addMapping.rule.1=/subsystem=security/security-domain=${name(../..)}/mapping=${name(.)}:add
 addMapping.precedence=90
 addMapping.refresh=true
 
-match.removeMapping=remove:/security-domain/*/mapping/*
-removeMapping.rule.1=/subsystem=security/security-domain=${name(../..)}/mapping=${name(.)}:remove
-removeMapping.precedence=90
-removeMapping.refresh=true
-
 match.addMappingModule=add:/security-domain/*/mapping/*/mapping-module/*
 addMappingModule.rule.1=/subsystem=security/security-domain=${name(../../../..)}/mapping=${name(../..)}/mapping-module=${name(.)}:add(code=${value(code)},type=${value(type)})
 addMappingModule.precedence=100
 addMappingModule.refresh=true
-
-match.removeMappingModule=remove:/security-domain/*/mapping/*/mapping-module/*
-removeMappingModule.rule.1=/subsystem=security/security-domain=${name(../../../..)}/mapping=${name(../..)}/mapping-module=${name(.)}:remove
-removeMappingModule.precedence=100
-removeMappingModule.refresh=true
-
 
 match.updateMappingModuleOptions=add:/security-domain/*/mapping/*/mapping-module/*/module-options/*
 updateMappingModuleOptions.rule.1=/subsystem=security/security-domain=${name(../../../../../..)}/mapping=${name(../../../..)}/mapping-module=${name(../..)}:write-attribute(name=module-options,value=${value(..)})
@@ -108,15 +85,6 @@ addLoginModule.rule.1=/subsystem=security/security-domain=${name(../../../..)}/a
 addLoginModule.precedence=70
 addLoginMOdule.refresh=true
 
-match.removeLoginModule=remove:/security-domain/*/authentication/*/login-module/*
-removeLoginModule.rule.1=/subsystem=security/security-domain=${name(../../../..)}/authentication/${name(../..)}/login-module=${name(.)}:remove
-removeLoginModule.precedence=70
-removeLoginModule.refresh=true
-
-match.updateLoginModuleAttr=modify:/security-domain/*/authentication/*/login-module/*/*
-updateLoginModuleAttr.rule.1=/subsystem=security/security-domain=${name(../../../../..)}/authentication=${name(../../..)}/login-module=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-updateLoginModuleAttr.precedence=75
-
 
 match.updateLoginModuleOptions=add:/security-domain/*/authentication/*/login-module/*/module-options/*
 updateLoginModuleOptions.rule.1=/subsystem=security/security-domain=${name(../../../../../..)}/authentication=${name(../../../..)}/login-module=${name(../..)}:write-attribute(name=module-options,value=${value(..)})
@@ -132,11 +100,4 @@ match.updateLoginModuleOptions3=modify:/security-domain/*/authentication/*/login
 updateLoginModuleOptions3.rule.1=/subsystem=security/security-domain=${name(../../../../../..)}/authentication=${name(../../../..)}/login-module=${name(../..)}:write-attribute(name=module-options,value=${value(..)})
 updateLoginModuleOptions3.precedence=80
 updateLoginModuleOptions3.refresh=true
-
-
-match.updateDomain=modify:/security-domain/*/*
-updateDomain.precedence=1000
-updateDomain.rule.1=/subsystem=security/security-domain=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-
 

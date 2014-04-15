@@ -363,8 +363,13 @@ public class Configurable {
             ret=absolute.toString();
         } else if(function.equals("cmdpath")) {
             String arg=resolve(matchedPath,allPaths,pathExpr);
+            boolean name;
+            if(arg.startsWith("=")) {
+                arg=arg.substring(1);
+                name=false;
+            } else
+                name=true;
             PathExpression p=PathExpression.parse(arg);
-            boolean name=true;
             int n=p.size();
             StringBuilder buf=new StringBuilder();
             for(int i=0;i<n;i++) {

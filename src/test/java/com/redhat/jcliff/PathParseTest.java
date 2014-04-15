@@ -72,5 +72,6 @@ public class PathParseTest {
 
         Assert.assertEquals("/a=b/c=d/e",Configurable.resolve(matched,allNodes,"${cmdpath(${path(.)})}"));
         Assert.assertEquals("/subsystem=x/a=b/c=d/e",Configurable.resolve(matched,allNodes,"/subsystem=x${cmdpath(${path(.)})}"));
+        Assert.assertEquals("/subsystem=a/b=c/d=e",Configurable.resolve(matched,allNodes,"/subsystem${cmdpath(=${path(.)})}"));
     }
 }

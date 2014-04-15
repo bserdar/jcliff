@@ -19,21 +19,18 @@ name=infinispan
 getContents=/subsystem=infinispan:read-resource(recursive=true)
 client.preprocess.strip=/infinispan
 
+prefix.modify=modify:/
+modify.rule.1=/subsystem=infinispan${cmdpath(${path(..)})}:write-attribute(name=${name(.)},value=${value(.)})
+
+prefix.remove=remove:/
+remove.rule.1=/subsystem=infinispan${cmdpath(${path(.)})}:remove
+remove.refresh=true
 
 
 match.addCacheContainer=add:/cache-container/*
 addCacheContainer.precedence=10
 addCacheContainer.rule=/subsystem=infinispan/cache-container=${name(.)}:add
 addCacheContainer.refresh=true
-
-match.modifyCacheContainer=modify:/cache-container/*/*
-modifyCacheContainer.precedence=30
-modifyCacheContainer.rule=/subsystem=infinispan/cache-container=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeCacheContainer=remove:/cache-container/*
-removeCacheContainer.precedence=10
-removeCacheContainer.rule=/subsystem=infinispan/cache-container=${name(.)}:remove
-removeCacheContainer.refresh=true
 
 match.listAddAlias=listAdd:/cache-container/*/aliases/*
 match.addAlias=add:/cache-container/*/aliases/*
@@ -42,15 +39,6 @@ match.addDistributedCache=add:/cache-container/*/distributed-cache/*
 addDistributedCache.precedence=40
 addDistributedCache.rule=/subsystem=infinispan/cache-container=${name(../..)}/distributed-cache=${name(.)}:add(mode=${value(mode)})
 addDistributedCache.refresh=true
-
-match.removeDistributedCache=remove:/cache-container/*/distributed-cache/*
-removeDistributedCache.precedence=44
-removeDistributedCache.rule=/subsystem=infinispan/cache-container=${name(../..)}/distributed-cache=${name(.)}:remove
-removeDistributedCache.refresh=true
-
-match.modifyDistributedCache=modify:/cache-container/*/distributed-cache/*/*
-modifyDistributedCache.precedence=42
-modifyDistributedCache.rule=/subsystem=infinispan/cache-container=${name(../../../)}/distributed-cache=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 
 match.addDefaultCache/cache-container/*/default-cache/*
 addDefaultCache.precedence=80
@@ -67,158 +55,58 @@ addLocalCache.precedence=41
 addLocalCache.rule=/subsystem=infinispan/cache-container=${name(../..)}/local-cache=${name(.)}:add
 addLocalCache.refresh=true
 
-match.modifyLocalCache=modify:/cache-container/*/local-cache/*/*
-modifyLocalCache.precedence=45
-modifyLocalCache.rule=/subsystem=infinispan/cache-container=${name(../../..)}/local-cache=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeLocalCache=remove:/cache-container/*/local-cache/*
-removeLocalCache.precedence=44
-removeLocalCache.rule=/subsystem=infinispan/cache-container=${name(../..)}/local-cache=${name(.)}:remove
-removeLocalCache.refresh=true
-
 match.addTransport=add:/cache-container/*/transport/*
 addTransport.precedence=42
 addTransport.rule=/subsystem=infinispan/cache-container=${name(../..)}/transport=${name(.)}:add
 addTransport.refresh=true
-
-match.modifyTransport=modify:/cache-container/*/transport/*/*
-modifyTransport.precedence=45
-modifyTransport.rule=/subsystem=infinispan/cache-container=${name(../../..)}/transport=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeTransport=remove:/cache-container/*/transport/*
-removeTransport.precedence=44
-removeTransport.rule=/subsystem=infinispan/cache-container=${name(../..)}/transport=${name(.)}:remove
-removeTransport.refresh=true
 
 match.addDistributedCache=add:/cache-container/*/distributed-cache/*/*
 addDistributedCache.precedence=90
 addDistributedCache.rule=/subsystem=infinispan/cache-container=${name(../../..)}/distributed-cache=${name(..)}:add(mode=${value(.)})
 addDistributedCache.refresh=true
 
-match.modifyDistributedCache=modify:/cache-container/*/distributed-cache/*/*
-modifyDistributedCache.precedence=45
-modifyDistributedCache.rule=/subsystem=infinispan/cache-container=${name(../../..)}/distributed-cache=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeDistributedCache=remove:/cache-container/*/distributed-cache/*
-removeDistributedCache.precedence=44
-removeDistributedCache.rule=/subsystem=infinispan/cache-container=${name(../..)}/distributed-cache=${name(.)}:remove
-removeDistributedCache.refresh=true
-
 match.addReplicatedCache=add:/cache-container/*/replicated-cache/*/*
 addReplicatedCache.precedence=40
 addReplicatedCache.rule=/subsystem=infinispan/cache-container=${name(../../..)}/replicated-cache=${name(..)}:add(mode=${value(.)})
 addReplicatedCache.refresh=true
-
-match.modifyReplicatedCache=modify:/cache-container/*/replicated-cache/*/*
-modifyReplicatedCache.precedence=45
-modifyReplicatedCache.rule=/subsystem=infinispan/cache-container=${name(../../..)}/replicated-cache=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeReplicatedCache=remove:/cache-container/*/replicated-cache/*
-removeReplicatedCache.precedence=44
-removeReplicatedCache.rule=/subsystem=infinispan/cache-container=${name(../..)}/replicated-cache=${name(.)}:remove
-removeReplicatedCache.refresh=true
 
 match.addRepCacheEviction=add:/cache-container/*/replicated-cache/*/eviction/*
 addRepCacheEviction.precedence=45
 addRepCacheEviction.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/eviction=${name(.)}:add
 addRepCacheEviction.refresh=true
 
-match.modifyRepCacheEviction=modify:/cache-container/*/replicated-cache/*/eviction/*/*
-modifyRepCacheEviction.precedence=46
-modifyRepCacheEviction.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/replicated-cache=${name(../../..)}/eviction=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeRepCacheEviction=remove:/cache-container/*/replicated-cache/*/eviction/*
-removeRepCacheEviction.precedence=65
-removeRepCacheEviction.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/eviction=${name(.)}:remove
-removeRepCacheEviction.refresh=true
-
 match.addRepCacheExpiration=add:/cache-container/*/replicated-cache/*/expiration/*
 addRepCacheExpiration.precedence=46
 addRepCacheExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/expiration=${name(.)}:add
 addRepCacheExpiration.refresh=true
-
-match.modifyRepCacheExpiration=modify:/cache-container/*/replicated-cache/*/expiration/*/*
-modifyRepCacheExpiration.precedence=47
-modifyRepCacheExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/replicated-cache=${name(../../..)}/expiration=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeRepCacheExpiration=remove:/cache-container/*/replicated-cache/*/expiration/*
-removeRepCacheExpiration.precedence=44
-removeRepCacheExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/expiration=${name(.)}:remove
 
 match.addExpiration=add:/cache-container/*/local-cache/*/expiration/*
 addExpiration.precedence=46
 addExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/expiration=${name(.)}:add
 addExpiration.refresh=true
 
-match.modifyExpiration=modify:/cache-container/*/local-cache/*/expiration/*/*
-modifyExpiration.precedence=47
-modifyExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/local-cache=${name(../../..)}/expiration=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeLocCacheExpiration=remove:/cache-container/*/local-cache/*/expiration/*
-removeLocCacheExpiration.precedence=44
-removeLocCacheExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/expiration=${name(.)}:remove
-
 match.addLocCacheEviction=add:/cache-container/*/local-cache/*/eviction/*
 addLocCacheEviction.precedence=46
 addLocCacheEviction.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/eviction=${name(.)}:add
 addLocCacheEviction.refresh=true
-
-match.modifyLocCacheEviction=modify:/cache-container/*/local-cache/*/eviction/*/*
-modifyLocCacheEviction.precedence=47
-modifyLocCacheEviction.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/local-cache=${name(../../..)}/eviction=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeLocCacheEviction=remove:/cache-container/*/local-cache/*/eviction/*
-removeLocCacheEviction.precedence=44
-removeLocCacheEviction.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/eviction=${name(.)}:remove
-removeLocCacheEviction.refresh=true
 
 match.addTransaction=add:/cache-container/*/local-cache/*/transaction/*
 addTransaction.precedence=46
 addTransaction.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/transaction=${name(.)}:add
 addTransaction.refresh=true
 
-match.modifyTransaction=modify:/cache-container/*/local-cache/*/transaction/*/*
-modifyTransaction.precedence=47
-modifyTransaction.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/local-cache=${name(../../..)}/transaction=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeLocCacheTransaction=remove:/cache-container/*/local-cache/*/transaction/*
-removeLocCacheTransaction.precedence=44
-removeLocCacheTransaction.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/transaction=${name(.)}:remove
-removeLocCacheTransaction.refresh=true
-
 match.addFileStore=add:/cache-container/*/local-cache/*/file-store/*
 addFileStore.precedence=80
 addFileStore.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/file-store=${name(.)}:add
 addFileStore.refresh=true
-
-match.removeLocCacheFileStore=remove:/cache-container/*/local-cache/*/file-store/*
-removeLocCacheFileStore.precedence=80
-removeLocCacheFileStore.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/local-cache=${name(../..)}/file-store=${name(.)}:remove
-removeLocCacheFileStore.refresh=true
 
 match.addReplicatedCacheStore=add:/cache-container/*/replicated-cache/*/file-store/*
 addReplicatedCacheStore.precedence=80
 addReplicatedCacheStore.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/file-store=${name(.)}:add
 addReplicatedCacheStore.refresh=true
 
-match.modifyReplicatedCacheStore=modify:/cache-container/*/replicated-cache/*/file-store/*/*
-modifyReplicatedCacheStore.precedence=80
-modifyReplicatedCacheStore.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/replicated-cache=${name(../../..)}/file-store=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
 match.addRepCacheLocking=add:/cache-container/*/replicated-cache/*/locking/*
 addRepCacheLocking.precedence=46
 addRepCacheLocking.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/locking=${name(.)}:add
 addRepCacheLocking.refresh=true
 
-match.modifyRepCacheLocking=modify:/cache-container/*/replicated-cache/*/locking/*/*
-modifyRepCacheLocking.precedence=47
-modifyRepCacheLocking.rule=/subsystem=infinispan/cache-container=${name(../../../../..)}/replicated-cache=${name(../../..)}/locking=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeRepCacheLocking=remove:/cache-container/*/replicated-cache/*/locking/*
-removeRepCacheLocking.precedence=44
-removeRepCacheLocking.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/locking=${name(.)}:remove
-
-match.removeReplicatedCacheFileStore=remove:/cache-container/*/replicated-cache/*/file-store/*
-removeReplicatedCacheFileStore.precedence=80
-removeReplicatedCacheFileStore.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/file-store=${name(.)}:remove
-removeReplicatedCacheFileStore.refresh=true

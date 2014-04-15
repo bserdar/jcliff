@@ -278,10 +278,10 @@ public class Main {
         for(NodeDiff diff:ldiff)
             norule.add(diff);
 
-        if(execute(ctx,cfg,ldiff,matchRules,norule))
+        if(execute(ctx,cfg,ldiff,matchRules,norule,RULE_MATCHER))
             return true;
         if(!norule.isEmpty()) {
-            if(execute(ctx,cfg,ldiff,prefixRules,norule))
+            if(execute(ctx,cfg,ldiff,prefixRules,norule,PREFIX_MATCHER))
                 return true;
         }
         if(!norule.isEmpty()) {
@@ -293,12 +293,32 @@ public class Main {
         return false;
     }
 
-    private static boolean execute(Ctx ctx,Configurable cfg,List<NodeDiff> ldiff,List<MatchRule> rules,List<NodeDiff> norule) {
+    interface Matcher {
+        boolean matches(PathExpression rulePath,PathExpression diffPath);
+    }
+
+    private static final class RuleMatcher implements Matcher {
+        public boolean matches(PathExpression rulePath,PathExpression diffPath) {
+            return rulePath.matches(diffPath);
+        }
+    }
+
+
+    private static final class PrefixRuleMatcher implements Matcher {
+        public boolean matches(PathExpression rulePath,PathExpression diffPath) {
+            return rulePath.prefixOf(diffPath);
+        }
+    }
+
+    private static final Matcher RULE_MATCHER=new RuleMatcher();
+    private static final Matcher PREFIX_MATCHER=new PrefixRuleMatcher();
+
+    private static boolean execute(Ctx ctx,Configurable cfg,List<NodeDiff> ldiff,List<MatchRule> rules,List<NodeDiff> norule,Matcher matcher) {
         for(MatchRule rule:rules) {
             ctx.log("Checking rule "+rule.name);
             for(NodeDiff diff:ldiff) {
                 if(diff.action==rule.action) {
-                    if(rule.expr.matches(diff.configPath.path)) {
+                    if(matcher.matches(rule.expr,diff.configPath.path)) {
                         norule.remove(diff);
                         ctx.log(rule.name+" will be run on "+diff);
                         boolean rerun=false;

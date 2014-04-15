@@ -437,5 +437,6 @@ modifications of a path with prefix '/webservices'.
 
   modifyProp.rule.1=/subsystem=webservices${cmdpath(${path(..)})}:write-attribute(name=${name(.)},value=${value(.)})
 
-The above rule will rewrite the matching path in the form of a path
-that can be used in a command.
+${cmdpath($path(..))} writes the path in the form /componen1=component2/component3=component4/...
+
+${cmdpath(=$path(..))} writes the path in the form =component1/component2=component3/component4=component5...

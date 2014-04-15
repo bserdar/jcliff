@@ -19,6 +19,12 @@ name=logging
 getContents=/subsystem=logging:read-resource(recursive=true)
 client.preprocess.strip=/logging
 
+prefix.modify=modify:/
+modify.rule.1=/subsystem=logging${cmdpath(${path(..)})}:write-attribute(name=${name(.)},value=${value(.)})
+
+prefix.remove=remove:/
+remove.rule.1=/subsystem=logging${cmdpath(${path(.)})}:remove
+remove.refresh=true
 
 
 match.addFileHandler=add:/file-handler/*
@@ -26,41 +32,15 @@ addFileHandler.precedence=50
 addFileHandler.rule=/subsytem=logging/file-handler=${name(.)}:add(file={"path"=>${value(./file/path/.)},"relative-to"=>${value(./file/relative-to/.)}})
 addFileHandler.refresh=true
 
-match.modifyFileHandler=modify:/file-handler/*/*
-modifyFileHandler.precedence=55
-modifyFileHandler.rule=/subsystem=logging/file-handler=${name(../)}:write-attribute(name=${name(.)},value=${value(.)})
-
 match.modifyFileHandlerFile=modify:/file-handler/*/file
 modifyFileHandlerFile.rule=/subsystem=logging/file-handler=${name(..)}:change-file(file={"path"=>${value(path)},"relative-to=>${value(relative-to)}})
 modifyFileHandlerFile.precedence=53
 modifyFileHandlerFile.refresh=true
 
-match.removeFileHandler=remove:/file-handler/*
-removeFileHandler.precedence=50
-removeFileHandler.rule=/subsystem=logging/file-handler=${name(.)}:remove
-
-
-
-
-
-
 match.addConsoleHandler=add:/console-handler/*
 addConsoleHandler.precedence=50
 addConsoleHandler.rule=/subsystem=logging/console-handler:${name(.)}:add
 addConsoleHandler.refresh=true
-
-match.modifyConsoleHandler=modify:/console-handler/*/*
-modifyConsoleHandler.precedence=55
-modifyConsoleHandler.rule=/subsystem=logging/console-handler=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeConsoleHandler=remove:/console-handler/*
-removeConsoleHandler.precedence=50
-removeConsoleHandler.rule=/subsystem=logging/console-handler=${name(.)}:remove
-
-
-
-
-
 
 match.addSizeRotatingFileHandler=add:/size-rotating-file-handler/*
 addSizeRotatingFileHandler.precedence=70
@@ -70,10 +50,6 @@ addSizeRotatingFileHandler.refresh=true
 match.modifySizeRotatingFileHandlerFile=modify:/size-rotating-file-handler/*/file
 modifySizeRotatingFileHandlerFile.rule=/subsystem=logging/size-rotating-file-handler=${name(..)}:change-file(file={"path"=>${value(path)},"relative-to"=>${value(relative-to)}})
 modifySizeRotatingFileHandlerFile.precedence=75
-
-match.modifySizeRotatingFileHandlerAttr=modify:/size-rotating-file-handler/*/*
-modifySizeRotatingFileHandlerAttr.precedence=77
-modifySizeRotatingFileHandlerAttr.rule=/subsystem=logging/size-rotating-file-handler=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 
 
 match.addPeriodicRotatingFileHandler=add:/periodic-rotating-file-handler/*
@@ -85,14 +61,6 @@ match.modifyPeriodicRotatingFileHandlerFile=modify:/periodic-rotating-file-handl
 modifyPeriodicRotatingFileHandlerFile.rule=/subsystem=logging/periodic-rotating-file-handler=${name(..)}:change-file(file={"path"=>${value(path)},"relative-to"=>${value(relative-to)}})
 modifyPeriodicRotatingFileHandlerFile.precedence=75
 
-match.modifyPeriodicRotatingFileHandlerAttr=modify:/periodic-rotating-file-handler/*/*
-modifyPeriodicRotatingFileHandlerAttr.precedence=77
-modifyPeriodicRotatingFileHandlerAttr.rule=/subsystem=logging/periodic-rotating-file-handler=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removePeriodicRotatingFileHandler=remove:/periodic-rotating-file-handler/*
-removePeriodicRotatingFileHandler.precedence=70
-removePeriodicRotatingFileHandler.rule=/subsystem=logging/periodic-rotating-file-handler=${name(.)}:remove
-
 
 match.addAsyncHandler=add:/async-handler/*
 addAsyncHandler.precedence=100
@@ -103,23 +71,6 @@ match.addSubhandler=add:/async-handler/*/subhandlers/*
 addSubhandler.precedence=105
 addSubhandler.rule=/subsystem=logging/async-handler=${name(../..)}:assign-subhandler(name=${name(.)})
 addSubhandler.refresh=true
-
-match.removeSubhandler=remove:/async-handler/*/subhandlers/*
-removeSubhandler.precedence=110
-removeSubhandler.rule=/subsystem=logging/async-handler=${name(../..)}:unassign-subhandler(name=${name(.)})
-
-match.modifyAsyncHandler=modify:/async-handler/*/*
-modifyAsyncHandler.precedence=110
-modifyAsyncHandler.rule=/subsystem=logging/async-handler=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
-
-match.removeAsyncHandler=remove:/async-handler/*
-removeAsyncHandler.precedence=100
-removeAsyncHandler.rule=/subsystem=logging/async-handler=${name(.)}:remove
-
-
-
-
-
 
 match.addLogger=add:/logger/*
 addLogger.rule=/subsystem=logging/logger=${name(.)}:add
@@ -134,23 +85,9 @@ match.removeLoggerHandler=remove:/logger/*/handlers/*
 removeLoggerHandler.rule=/subsytem=logging/logger=${name(../..)}:unassign-handler(name=${value(.)})
 removeLoggerHandler.precedence=1100
 
-match.modifyLoggerLevel=modify:/logger/*/level
-modifyLoggerLevel.rule=/subsystem=logging/logger=${name(..)}:write-attribute(name="level",value=${value(.)})
-modifyLoggerLevel.precedence=1100
-
 match.modifyParentHandlers=modify:/logger/*/use-parent-handlers
 modifyParentHandlers.rule=/subsystem=logging/logger=${name(..)}:write-attribute(name="use-parent-handlers",value=${value(.)})
 modifyParentHandlers.precedence=1100
-
-match.removeLogger=remove:/logger/*
-removeLogger.rule=/subsystem=logging/logger=${name(.)}:remove
-removeLogger.precedence=1000
-
-
-
-match.modifyRootLoggerLevel=modify:/root-logger/ROOT/level
-modifyRootLoggerLevel.rule=/subsystem=logging/root-logger=ROOT:write-attribute(name="level",value=${value(.)})
-modifyRootLogger.precedence=10000
 
 match.assignRootLoggerHandler=listAdd:/root-logger/ROOT/handlers/*
 assignRootLoggerHandler.rule=/subsystem=logging/root-logger=ROOT:root-logger-assign-handler(name=${name(.)})
