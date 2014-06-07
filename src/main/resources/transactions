@@ -15,23 +15,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-configurable.1=system-properties
-configurable.2=path
-configurable.3=jmx
-configurable.4=threads
-configurable.5=logging
-configurable.6=jdbc-driver
-configurable.7=datasource
-configurable.8=xadatasource
-configurable.9=standard-sockets
-configurable.10=web
-configurable.11=webservices
-configurable.12=infinispan
-configurable.13=security
-configurable.14=scanner
-configurable.15=subsystem
-configurable.16=osgi
-configurable.17=messaging
-configurable.18=ejb3
-configurable.19=resource-adapter
-configurable.20=transactions
+name=transactions
+getContents=/subsystem=transactions:read-resource(recursive=true)
+client.preprocess.strip=/transactions
+
+match.modifyProperty=modify:/*
+modifyProperty.rule=/subsystem=transactions:write-attribute(name=${name(.)},value=${value(.)})
