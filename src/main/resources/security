@@ -47,6 +47,23 @@ addAuditProvider.rule.1=/subsystem=security/security-domain=${name(../../../..)}
 addAuditProvider.precedence=80
 addAuditProvider.refresh=true
 
+match.addJsse=add:/security-domain/*/jsse/*
+addJsse.rule.1=/subsystem=security/security-domain=${name(../..)}/jsse=${name(.)}:add
+addJsse.precedence=85
+addJsse.refresh=true
+
+match.addJsseKeyStore=add:/security-domain/*/jsse/*/keystore/*
+addJsseKeyStore.rule.1=/subsystem=security/security-domain=${name(../../../..)}/jsse=${name(../..)}:write-attribute(name=keystore,value=${value(..)}
+
+match.modifyJsseKeyStore=modify:/security-domain/*/jsse/*/keystore/*
+modifyJsseKeyStore.rule.1=/subsystem=security/security-domain=${name(../../../..)}/jsse=${name(../..)}:write-attribute(name=keystore,value=${value(..)}
+
+match.addJsseTrustStore=add:/security-domain/*/jsse/*/truststore/*
+addJsseTrustStore.rule.1=/subsystem=security/security-domain=${name(../../../..)}/jsse=${name(../..)}:write-attribute(name=truststore,value=${value(..)}
+
+match.modifyJsseTrustStore=modify:/security-domain/*/jsse/*/truststore/*
+modifyJsseTrustStore.rule.1=/subsystem=security/security-domain=${name(../../../..)}/jsse=${name(../..)}:write-attribute(name=truststore,value=${value(..)}
+
 match.addMapping=add:/security-domain/*/mapping/*
 addMapping.rule.1=/subsystem=security/security-domain=${name(../..)}/mapping=${name(.)}:add
 addMapping.precedence=90

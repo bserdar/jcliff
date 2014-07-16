@@ -1,3 +1,53 @@
+# Jcliff
+## What does it do?
+
+Jcliff configures a running instance of EAP6/JBoss7 using modular
+configuration files.
+
+### But I can configure EAP6/JBoss7 by editing the configuration XML file....
+
+There are several problems with that:
+  * It is not easily maintainable, especially if you have many hosts with different configurations.
+  * It requires a bounce. JCliff uses jboss-cli.sh to invoke
+configuration commands, so many configuration modifications can be
+done without bouncing the server.
+
+### I can use scripts that call jboss-cli.sh to configure the server
+
+JCliff modifies the configuration incrementally. Only necessary parts
+of the configuration is modified, and if the required changes are already 
+applied, nothing is done.
+
+### How do I use puppet?
+
+Use puppet to lay down configuration files, and then have puppet
+execute jcliff. This way, you can define datasources, logging,
+etc. using puppet code and templates, and configure only what's
+necessary.
+
+### Can I use another configuration management tool?
+
+There's nothing puppet specific in jcliff. You can use jcliff as a
+command line tool, or from any configuration management system than
+can install files, and execute other programs.
+
+### What does jcliff configuration files look like?
+
+JCliff uses the same JSON-like language used by jboss-cli.sh (jboss-dmr library).
+A configuration file that sets the root level logging looks like
+
+{
+  "logging" => { 
+    "root-logger" => {
+       "ROOT" => {
+          "level" => "debug"
+       }
+    }
+  }
+}
+
+# Operation
+
 EAP6 configuration is difficult if you intend to use puppet. The
 command line client provides an interactive front-end for
 configuration tasks, not easily called from puppet scripts. There is
