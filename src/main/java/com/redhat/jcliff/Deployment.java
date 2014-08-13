@@ -104,7 +104,8 @@ public class Deployment {
                                 child.get(col);
                             int i=0;
                             for(String val:values) {
-                                child.get(columnNames.get(i++)).set(val);
+                                if(i <=3)
+                                    child.get(columnNames.get(i++)).set(val);
                             }
                         }
                     }
