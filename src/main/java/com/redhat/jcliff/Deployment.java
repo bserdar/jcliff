@@ -54,6 +54,8 @@ import org.jboss.dmr.ModelType;
  *        "NAME" => name,
  *        "path" => path to file to deploy,
  *        "RUNTIME-NAME" => runtime name (optional),
+ *        "unmanaged" =>  [true|false] (optional), if set to true, deployment is unamanaged
+ *                                     otherwise, deployment is managed
  *        "replace-name-regex"   => if NAME of a deployed app matches this regex, 
  *                                  the existing version of the app will be undeployed first
  *        "replace-runtime-name-regex" => If the RUNTIME-NAME of a deployed app matches this regex,
@@ -217,11 +219,16 @@ public class Deployment {
         ModelNode deployment=newDeployments.get(name);
         String path=deployment.has("path")?deployment.get("path").asString():null;
         String runtimeName=deployment.has("RUNTIME-NAME")?deployment.get("RUNTIME-NAME").asString():null;
+        String unmanaged=deployment.has("unmanaged")?deployment.get("unmanaged").asString():null;
+        String unmanagedMode="";
         if(path==null)
             throw new RuntimeException("path is required in "+deployment);
+        if(unmanaged=="true")
+            unmanagedMode="--unmanaged";
         ctx.log("deploy "+path+" runtime-name="+runtimeName);
         ctx.queueCmd(new Script(new String[] {"deploy "+path+
                                               " --name="+name+
+                                              " "+unmanagedMode+ 
                                               (runtimeName==null?"":" --runtime-name="+runtimeName)}));
     }
     
