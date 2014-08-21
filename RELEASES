@@ -1,0 +1,6 @@
+v2.3:
+ - Added support for unmanaged deployments (amoralej)
+v2.2:
+ - Transaction subsystem attribute fix (mpatercz)
+v2.0-v2.1:
+ - Added support for prefix rules
