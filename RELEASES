@@ -1,3 +1,5 @@
+v2.4:
+ - Add support for topics and security settings in hornetq (corecanarias)
 v2.3:
  - Added support for unmanaged deployments (amoralej)
 v2.2:
