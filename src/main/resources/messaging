@@ -14,6 +14,10 @@ match.addQueue=add:/messaging/hornetq-server/*/jms-queue/*
 addQueue.rule=jms-queue add --queue-address=${name(.)} --entries=${value(entries)} --durable=${value(durable)}
 addQueue.precedence=20
 
+match.addTopic=add:/messaging/hornetq-server/*/jms-topic/*
+addTopic.rule=jms-topic add --topic-address=${name(.)} --entries=${value(entries)}  
+addTopic.precedence=20
+
 match.modifyConFactory=modify:/messaging/hornetq-server/*/connection-factory/*/*
 modifyConFactory.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/connection-factory=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
 
@@ -57,3 +61,11 @@ addAddressSetting.precendence=50
 
 match.modifyAddressSetting=modify:/messaging/hornetq-server/*/address-setting/*/*
 modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/address-setting=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+
+match.addSecuritySetting=add:/messaging/hornetq-server/*/security-setting/*
+addSecuritySetting.rule=/subsystem=messaging/hornetq-server=${name(../..)}/security-setting=${name(.)}:add()
+addSecuritySetting.refresh=true
+addSecuritySetting.precendence=50
+
+match.modifyAddressSetting=modify:/messaging/hornetq-server/*/security-setting/*/*/*/*
+modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../../../../)}/security-setting=${name(../../../)}/role=${name(../)}:write-attribute(name=${name(.)}, value=${value(.)})
