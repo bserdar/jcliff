@@ -35,17 +35,20 @@ public class Cli {
     private final String controller;
     private final String userName;
     private final String password;
+    private final String timeout;
     private final Ctx ctx;
 
     public Cli(String cli,
                String controller,
                String userName,
                String password,
+               String timeout,
                Ctx ctx) {
         this.cli=cli==null?"jboss-cli.sh":cli;
         this.controller=controller==null?"localhost":controller;
         this.userName=userName;
         this.password=password;
+        this.timeout=timeout;
         this.ctx=ctx;
     }
 
@@ -71,73 +74,76 @@ public class Cli {
         File outFile;
         File errFile;
         File scriptFile;
-        try {
-            tempFile=File.createTempFile("jcliff-in",null);
-            outFile=File.createTempFile("jcliff-out",null);
-            errFile=File.createTempFile("jcliff-err",null);
-            scriptFile=File.createTempFile("jcliff-script",null);
-            ctx.log("in file:"+tempFile.getAbsolutePath()+" "+tempFile.exists());
-            ctx.log("out file:"+outFile.getAbsolutePath()+" "+outFile.exists());
-            ctx.log("err file:"+errFile.getAbsolutePath()+" "+errFile.exists());
-            ctx.log("script file:"+scriptFile.getAbsolutePath()+" "+scriptFile.exists());
+            try {
+                tempFile=File.createTempFile("jcliff-in",null);
+                outFile=File.createTempFile("jcliff-out",null);
+                errFile=File.createTempFile("jcliff-err",null);
+                scriptFile=File.createTempFile("jcliff-script",null);
+                ctx.log("in file:"+tempFile.getAbsolutePath()+" "+tempFile.exists());
+                ctx.log("out file:"+outFile.getAbsolutePath()+" "+outFile.exists());
+                ctx.log("err file:"+errFile.getAbsolutePath()+" "+errFile.exists());
+                ctx.log("script file:"+scriptFile.getAbsolutePath()+" "+scriptFile.exists());
 
-            cmdArray.add(cli);
-            cmdArray.add("--controller="+controller);
-            cmdArray.add("--connect");
-            cmdArray.add("--file="+tempFile.getAbsolutePath());
-            if(userName!=null) {
-                cmdArray.add("--user="+userName);
-                if(password!=null)
-                    cmdArray.add("--password="+password);
+                cmdArray.add(cli);
+                cmdArray.add("--controller="+controller);
+                cmdArray.add("--connect");
+                cmdArray.add("--file="+tempFile.getAbsolutePath());
+                if(userName!=null) {
+                    cmdArray.add("--user="+userName);
+                    if(password!=null)
+                        cmdArray.add("--password="+password);
+                }
+                if(timeout!=null) {
+                        cmdArray.add("--timeout="+timeout);
+                }
+                FileWriter writer=new FileWriter(tempFile);
+                for(String x:command) {
+                    writer.write(x,0,x.length());
+                    writer.write('\n');
+                }
+                writer.flush();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-            FileWriter writer=new FileWriter(tempFile);
+            for(String x:cmdArray) {
+                ctx.log("args:"+x);
+            }
             for(String x:command) {
-                writer.write(x,0,x.length());
-                writer.write('\n');
+                ctx.log("cmds:"+x);
             }
-            writer.flush();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        for(String x:cmdArray) {
-            ctx.log("args:"+x);
-        }
-        for(String x:command) {
-            ctx.log("cmds:"+x);
-        }
-        try {
-            StringBuffer buf=new StringBuffer();
-            for(String x:cmdArray)
-                buf.append(x).append(' ');
-            FileWriter scw=new FileWriter(scriptFile);
-            scw.write(buf.toString()+">"+outFile.getAbsolutePath()+" 2>"+errFile.getAbsolutePath());
-            scw.flush();
-            ctx.log("Script file:"+scriptFile.getAbsolutePath()+" "+scriptFile.exists());
-            ctx.log("In file:"+tempFile.getAbsolutePath()+" "+tempFile.exists());
-            Process p=runtime.exec(new String[] {"/bin/sh",scriptFile.getAbsolutePath()});
+            try {
+                StringBuffer buf=new StringBuffer();
+                for(String x:cmdArray)
+                    buf.append(x).append(' ');
+                FileWriter scw=new FileWriter(scriptFile);
+                scw.write(buf.toString()+">"+outFile.getAbsolutePath()+" 2>"+errFile.getAbsolutePath());
+                scw.flush();
+                ctx.log("Script file:"+scriptFile.getAbsolutePath()+" "+scriptFile.exists());
+                ctx.log("In file:"+tempFile.getAbsolutePath()+" "+tempFile.exists());
+                    Process p=runtime.exec(new String[] {"/bin/sh",scriptFile.getAbsolutePath()});
             
-            
-            int returnCode=p.waitFor();
-            String errString=read(errFile);
-            String outString=read(outFile);
-            ctx.log("stderr:"+errString);
-            ctx.log("stdout:"+outString);
-            scriptFile.delete();
-            tempFile.delete();
-            errFile.delete();
-            outFile.delete();
-            if(errString.length()>0)
-                throw new RuntimeException(errString);
-            if(returnCode==0||returnCode==1) {
-                ctx.log("Return:"+outString);
-                return outString;
-            } else {
-                ctx.log("Return code="+returnCode);
-                return null;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+                    int returnCode=p.waitFor();
+                    ctx.log("return Code has :"+returnCode);
+                    String errString=read(errFile);
+                    String outString=read(outFile);
+                    ctx.log("stderr:"+errString);
+                    ctx.log("stdout:"+outString);
+                    scriptFile.delete();
+                    tempFile.delete();
+                    errFile.delete();
+                    outFile.delete();
+                    if(errString.length()>0)
+                        throw new RuntimeException(errString);
+                    if(returnCode==0||returnCode==1) {
+                        ctx.log("Return:"+outString);
+                        return outString;
+                    } else {
+                        ctx.log("Return code="+returnCode);
+                        return null;
+                           }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
     }
 
     private String read(File f) throws Exception {

@@ -20,6 +20,7 @@ package com.redhat.jcliff;
 
 import java.io.*;
 import java.util.*;
+import java.net.*;
 
 import org.jboss.dmr.*;
 
@@ -40,15 +41,17 @@ public class Main {
         "where options are:\n"+
         "  --cli=Path : jboss-cli.sh. Defaults to \n"+
         "               /usr/share/jbossas/bin/jboss-cli.sh\n"+
-        "  --controller=host : EAP6 host. Defaults to localhost.\n"+
-        "  --user=username   : EAP6 admin user name\n"+
-        "  --password=pwd    : EAP6 admin password\n"+
-        "  --ruledir=Path    : Location of jcliff rules.\n"+
-        "  --noop            : Read-only mode\n"+
-        "  -v                : Verbose output\n"+
-        "  --output=Path     : Log output file\n"+
-        "  --reload          : Reload if required\n"+
-        "  --redeploy        : Redeploy all apps";
+        "  --controller=host       : EAP6 host. Defaults to localhost.\n"+
+        "  --user=username         : EAP6 admin user name\n"+
+        "  --password=pwd          : EAP6 admin password\n"+
+        "  --ruledir=Path          : Location of jcliff rules.\n"+
+        "  --noop                  : Read-only mode\n"+
+        "  -v                      : Verbose output\n"+
+        "  --timeout=timeout       : Timeout\n"+
+        "  --output=Path           : Log output file\n"+
+        "  --reload                : Reload if required\n"+
+        "  --waitport=waitport     : Seconds waiting for port to be opened\n"+
+        "  --redeploy              : Redeploy all apps";
 
     public static void println(int indent,String s) {
         for(int i=0;i<indent;i++)
@@ -119,6 +122,8 @@ public class Main {
         String logOutput=null;
         List<String> files=new ArrayList<String>();
         String ruleDir=null;
+        String timeout="5000";
+        int     waitport=0;
         boolean reload=false;
         boolean redeploy=false;
         
@@ -139,6 +144,10 @@ public class Main {
                 noop=true; 
             else if(args[i].startsWith("--ruledir="))
                 ruleDir=args[i].substring("--ruledir=".length());
+            else if(args[i].startsWith("--timeout="))
+                timeout=args[i].substring("--timeout=".length());
+            else if(args[i].startsWith("--waitport="))
+                waitport=Integer.parseInt(args[i].substring("--waitport=".length()));
             else if(args[i].equals("--reload"))
                 reload=true;
             else if(args[i].equals("--redeploy"))
@@ -154,7 +163,19 @@ public class Main {
             ctx.log=log;
             if(logOutput!=null)
                 ctx.out=new PrintStream(new File(logOutput));
-            ctx.cli=new Cli(cli,controller,user,password,ctx);
+            if ( waitport != 0 ) {
+            Socket s = null;
+            String host = controller.split(":")[0];
+            int    port = Integer.parseInt(controller.split(":")[1]);
+            try {
+                Socket client = new Socket(host, port);
+                client.close();
+            } catch (Exception e) {
+                System.out.println("waiting "+waitport+" seconds for server to be up up");
+                try { Thread.sleep(waitport*1000); } catch(InterruptedException f) {}
+            } ;
+            }
+            ctx.cli=new Cli(cli,controller,user,password,timeout,ctx);
             try {
                 List<ModelNode> nodes=new ArrayList<ModelNode>();
                 Set<String> systemNames=new HashSet<String>();
