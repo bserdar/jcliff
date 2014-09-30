@@ -1,3 +1,5 @@
+v2.5:
+ - Added --timeout and --waitport options (karmab)
 v2.4:
  - Add support for topics and security settings in hornetq (corecanarias)
 v2.3:
