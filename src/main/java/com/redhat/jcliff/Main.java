@@ -47,10 +47,10 @@ public class Main {
         "  --ruledir=Path          : Location of jcliff rules.\n"+
         "  --noop                  : Read-only mode\n"+
         "  -v                      : Verbose output\n"+
-        "  --timeout=timeout       : Timeout\n"+
+        "  --timeout=timeout       : Command timeout in milliseconds\n"+
         "  --output=Path           : Log output file\n"+
         "  --reload                : Reload if required\n"+
-        "  --waitport=waitport     : Seconds waiting for port to be opened\n"+
+        "  --waitport=waitport     : Wait this many seconds for the port to be opened\n"+
         "  --redeploy              : Redeploy all apps";
 
     public static void println(int indent,String s) {
