@@ -468,6 +468,35 @@ configuration will have all the datasource attributes initialized to
 their default values, and any datasource attribute modification rule
 will match after a refresh.
 
+## Conditionals
+
+It is possible, as of v2.6, to have conditionals in rules:
+
+  ${if-defined (path), (true-case) <, (false-case) > }
+
+If `path` is defined, then `true-case` is evaluated, otherwise
+`false-case` is evaluated if it exists. For example:
+
+{ 
+  "jdbc-driver" => {
+   { "MyDriver" => {
+      ...
+      "module-slot" => "2.0"
+    }
+  }
+
+Above, "module-slot" is an optional parameter. The rule for inserting
+a jdbc driver is written taking this into account:
+
+  addDriver.rule.1=/subsystem=datasources/jdbc-driver=${name(.)}:add( \
+      driver-name=${value(driver-name)}, \
+      driver-module-name=${value(driver-module-name)}, \
+      driver-xa-datasource-class-name=${value(driver-xa-datasource-class-name)} \
+      ${if-defined (module-slot),(,module-slot=${value(module-slot)})} \
+      ${if-defined (driver-class-name),(,driver-class-name=${value(driver-class-name)})})
+
+Note that the argument has a starting comma. This is required to build a correct command.
+
 ## Prefix Rules
 
 It is inefficient and error prone to keep writing rules of the form:

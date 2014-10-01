@@ -340,16 +340,19 @@ public class Configurable {
         if(index==-1||lastIndex==-1)
             throw new RuntimeException("Cannot interpret "+str);
         String function=str.substring(0,index).trim();
-        String pathExpr=str.substring(index+1,lastIndex).trim();
-
+        List<String> args=split(str.substring(index,lastIndex+1));
         String ret;
         if(function.equals("name")) {
-            pathExpr=resolve(matchedPath,allPaths,pathExpr);
+            if(args.size()!=1)
+                throw new RuntimeException("Syntax error in "+str);
+            String pathExpr=resolve(matchedPath,allPaths,args.get(0));
             PathExpression expr=PathExpression.parse(pathExpr);
             PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
             ret=absolute.last();
         } else if(function.equals("value")) {
-            pathExpr=resolve(matchedPath,allPaths,pathExpr);
+            if(args.size()!=1)
+                throw new RuntimeException("Syntax error in "+str);
+            String pathExpr=resolve(matchedPath,allPaths,args.get(0));
             PathExpression expr=PathExpression.parse(pathExpr);
             PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
             NodePath p=NodePath.find(allPaths,absolute);
@@ -357,12 +360,16 @@ public class Configurable {
                 throw new RuntimeException("Cannot resolve "+str+" with respect to "+matchedPath);
             ret=p.node.toString();
         } else if(function.equals("path")) {
-            pathExpr=resolve(matchedPath,allPaths,pathExpr);
+            if(args.size()!=1)
+                throw new RuntimeException("Syntax error in "+str);
+            String pathExpr=resolve(matchedPath,allPaths,args.get(0));
             PathExpression expr=PathExpression.parse(pathExpr);
             PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
             ret=absolute.toString();
         } else if(function.equals("cmdpath")) {
-            String arg=resolve(matchedPath,allPaths,pathExpr);
+            if(args.size()!=1)
+                throw new RuntimeException("Syntax error in "+str);
+            String arg=resolve(matchedPath,allPaths,args.get(0));
             boolean name;
             if(arg.startsWith("=")) {
                 arg=arg.substring(1);
@@ -381,68 +388,124 @@ public class Configurable {
                 name=!name;
             }
             ret=buf.toString();
+        } else if(function.equals("if-defined")) {
+            if(args.size()==2||args.size()==3) {
+                String pathExpr=resolve(matchedPath,allPaths,args.get(0));
+                PathExpression expr=PathExpression.parse(pathExpr);
+                PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
+                NodePath p=NodePath.find(allPaths,absolute);
+                String evalPart;
+                if(p!=null) {
+                    // evaluate the true part
+                    evalPart=args.get(1);
+                } else {
+                    // evaluate the else part, if there is one
+                    if(args.size()==3)
+                        evalPart=args.get(2);
+                    else
+                        evalPart=null;
+                }
+                if(evalPart!=null) {
+                    ret=resolve(matchedPath,allPaths,evalPart);
+                } else {
+                    ret="";
+                }
+            } else
+                throw new RuntimeException("if-defined needs 2 or 3 args in "+str);
         } else
             throw new RuntimeException("Cannot process "+function);
         return ret;
     }
 
-    private static char closing(char c) {
-        switch(c) {
-        case '{': return '}';
-        case '(': return ')';
-        default: return 0;
-        }
-    }
 
+    /**
+     * Parse arguments in parantheses delimited by commas
+     *
+     * <pre>
+     *   (arg1),(arg2),...
+     * </pre>
+     * 
+     * Returns list containing arg1, arg2,...
+     */
     private static List<String> split(String s) {
         int state=0;
         List<Character> stack=new ArrayList<Character>();
         int n=s.length();
         List<String> ret=new ArrayList<String>();
-        StringBuffer buf=null;
+        StringBuilder buf=null;
         for(int i=0;i<n;i++) {
             char c=s.charAt(i);
             switch(state) {
-            case 0:
-                buf=new StringBuffer();
-                if(c==',') {
-                    ret.add(buf.toString());
-                } else {
-                    if(c=='('||c=='{') {
-                        stack.add(c);
-                        buf.append(c);
-                        state=1;
-                    } else if(c==')'||c=='}')
-                        throw new RuntimeException("Mismatched "+c+":"+s);
-                    else {
-                        state=1;
+            case 0: // Initial state, expecting an open paren
+                if(Character.isWhitespace(c)) {
+                } else if(c=='(') {
+                    state=1;
+                    buf=new StringBuilder();
+                } else
+                    throw new RuntimeException("Syntax error parsing "+s);
+                break;
+
+            case 1: // Parsing an arg, continue until an un-escaped close paren
+                if(c=='\\') {
+                    state=10;
+                } else if(c=='{'||c=='(') {
+                    buf.append(c);
+                    stack.add(c);
+                } else if(c=='}') {
+                    if(stack.isEmpty()||
+                       stack.get(stack.size()-1)!='{')
+                        throw new RuntimeException("Mismatched "+c+" in "+s);
+                    stack.remove(stack.size()-1);
+                    buf.append(c);
+                } else if(c==')') {
+                    if(stack.isEmpty()) {
+                        ret.add(buf.toString());
+                        state=2;
+                    } else if(stack.get(stack.size()-1)!='(') {
+                        throw new RuntimeException("Mismatched "+c+" in "+s);
+                    } else {
+                        stack.remove(stack.size()-1);
                         buf.append(c);
                     }
+                } else if(c=='\"') {
+                    buf.append(c);
+                    state=3;
+                } else {
+                    buf.append(c);
                 }
                 break;
 
-            case 1:
-                if(c=='('||c=='{') {
-                    stack.add(c);
-                    buf.append(c);
-                } else if(c==')'||c=='}') {
-                    if(!stack.isEmpty()) {
-                        if(closing(stack.get(stack.size()-1))==c) {
-                            stack.remove(stack.size()-1);
-                            buf.append(c);
-                        } else
-                            throw new RuntimeException("Mismatched "+c+":"+s);
-                    } else
-                        throw new RuntimeException("Mismatched "+c+":"+s);
-                } else if(stack.isEmpty()&&c==',') {
-                    ret.add(buf.toString());
+            case 2: // Arg completed, waiting for a comma, or end
+                if(c==',') {
                     state=0;
+                } else if(!Character.isWhitespace(c))
+                    throw new RuntimeException("Syntax error parsing "+s);
+                break;
+
+            case 3: // In a quoted string. Continue until next quote
+                if(c=='\\') {
+                    state=11;
+                } else if(c=='\"') {
+                    buf.append(c);
+                    state=1;
                 } else
                     buf.append(c);
                 break;
+
+            case 10: // Escape char seen, copy verbatim
+                buf.append(c);
+                state=1;
+                break;
+
+            case 11: // Escape char seen in string, copy verbatim
+                buf.append(c);
+                state=3;
+                break;
             }
         }
-        ret.add(buf.toString());
+        // End state is 2
+        if(state!=2)
+            throw new RuntimeException("Syntax error parsing "+s);
         return ret;
     }
 

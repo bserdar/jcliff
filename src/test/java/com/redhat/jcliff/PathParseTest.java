@@ -74,4 +74,15 @@ public class PathParseTest {
         Assert.assertEquals("/subsystem=x/a=b/c=d/e",Configurable.resolve(matched,allNodes,"/subsystem=x${cmdpath(${path(.)})}"));
         Assert.assertEquals("/subsystem=a/b=c/d=e",Configurable.resolve(matched,allNodes,"/subsystem${cmdpath(=${path(.)})}"));
     }
+
+    @Test
+    public void ifTest() {
+        PathExpression matched=new PathExpression("a","b","c","d");
+        List<NodePath> allNodes=new ArrayList<NodePath>();
+        ModelNode node=ModelNode.fromString(str("{'a' => { 'b' => { 'c' => { 'd' => { 'e' => 'f' } } } } }"));
+        add(allNodes,node,"a","b","c","d","e");
+
+        Assert.assertEquals("/blah,\"f\"",Configurable.resolve(matched,allNodes,"/blah${if-defined (e),(,${value(e)})}"));
+        Assert.assertEquals("/blah",Configurable.resolve(matched,allNodes,"/blah${if-defined (g),(,${value(g)})}"));
+    }
 }
