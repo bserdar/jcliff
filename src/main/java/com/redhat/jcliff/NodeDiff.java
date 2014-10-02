@@ -97,7 +97,8 @@ public class NodeDiff {
                         diff.add(new NodeDiff(Action.remove,x,null));
                     } else if(x.node.getType().equals(ModelType.UNDEFINED)) {
                         ctx.log("Node undefined");
-                        diff.add(new NodeDiff(Action.undefine,x,null));
+                        if(!s.node.getType().equals(ModelType.UNDEFINED))
+                            diff.add(new NodeDiff(Action.undefine,x,null));
                     } else if(x.node.getType().equals(ModelType.LIST)&&!isSubsetOf(x.node,s.node)) {
                         ctx.log("Node is list");
                         List<ModelNode> configList=x.node.asList();
