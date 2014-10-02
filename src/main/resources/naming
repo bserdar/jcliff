@@ -15,24 +15,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-configurable.1=system-properties
-configurable.2=path
-configurable.3=jmx
-configurable.4=naming
-configurable.5=threads
-configurable.6=logging
-configurable.7=jdbc-driver
-configurable.8datasource
-configurable.9=xadatasource
-configurable.10=standard-sockets
-configurable.11=web
-configurable.12=webservices
-configurable.13=infinispan
-configurable.14=security
-configurable.15=scanner
-configurable.16=subsystem
-configurable.17=osgi
-configurable.18=messaging
-configurable.19=ejb3
-configurable.20=resource-adapter
-configurable.21=transactions
+name=naming
+getContents=/subsystem=naming:read-resource(recursive=true)
+client.preprocess.strip=/naming
+
+
+match.addBinding=add:/binding/*
+addBinding.rule.1=/subsystem=naming/binding="${name(.)}":add(binding-type=${value(binding-type)})
+addBinding.refresh=true
+
+match.modifyBinding=modify:/binding/*/*
+modifyBinding.rule.1=/subsystem=naming/binding="${name(..)}":write-attribute(name=${name(.)},value=${value(.)})
+
+match.removeBinding=remove:/binding/*
+removeBinding.rule.1=/subsystem=naming/binding="${name(.)}":remove
+removeBinding.refresh=true
