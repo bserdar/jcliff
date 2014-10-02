@@ -40,6 +40,7 @@ public class Ctx {
     public Cli cli;
     public boolean log=false;
     public boolean noop=false;
+    public boolean batch=true;
     public PrintStream out=System.out;
     public ModelNode currentServerNode;
     public List<NodePath> configPaths;
@@ -63,8 +64,16 @@ public class Ctx {
 
     public ModelNode[] runcmd(Script cmds,Postprocessor p) {
         if(!noop) {
-            msg(cmds.toString());
-            String s=cli.run(cmds);
+            Script run=cmds;
+            if(batch) {
+                if(cmds.size()>1) {
+                    run=new Script(cmds);
+                    run.insertToHead("batch");
+                    run.addToTail("run-batch");
+                }
+            }
+            msg(run.toString());
+            String s=cli.run(run);
             if(s==null)
                 throw new RuntimeException("Operation failed");
             return p.process(s);
@@ -74,7 +83,7 @@ public class Ctx {
 
     public void queueCmd(Script s) {
         if(s!=null)
-            for(String x:s.cmds)
+            for(String x:s.getCmds())
                 queueCmd(x);
     }
 

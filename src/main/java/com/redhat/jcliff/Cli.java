@@ -57,7 +57,7 @@ public class Cli {
     }
 
     public String run(Script command) {
-        return run(command.cmds);
+        return run(command.getCmds());
     }
 
 

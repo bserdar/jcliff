@@ -18,14 +18,16 @@
 */
 package com.redhat.jcliff;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Script {
-    public final String[] cmds;
+    private final List<String> cmds=new ArrayList<String>();
 
     public Script(String[] cmds) {
-        this.cmds=cmds==null?new String[0]:cmds;
+        if(cmds!=null)
+            for(String x:cmds)
+                this.cmds.add(x);
     }
 
     public Script(String cmd) {
@@ -33,9 +35,28 @@ public class Script {
     }
 
     public Script(List<String> cmds) {
-        this(cmds.toArray(new String[cmds.size()]));
+        this.cmds.addAll(cmds);
     }
 
+    public Script(Script s) {
+        this.cmds.addAll(s.cmds);
+    }
+
+    public int size() {
+        return cmds.size();
+    }
+
+    public String[] getCmds() {
+        return cmds.toArray(new String[cmds.size()]);
+    }
+
+    public void addToTail(String s) {
+        cmds.add(s);
+    }
+
+    public void insertToHead(String s) {
+        cmds.add(0,s);
+    }
 
     public boolean equals(Object o) {
         try {
@@ -46,7 +67,7 @@ public class Script {
 
     public boolean equals(Script o) {
         try {
-            Arrays.equals(cmds,o.cmds);
+            return cmds.equals(o.cmds);
         } catch (Exception e) {}
         return false;
     }

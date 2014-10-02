@@ -51,6 +51,7 @@ public class Main {
         "  --output=Path           : Log output file\n"+
         "  --reload                : Reload if required\n"+
         "  --waitport=waitport     : Wait this many seconds for the port to be opened\n"+
+        "  --nobatch               : Don't use batch mode of jboss-cli\n"+
         "  --redeploy              : Redeploy all apps";
 
     public static void println(int indent,String s) {
@@ -126,6 +127,7 @@ public class Main {
         int     waitport=0;
         boolean reload=false;
         boolean redeploy=false;
+        boolean batch=true;
         
         for(int i=0;i<args.length;i++) {
             if(args[i].startsWith("--cli="))
@@ -144,6 +146,8 @@ public class Main {
                 noop=true; 
             else if(args[i].startsWith("--ruledir="))
                 ruleDir=args[i].substring("--ruledir=".length());
+            else if(args[i].equals("--nobatch"))
+                batch=false;
             else if(args[i].startsWith("--timeout="))
                 timeout=args[i].substring("--timeout=".length());
             else if(args[i].startsWith("--waitport="))
@@ -161,6 +165,7 @@ public class Main {
             Ctx ctx=new Ctx();
             ctx.noop=noop;
             ctx.log=log;
+            ctx.batch=batch;
             if(logOutput!=null)
                 ctx.out=new PrintStream(new File(logOutput));
             if ( waitport != 0 ) {
