@@ -1,3 +1,7 @@
+v2.6:
+ - Conditional expression support in rules
+ - Basic naming subsystem support
+ - Add module-slot and driver-class to jdbc driver
 v2.5:
  - Added --timeout and --waitport options (karmab)
 v2.4:
