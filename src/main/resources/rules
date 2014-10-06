@@ -22,7 +22,7 @@ configurable.4=naming
 configurable.5=threads
 configurable.6=logging
 configurable.7=jdbc-driver
-configurable.8datasource
+configurable.8=datasource
 configurable.9=xadatasource
 configurable.10=standard-sockets
 configurable.11=web
