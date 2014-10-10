@@ -273,6 +273,10 @@ public class Main {
                             replaceList.put(x,null);
                     if(replaceList.size()>0)
                         deployment.deployUpdate(replaceList,allRequestedDeployments);
+
+                    names=deployment.getUndeployments(allRequestedDeployments,currentDeployments);
+                    if(names.length>0)
+                        deployment.undeploy(names);
                 }
 
                 if(reload)

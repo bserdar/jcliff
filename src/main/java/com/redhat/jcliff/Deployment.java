@@ -148,10 +148,13 @@ public class Deployment {
         Set<String> existingDeploymentNames=existingDeployments.keys();
         Set<String> newDeploymentNames=newDeployments.keys();
         if(redeploy) {
-            for(String newDeployment:newDeploymentNames)
-                if(existingDeploymentNames.contains(newDeployment)) {
-                    addDeployment(ret,newDeployment,newDeployment);
+            for(String newDeployment:newDeploymentNames) {
+                if(!newDeployments.get(newDeployment).asString().equals("deleted")) {
+                    if(existingDeploymentNames.contains(newDeployment)) {
+                        addDeployment(ret,newDeployment,newDeployment);
+                    }
                 }
+            }
             ctx.log("Apps to redeploy:"+ret);
         }
 
@@ -190,8 +193,27 @@ public class Deployment {
     public String[] getNewDeployments(ModelNode newDeployments,
                                       Set<String> existingDeploymentNames) {
         Set<String> newNames=newDeployments.keys();
+        Set<String> removeList=new HashSet<String>();
+        for(String x:newNames) {
+            if(newDeployments.get(x).asString().equals("deleted"))
+                removeList.add(x);
+        }
+        newNames.removeAll(removeList);
         newNames.removeAll(existingDeploymentNames);
         return newNames.toArray(new String[newNames.size()]);
+    }
+
+    public String[] getUndeployments(ModelNode requestedDeployments,
+                                     ModelNode currentDeployments) {
+        Set<String> undeployments=new HashSet<String>();
+        for(String requested:requestedDeployments.keys()) {
+            if(requestedDeployments.get(requested).asString().equals("deleted")) {
+                if(currentDeployments.has(requested)) {
+                    undeployments.add(requested);
+                }
+            }
+        }
+        return undeployments.toArray(new String[undeployments.size()]);
     }
     
     public void undeploy(String[] names) {
