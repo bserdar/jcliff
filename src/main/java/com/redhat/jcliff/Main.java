@@ -240,6 +240,7 @@ public class Main {
 
                 // Deal with deployments
                 ctx.log("Processing deployments");
+                ctx.batch=false; // Don't batch them
                 Deployment deployment=new Deployment(ctx,redeploy);
                 ModelNode allRequestedDeployments=new ModelNode();
                 allRequestedDeployments.setEmptyObject();
@@ -254,6 +255,7 @@ public class Main {
                         }
                     }
                 }
+                ModelNode originalReq=(ModelNode)allRequestedDeployments.clone();
                 ctx.log("All requested deployments:"+allRequestedDeployments);
                 if(!noDeployments) {
                     ModelNode currentDeployments=deployment.getCurrentDeployments();
@@ -273,8 +275,14 @@ public class Main {
                             replaceList.put(x,null);
                     if(replaceList.size()>0)
                         deployment.deployUpdate(replaceList,allRequestedDeployments);
-
-                    names=deployment.getUndeployments(allRequestedDeployments,currentDeployments);
+                    
+                    ctx.log("Checking undeploy");
+                    ctx.log("All requested deployments:"+originalReq);
+                    ctx.log("Current deployments:"+currentDeployments);
+                    names=deployment.getUndeployments(originalReq,currentDeployments);
+                    ctx.log("There are "+names.length+" apps to undeploy");
+                    for(String x:names)
+                        ctx.log("undeploy:"+x);
                     if(names.length>0)
                         deployment.undeploy(names);
                 }
