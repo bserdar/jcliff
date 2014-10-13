@@ -1,3 +1,5 @@
+v2.7:
+ - Add undeploy support
 v2.6:
  - Conditional expression support in rules
  - Basic naming subsystem support
