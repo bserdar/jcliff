@@ -1,3 +1,5 @@
+v2.8:
+ - Add support for ee subsystem
 v2.7:
  - Add undeploy support
 v2.6:
