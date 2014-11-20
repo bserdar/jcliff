@@ -68,6 +68,34 @@ match.removeVirtualServer=remove:/web/virtual-server/*
 removeVirtualServer.rule=/subsystem=web/virtual-server=${name(.)}:remove
 removeVirtualServer.refresh=true
 
+match.addRewrite=add:/web/virtual-server/*/rewrite/*
+addRewrite.rule=/subsystem=web/virtual-server=${name(../..)}/rewrite=${name(.)}:add(pattern=${value(pattern)},substitution=${value(substitution)},flags=${value(flags)})
+addRewrite.refresh=true
+addRewrite.precedence=65
+
+match.removeRewrite=remove:/web/virtual-server/*/rewrite/*
+removeRewrite.rule=/subsystem=web/virtual-server=${name(../..)}/rewrite=${name(.)}:remove
+removeRewrite.refresh=true
+
+match.addRewriteCondition=add:web/virtual-server/*/rewrite/*/condition/*
+addRewriteCondition.rule=/subsystem=web/virtual-server=${name(../../../..)}/rewrite=${name(../..)}/condition=${name(.)}:add(pattern=${value(pattern)},test=${value(test)})
+addRewriteCondition.refresh=true
+addRewriteCondition.precedence=66
+
+match.removeRewriteCondition=remove:/web/virtual-server/*/rewrite/*/condition/*
+removeRewriteCondition.rule=/subsystem=web/virtual-server=${name(../../../..)}/rewrite=${name(../..)}/condition=${name(.)}:remove
+removeRewriteCondition.refresh=true
+removeRewriteCondition.precedence=66
+
+match.modifyRewriteCondition=modify:/web/virtual-server/*/rewrite/*/condition/*/*
+modifyRewriteCondition.rule=/subsystem=web/virtual-server=${name(../../../../..)}/rewrite=${name(../../..)}/condition=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+
+match.modifyRewrite=modify:/web/virtual-server/*/rewrite/*/*
+modifyRewrite.rule=/subsystem=web/virtual-server=${name(../../..)}/rewrite=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyRewrite.precedence=69
+
+
 # sso
 match.addSSO=add:/web/virtual-server/*/configuration/sso
 addSSO.rule=/subsystem=web/virtual-server=${name(../..)}/sso=configuration:add(cache-container=${value(cache-container)},cache-name=${value(cache-name)},reauthenticate=${value(reauthenticate)},domain=${value(domain)})

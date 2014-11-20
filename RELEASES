@@ -1,3 +1,5 @@
+v2.9:
+ - Add rewrite support to web subsystem
 v2.8:
  - Add support for ee subsystem
 v2.7:
