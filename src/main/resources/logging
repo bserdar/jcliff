@@ -49,7 +49,7 @@ addSyslogHandler.refresh=true
 
 match.addCustomHandler=add:/custom-handler/*
 addCustomHandler.precedence=50
-addCustomHandler.rule=/subsystem=logging/custom-handler=${name(.)}:add(class=$value(class), module=$value(module))
+addCustomHandler.rule=/subsystem=logging/custom-handler=${name(.)}:add(class=${value(class)}, module=${value(module)})
 addCustomHandler.refresh=true
 
 match.addSizeRotatingFileHandler=add:/size-rotating-file-handler/*
