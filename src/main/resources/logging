@@ -52,6 +52,18 @@ addCustomHandler.precedence=50
 addCustomHandler.rule=/subsystem=logging/custom-handler=${name(.)}:add(class=${value(class)}, module=${value(module)})
 addCustomHandler.refresh=true
 
+match.addCustomHandlerProperties=add:/custom-handler/*/properties/*
+addCustomHandlerProperties.rule=/subsystem=logging/custom-handler=${name(../..)}:write-attribute(name=properties,value=${value(..)})
+addCustomHandlerProperties.refresh=true
+
+match.delCustomHandlerProperties=remove:/custom-handler/*/properties/*
+delCustomHandlerProperties.rule=/subsystem=logging/custom-handler=${name(../..)}:write-attribute(name=properties,value=${value(..)})
+delCustomHandlerProperties.refresh=true
+
+match.modCustomHandlerProperties=modify:/custom-handler/*/properties/*
+modCustomHandlerProperties.rule=/subsystem=logging/custom-handler=${name(../..)}:write-attribute(name=properties,value=${value(..)})
+modCustomHandlerProperties.refresh=true
+
 match.addSizeRotatingFileHandler=add:/size-rotating-file-handler/*
 addSizeRotatingFileHandler.precedence=70
 addSizeRotatingFileHandler.rule=/subsystem=logging/size-rotating-file-handler=${name(.)}:add(file={"path"=>${value(./file/path/.)},"relative-to"=>${value(./file/relative-to)}})
