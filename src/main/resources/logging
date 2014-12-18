@@ -39,8 +39,18 @@ modifyFileHandlerFile.refresh=true
 
 match.addConsoleHandler=add:/console-handler/*
 addConsoleHandler.precedence=50
-addConsoleHandler.rule=/subsystem=logging/console-handler:${name(.)}:add
+addConsoleHandler.rule=/subsystem=logging/console-handler=${name(.)}:add
 addConsoleHandler.refresh=true
+
+match.addSyslogHandler=add:/syslog-handler/*
+addSyslogHandler.precedence=50
+addSyslogHandler.rule=/subsystem=logging/syslog-handler=${name(.)}:add
+addSyslogHandler.refresh=true
+
+match.addCustomHandler=add:/custom-handler/*
+addCustomHandler.precedence=50
+addCustomHandler.rule=/subsystem=logging/custom-handler=${name(.)}:add(class=$value(class), module=$value(module))
+addCustomHandler.refresh=true
 
 match.addSizeRotatingFileHandler=add:/size-rotating-file-handler/*
 addSizeRotatingFileHandler.precedence=70
