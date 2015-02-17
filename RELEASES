@@ -1,3 +1,5 @@
+v2.9.4:
+ - Add support for teiid (JBoss data virtualization)
 v2.9.1:
  - Add custom-logger and syslog-logger rules (rbrackma)
 v2.9:

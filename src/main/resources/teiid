@@ -15,27 +15,25 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-configurable.1=system-properties
-configurable.2=path
-configurable.3=ee
-configurable.4=jmx
-configurable.5=naming
-configurable.6=threads
-configurable.7=logging
-configurable.8=jdbc-driver
-configurable.9=security
-configurable.10=datasource
-configurable.11=xadatasource
-configurable.12=standard-sockets
-configurable.13=web
-configurable.14=webservices
-configurable.15=infinispan
-configurable.16=scanner
-configurable.17=subsystem
-configurable.18=osgi
-configurable.19=messaging
-configurable.20=ejb3
-configurable.21=resource-adapter
-configurable.22=transactions
-configurable.23=teiid
+name=teiid
+getContents=/subsystem=teiid:read-resource(recursive=true)
+client.preprocess.strip=/teiid
+
+prefix.modify=modify:/
+modify.rule.1=/subsystem=teiid${cmdpath(${path(..)})}:write-attribute(name=${name(.)},value=${value(.)})
+
+prefix.remove=remove:/
+remove.rule.1=/subsystem=teiid${cmdpath(${path(.)})}:remove
+remove.refresh=true
+
+
+match.addTransport=add:/transport/*
+addTransport.rule.1=/subsystem=teiid/transport=${name(.)}:add
+addTransport.refresh=true
+addTransport.precedence=10
+
+match.removeTransport=remove:/transport/*
+removeTransport.rule.1=/subsystem=teiid/transport=${name(.)}:remove
+removeTransport.refresh=true
+removeTransport.precedence=10
 
