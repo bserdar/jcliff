@@ -18,9 +18,17 @@
 name=resource-adapter
 getContents=/subsystem=resource-adapters:read-resource(recursive=true)
 
+prefix.modify=modify:/
+modify.rule.1=/subsystem=resource-adapters${cmdpath(${path(..)})}:write-attribute(name=${name(.)},value=${value(.)})
+
+prefix.remove=remove:/
+remove.rule.1=/subsystem=resource-adapters${cmdpath(${path(.)})}:remove
+remove.refresh=true
+
+
 #first add/modify/delete resource adapter, then enable it
 match.addAdapter=add:/resource-adapter/*
-addAdapter.rule.1=/subsystem=resource-adapters/resource-adapter=${name(.)}:add(archive=${value(archive)})
+addAdapter.rule.1=/subsystem=resource-adapters/resource-adapter=${name(.)}:add(${if-defined (archive), (archive=${value(archive)}), (module=${value(module)}) })
 addAdapter.rule.2=/subsystem=resource-adapters/resource-adapter=${name(.)}:activate
 addAdapter.precedence=10
 addAdapter.refresh=true
@@ -80,6 +88,22 @@ modifyConfigProps.precedence=20
 
 match.removeConfigProps=remove:/resource-adapter/*/config-properties/*/value
 removeConfigProps.rule=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/config-properties=${name(..)}:remove
+
+#Connection Config properties
+match.addConnectionConfigProps=add:/resource-adapter/*/connection-definitions/*/config-properties/*
+addConnectionConfigProps.rule=/subsystem=resource-adapters/resource-adapter=${name(../../../..)}/connection-definitions=${name(../..)}/config-properties=${name(.)}:add(value=${value(value)})
+addConnectionConfigProps.precedence=25
+
+#Due to a bug in jboss, this will fail the first time, because it won't unregister the config property
+#It has to be run a second time to land
+match.modifyConnectionConfigProps=modify:/resource-adapter/*/connection-definitions/*/config-properties/*/value
+modifyConnectionConfigProps.rule.1=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/connection-definitions=${name(../../..)}/config-properties=${name(..)}:remove
+modifyConnectionConfigProps.rule.2=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/connection-definitions=${name(../../..)}/config-properties=${name(..)}:add(value=${value(.)})
+modifyConfigProps.precedence=24
+
+match.removeConnectionConfigProps=remove:/resource-adapter/*/connection-definitions/*/config-properties/*/value
+removeConnectionConfigProps.rule=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/connection-definitions=${name(../..)}/config-properties=${name(..)}:remove
+
 
 #basic properties
 match.addProperty=add:/resource-adapter/*/*
