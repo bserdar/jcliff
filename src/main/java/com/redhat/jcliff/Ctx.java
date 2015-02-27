@@ -66,17 +66,33 @@ public class Ctx {
         if(!noop) {
             Script run=cmds;
             if(batch) {
-                if(cmds.size()>1) {
+                if(cmds.size()>1&&!cmds.hasReload()) {
                     run=new Script(cmds);
                     run.insertToHead("batch");
                     run.addToTail("run-batch");
                 }
             }
             msg(run.toString());
-            String s=cli.run(run);
-            if(s==null)
-                throw new RuntimeException("Operation failed");
-            return p.process(s);
+
+            Script[] scripts=run.splitByReloads();
+            List<ModelNode> ret=new ArrayList<ModelNode>();
+
+            for(Script x:scripts) {
+                String s=cli.run(x);
+                if(!x.hasReload()) {
+                    if(s==null)
+                        throw new RuntimeException("Operation failed");
+                    ModelNode[] r=p.process(s);
+                    for(ModelNode nd:r)
+                        ret.add(nd);
+                } else {
+                    // Reload: wait for reload
+                    try {
+                        Thread.sleep(20000);
+                    } catch (Exception e) {}
+                }
+            }
+            return ret.toArray(new ModelNode[ret.size()]);
         } else
             return null;
     }

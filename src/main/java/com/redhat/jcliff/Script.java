@@ -95,4 +95,32 @@ public class Script {
         }
         return buf.toString();
     }
+
+    public boolean hasReload() {
+        for(String x:cmds)
+            if(x.indexOf(":reload")!=-1)
+                return true;
+        return false;
+    }
+
+    public Script[] splitByReloads() {
+        List<Script> scripts=new ArrayList<Script>();
+        List<String> current=new ArrayList<String>();
+        for(String x:cmds) {
+            if(x.indexOf(":reload")!=-1) {
+                if(!current.isEmpty()) {
+                    scripts.add(new Script(current));
+                    current=new ArrayList<String>();
+                }
+                current.add(x);
+                scripts.add(new Script(current));
+                current=new ArrayList<String>();
+            } else {
+                current.add(x);
+            }
+        }
+        if(!current.isEmpty())
+            scripts.add(new Script(current));
+        return scripts.toArray(new Script[scripts.size()]);
+    }
 }

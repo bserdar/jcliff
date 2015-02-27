@@ -68,7 +68,8 @@ addAdminObjectsConfig.precedence=30
 #This is because it fails to unregister the removed config
 match.modifyAdminObjectsConfig=modify:/resource-adapter/*/admin-objects/*/config-properties/*/value
 modifyAdminObjectsConfig.rule.1=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/admin-objects=${name(../../..)}/config-properties=${name(..)}:remove
-modifyAdminObjectsConfig.rule.2=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/admin-objects=${name(../../..)}/config-properties=${name(..)}:add(value=${value(.)})
+modifyAdminObjectsConfig.rule.2=:reload
+modifyAdminObjectsConfig.rule.3=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/admin-objects=${name(../../..)}/config-properties=${name(..)}:add(value=${value(.)})
 modifyAdminObjectsConfig=30
 
 match.removeAdminObjects=remove:/resource-adapter/*/admin-objects/*
@@ -83,26 +84,28 @@ addConfigProps.precedence=20
 #It has to be run a second time to land
 match.modifyConfigProps=modify:/resource-adapter/*/config-properties/*/value
 modifyConfigProps.rule.1=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/config-properties=${name(..)}:remove
-modifyConfigProps.rule.2=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/config-properties=${name(..)}:add(value=${value(.)})
+modifyConfigProps.rule.2=:reload
+modifyConfigProps.rule.3=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/config-properties=${name(..)}:add(value=${value(.)})
 modifyConfigProps.precedence=20
 
 match.removeConfigProps=remove:/resource-adapter/*/config-properties/*/value
-removeConfigProps.rule=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/config-properties=${name(..)}:remove
+removeConfigProps.rule.1=/subsystem=resource-adapters/resource-adapter=${name(../../..)}/config-properties=${name(..)}:remove
+removeConfigProps.rule.2=:reload
 
 #Connection Config properties
 match.addConnectionConfigProps=add:/resource-adapter/*/connection-definitions/*/config-properties/*
 addConnectionConfigProps.rule=/subsystem=resource-adapters/resource-adapter=${name(../../../..)}/connection-definitions=${name(../..)}/config-properties=${name(.)}:add(value=${value(value)})
 addConnectionConfigProps.precedence=25
 
-#Due to a bug in jboss, this will fail the first time, because it won't unregister the config property
-#It has to be run a second time to land
 match.modifyConnectionConfigProps=modify:/resource-adapter/*/connection-definitions/*/config-properties/*/value
 modifyConnectionConfigProps.rule.1=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/connection-definitions=${name(../../..)}/config-properties=${name(..)}:remove
-modifyConnectionConfigProps.rule.2=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/connection-definitions=${name(../../..)}/config-properties=${name(..)}:add(value=${value(.)})
+modifyConnectionConfigProps.rule.2=:reload
+modifyConnectionConfigProps.rule.3=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/connection-definitions=${name(../../..)}/config-properties=${name(..)}:add(value=${value(.)})
 modifyConfigProps.precedence=24
 
 match.removeConnectionConfigProps=remove:/resource-adapter/*/connection-definitions/*/config-properties/*/value
-removeConnectionConfigProps.rule=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/connection-definitions=${name(../..)}/config-properties=${name(..)}:remove
+removeConnectionConfigProps.rule.1=/subsystem=resource-adapters/resource-adapter=${name(../../../../..)}/connection-definitions=${name(../..)}/config-properties=${name(..)}:remove
+removeConnectionConfigProps.rule.2=:reload
 
 
 #basic properties
