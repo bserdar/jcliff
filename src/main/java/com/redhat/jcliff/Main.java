@@ -65,7 +65,7 @@ public class Main {
         case LIST:
             List<ModelNode> l=node.asList();
             println(indent,"LIST:");
-            for(ModelNode x:l) 
+            for(ModelNode x:l)
                 printNode(indent+1,x);
             break;
         case OBJECT:
@@ -87,7 +87,7 @@ public class Main {
     }
 
     public static void printTree(ModelNode node) {
-        System.out.println(node);        
+        System.out.println(node);
         printNode(0,node);
     }
 
@@ -128,7 +128,7 @@ public class Main {
         boolean reload=false;
         boolean redeploy=false;
         boolean batch=true;
-        
+
         for(int i=0;i<args.length;i++) {
             if(args[i].startsWith("--cli="))
                 cli=args[i].substring("--cli=".length());
@@ -143,13 +143,17 @@ public class Main {
             else if(args[i].startsWith("--output="))
                 logOutput=args[i].substring("--output=".length());
             else if(args[i].equals("--noop"))
-                noop=true; 
+                noop=true;
             else if(args[i].startsWith("--ruledir="))
                 ruleDir=args[i].substring("--ruledir=".length());
             else if(args[i].equals("--nobatch"))
                 batch=false;
-            else if(args[i].startsWith("--timeout="))
-                timeout=args[i].substring("--timeout=".length());
+            else if(args[i].startsWith("--timeout=")) {
+                timeout = args[i].substring("--timeout=".length());
+                if ("0".equals(timeout.trim())) {
+                    timeout = null;
+                }
+            }
             else if(args[i].startsWith("--waitport="))
                 waitport=Integer.parseInt(args[i].substring("--waitport=".length()));
             else if(args[i].equals("--reload"))
@@ -160,7 +164,7 @@ public class Main {
                 files.add(args[i]);
         }
         RuleSet rules=RuleSet.getRules(new RuleLoader(ruleDir),"rules");
-                    
+
         if(!files.isEmpty()) {
             Ctx ctx=new Ctx();
             ctx.noop=noop;
@@ -215,7 +219,7 @@ public class Main {
                                 configNode=newNode;
                                 configNode=cfg.applyClientPreprocessingRules(configNode);
                                 ctx.log("Configuration node after preprocessing:"+configNode);
-                                
+
                                 ctx.configPaths=NodePath.getPaths(configNode);
                                 boolean refresh=false;
                                 do {
@@ -250,7 +254,7 @@ public class Main {
                         ModelNode root=requestedDeployments.get(Deployment.NAME);
                         Set<String> deploymentNames=root.keys();
                         for(String x:deploymentNames) {
-                            allRequestedDeployments.get(x).set(root.get(x)); 
+                            allRequestedDeployments.get(x).set(root.get(x));
                             noDeployments=false;
                         }
                     }
@@ -275,7 +279,7 @@ public class Main {
                             replaceList.put(x,null);
                     if(replaceList.size()>0)
                         deployment.deployUpdate(replaceList,allRequestedDeployments);
-                    
+
                     ctx.log("Checking undeploy");
                     ctx.log("All requested deployments:"+originalReq);
                     ctx.log("Current deployments:"+currentDeployments);
@@ -373,7 +377,7 @@ public class Main {
                         // Check if we need to refresh
                         if(!rerun&&cfg.needsRefresh(rule.name))
                             return true;
-                    } 
+                    }
                 }
             }
         }
