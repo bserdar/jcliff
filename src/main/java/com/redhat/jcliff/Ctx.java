@@ -66,7 +66,7 @@ public class Ctx {
         if(!noop) {
             Script run=cmds;
             if(batch) {
-                if(cmds.size()>1&&!cmds.hasReload()) {
+                if(cmds.size()>1&&!cmds.hasReload() && !cmds.hasIf()) {
                     run=new Script(cmds);
                     run.insertToHead("batch");
                     run.addToTail("run-batch");

@@ -103,6 +103,13 @@ public class Script {
         return false;
     }
 
+    public boolean hasIf() {
+        for(String x:cmds)
+            if(x.indexOf("if ")!=-1)
+                return true;
+        return false;
+    }
+
     public Script[] splitByReloads() {
         List<Script> scripts=new ArrayList<Script>();
         List<String> current=new ArrayList<String>();
