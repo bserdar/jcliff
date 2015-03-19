@@ -24,18 +24,41 @@ addSocketBinding.rule=/socket-binding-group=standard-sockets/socket-binding=${na
 addSocketBinding.refresh=true
 addSocketBinding.precedence=40
 
+match.addRSocketBinding=add:/standard-sockets/remote-destination-outbound-socket-binding/*
+addRSocketBinding.rule=/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=${name(.)}:add
+addRSocketBinding.refresh=true
+addRSocketBinding.precedence=45
+
+
 match.addSocketBindingAttr=add:/standard-sockets/socket-binding/*/*
 addSocketBindingAttr.rule=/socket-binding-group=standard-sockets/socket-binding=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 addSocketBindingAttr.precedence=60
+
+match.addRSocketBindingAttr=add:/standard-sockets/remote-destination-outbound-socket-binding/*/*
+addRSocketBindingAttr.rule=/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+addRSocketBindingAttr.precedence=65
 
 match.modifySocketBindingAttr=modify:/standard-sockets/socket-binding/*/*
 modifySocketBindingAttr.rule=/socket-binding-group=standard-sockets/socket-binding=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 modifySocketBindingAttr.precedence=60
 
+match.modifyRSocketBindingAttr=modify:/standard-sockets/remote-destination-outbound-socket-binding/*/*
+modifyRSocketBindingAttr.rule=/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyRSocketBindingAttr.precedence=65
+
 match.undefineSocketBindingAttr=undefine:/standard-sockets/socket-binding/*/*
 undefineSocketBindingAttr.rule=/socket-binding-group=standard-sockets/socket-binding=${name(..)}:undefine-attribute(name=${name(.)})
 undefineSocketBindingAttr.precedence=60
 
+match.undefineRSocketBindingAttr=undefine:/standard-sockets/remote-destination-outbound-socket-binding/*/*
+undefineRSocketBindingAttr.rule=/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=${name(..)}:undefine-attribute(name=${name(.)})
+undefineRSocketBindingAttr.precedence=65
+
 match.deleteSocketBinding=remove:/standard-sockets/socket-binding/*
 deleteSocketBinding.rule=/socket-binding-group=standard-sockets/socket-binding=${name(.)}:remove
 deleteSocketBinding.precedence=80
+
+match.deleteRSocketBinding=remove:/standard-sockets/remote-destination-outbound-socket-binding/*
+deleteRSocketBinding.rule=/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=${name(.)}:remove
+deleteRSocketBinding.precedence=80
+
