@@ -1,0 +1,91 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=security-realm
+getContents=/core-service=management:read-children-resources(child-type=security-realm)
+client.preprocess.strip=/security-realm
+
+match.addRealm=add:/*
+addRealm.rule=/core-service=management/security-realm=${name(.)}:add
+addRealm.precedence=10
+addRealm.refresh=true
+
+match.removeRealm=remove:/*
+removeRealm.rule=/core-service=management/security-realm=${name(.)}:remove
+removeRealm.precedence=10
+removeRealm.refresh=true
+
+match.mapGroupsToRoles=modify:/*/map-groups-to-roles
+mapGroupsToRoles.rule=/core-service=management/security-realm=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+mapGroupsToRoles.precedence=20
+
+match.addAuthLocal=add:/*/authentication/local
+addAuthLocal.rule=/core-service=management/security-realm=${name(../..)}/authentication=${name(.)}:add
+addAuthLocal.precedence=30
+addAuthLocal.refresh=true
+
+match.modifyAuthLocal=modify:/*/authentication/local/*
+modifyAuthLocal.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthLocal.precedence=30
+
+match.removeAuthLocal=remove:/*/authentication/local
+removeAuthLocal.rule=/core-service=management/security-realm=${name(../..)}/authentication=${name(.)}:remove
+removeAuthLocal.precedence=25
+removeAuthLocal.refresh=true
+
+match.addAuthProperties=add:/*/authentication/properties
+addAuthProperties.rule=/core-service=management/security-realm=${name(../..)}/authentication=${name(.)}:add(path=${value(path)})
+addAuthProperties.precedence=30
+addAuthProperties.refresh=true
+
+match.modifyAuthProperties=modify:/*/authentication/properties/*
+modifyAuthProperties.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthProperties.precedence=30
+
+match.removeAuthProperties=remove:/*/authentication/properties
+removeAuthProperties.rule=/core-service=management/security-realm=${name(../..)}/authentication=${name(.)}:remove
+removeAuthProperties.precedence=25
+removeAuthProperties.refresh=true
+
+match.addAuthJaas=add:/*/authentication/jaas
+addAuthJaas.rule=/core-service=management/security-realm=${name(../..)}/authentication=${name(.)}:add(name=${value(name)})
+addAuthJaas.precedence=30
+addAuthJaas.refresh=true
+
+match.modifyAuthJaas=modify:/*/authentication/jaas/*
+modifyAuthJaas.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthJaas.precedence=30
+
+match.removeAuthJaas=remove:/*/authentication/jaas
+removeAuthJaas.rule=/core-service=management/security-realm=${name(../..)}/authentication=${name(.)}:remove
+removeAuthJaas.precedence=25
+removeAuthJaas.refresh=true
+
+match.addAuthorizationProperties=add:/*/authorization/properties
+addAuthorizationProperties.rule=/core-service=management/security-realm=${name(../..)}/authorization=${name(.)}:add(path=${value(path)})
+addAuthorizationProperties.precedence=30
+addAuthorizationProperties.refresh=true
+
+match.modifyAuthorizationProperties=modify:/*/authorization/properties/*
+modifyAuthorizationProperties.rule=/core-service=management/security-realm=${name(../../..)}/authorization=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthorizationProperties.precedence=30
+
+match.removeAuthorizationProperties=remove:/*/authorization/properties
+removeAuthorizationProperties.rule=/core-service=management/security-realm=${name(../..)}/authorization=${name(.)}:remove
+removeAuthorizationProperties.precedence=25
+removeAuthorizationProperties.refresh=true
+
