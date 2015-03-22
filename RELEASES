@@ -1,3 +1,7 @@
+v2.9.8:
+ - Add support for remoting (#34)
+ - Add support for mail (#35)
+ - Add security realms (#33)
 v2.9.7:
  - Don't re-renable datasources if they're enabled (wildfly)
 v2.9.6.1:
