@@ -1,0 +1,50 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=mail
+getContents=/subsystem=mail:read-resource(recursive=true)
+client.preprocess.strip=/mail
+
+match.addSession=add:/mail-session/*
+addSession.rule=/subsystem=mail/mail-session=${name(.)}:add(jndi-name=${value(jndi-name)})
+addSession.precedence=10
+addSession.refresh=true
+
+match.removeSession=remove:/mail-session/*
+removeSession.rule=/subsystem=mail/mail-session:${name(.)}:remove
+removeSession.precedence=10
+removeSession.refresh=true
+
+
+match.modSessionProps=modify:/mail-session/*/*
+modSessionProps.rule=/subsystem=mail/mail-session=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modSessionProps.precedence=20
+
+
+match.addSmtp=add:/mail-session/*/server/smtp
+addSmtp.rule=/subsystem=mail/mail-session=${name(../..)}/server=smtp:add(outbound-socket-binding-ref=${value(outbound-socket-binding-ref)})
+addSmtp.precedence=30
+addSmtp.refresh=true
+
+
+match.removeSmtp=remove:/mail-session/*/server/smtp
+removeSmtp.rule=/subsystem=mail/mail-session/${name(../..)}/server=smtp:remove
+removeSmtp.precedence=30
+removeSmtp.refresh=true
+
+match.smtpProps=modify:/mail-session/*/server/smtp/*
+smtpProps.rule=/subsytem=mail/mail-session/${name(../../..)}/server=smtp:write-attribute(name=${name(.)},value=${value(.)})

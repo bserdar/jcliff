@@ -35,8 +35,9 @@ configurable.17=scanner
 configurable.18=subsystem
 configurable.19=osgi
 configurable.20=messaging
-configurable.21=ejb3
-configurable.22=resource-adapter
-configurable.23=transactions
-configurable.24=teiid
+configurable.21=mail
+configurable.22=ejb3
+configurable.23=resource-adapter
+configurable.24=transactions
+configurable.25=teiid
 
