@@ -1,0 +1,101 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=remoting
+getContents=/subsystem=remoting:read-resource(recursive=true)
+client.preprocess.strip=/remoting
+
+match.modProps=modify:/*
+modProps.rule=/subsytem=remoting:write-attribute(name=${name(.)},value=${value(.)})
+modProps.precedence=100
+
+
+match.configEndpointProps=modify:/configuration/endpoint/*
+configEndpointProps.rule=/subsystem=remoting/configration=endpoint:write-attribute(name=${name(.)},value=${value(.)})
+configEndpointProps=110
+
+
+match.addConnector=add:/connector/*
+addConnector.rule=/subsystem=remoting/connector=${name(.)}:add(socket-binding=${value(socket-binding)})
+addConnector.precedence=200
+addConnector.refresh=true
+
+match.modConnector=modify:/connector/*/*
+modConnector.rule=/subsystem=remoting/connector=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+
+match.removeConnector=remove:/connector/*
+removeConnector.rule=/subsystem=remoting/connector=${name(.)}:remove
+removeConnector.precedence=200
+removeConnector.refresh=true
+
+match.addHttpConnector=add:/http-connector/*
+addHttpConnector.rule=/subsystem=remoting/http-connector=${name(.)}:add(connector-ref=${value(connector-ref)})
+addHttpConnector.precedence=200
+addHttpConnector.refresh=true
+
+match.modHttpConnector=modify:/http-connector/*/*
+modHttpConnector.rule=/subsystem=remoting/http-connector=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.removeHttpConnector=remove:/http-connector/*
+removeHttpConnector.rule=/subsystem=remoting/http-connector=${name(.)}:remove
+removeHttpConnector.precedence=200
+removeHttpConnector.refresh=true
+
+
+match.addLocalOutboundConnection=add:/local-outbound-connection/*
+addLocalOutboundConnection.rule=/subsystem=remoting/local-outbound-connection=${name(.)}:add(outbound-socket-binding-ref=${value(outbound-socket-binding-ref)})
+addLocalOutboundConnection.precedence=200
+addLocalOutboundConnection.refresh=true
+
+match.modLocalOutboundConnection=modify:/local-outbound-connection/*/*
+modLocalOutboundConnection.rule=/subsystem=remoting/local-outbound-connection=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.removeLocalOutboundConnection=remove:/local-outbound-connection/*
+removeLocalOutboundConnection.rule=/subsystem=remoting/local-outbound-connection=${name(.)}:remove
+removeLocalOutboundConnection.precedence=200
+removeLocalOutboundConnection.refresh=true
+
+
+
+match.addOutboundConnection=add:/outbound-connection/*
+addOutboundConnection.rule=/subsystem=remoting/outbound-connection=${name(.)}:add(uri=${value(uri)})
+addOutboundConnection.precedence=200
+addOutboundConnection.refresh=true
+
+match.modOutboundConnection=modify:/outbound-connection/*/*
+modOutboundConnection.rule=/subsystem=remoting/outbound-connection=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.removeOutboundConnection=remove:/outbound-connection/*
+removeOutboundConnection.rule=/subsystem=remoting/outbound-connection=${name(.)}:remove
+removeOutboundConnection.precedence=200
+removeOutboundConnection.refresh=true
+
+
+
+match.addRemoteOutboundConnection=add:/remote-outbound-connection/*
+addRemoteOutboundConnection.rule=/subsystem=remoting/remote-outbound-connection=${name(.)}:add(outbound-socket-binding-ref=${value(outbound-socket-binding-ref)})
+addRemoteOutboundConnection.precedence=200
+addRemoteOutboundConnection.refresh=true
+
+match.modRemoteOutboundConnection=modify:/remote-outbound-connection/*/*
+modRemoteOutboundConnection.rule=/subsystem=remoting/remote-outbound-connection=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.removeRemoteOutboundConnection=remove:/remote-outbound-connection/*
+removeRemoteOutboundConnection.rule=/subsystem=remoting/remote-outbound-connection=${name(.)}:remove
+removeRemoteOutboundConnection.precedence=200
+removeRemoteOutboundConnection.refresh=true
