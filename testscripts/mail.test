@@ -1,0 +1,16 @@
+{
+  "mail" => {
+     "mail-session" => {
+        "testSession" => {
+           "from" => "a@b.com",
+           "jndi-name" => "java:jboss/mail/testSession",
+           "server" => {
+              "smtp" => {
+                 "outbound-socket-binding-ref" => "mail-smtp",
+                 "ssl" => false
+               }
+           }
+         }
+     }
+  }
+}
