@@ -136,8 +136,8 @@
           <group>Applications/File</group>
           <specfileName>redhat-sd-${project.artifactId}.spec</specfileName>
           <defaultDirmode>755</defaultDirmode>
-          <defaultGroupname>jboss</defaultGroupname>
-          <defaultUsername>jboss</defaultUsername>
+          <defaultGroupname>root</defaultGroupname>
+          <defaultUsername>root</defaultUsername>
           <mappings>
             <mapping>
               <directory>/usr/share/jcliff-${project.version}</directory>
