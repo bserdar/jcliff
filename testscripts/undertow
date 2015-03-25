@@ -1,0 +1,27 @@
+{
+  "undertow" => {
+    "configuration" => {
+      "filter" => {
+        "basic-auth" => { "basic_auth_test" => { "security-domain" => "test" } },
+        "connection-limit" => { "conn_limit_test" => { "queue-size" => 100 } },
+        "custom-filter" => { "test_custom_filter" => { "class-name" => "test.class", "module" => "test.module" } },
+        "error-page" => { "test_error_page" => { "code" => 404, "path" => "testPath" } },
+        "response-header" => { "test_header" => { "header-name" => "name", "header-value" => "value" } }
+      },
+      "handler" => {
+        "file" => { "testfile" => { "path" => "test" } },
+        "reverse-proxy" => { "test_proxy" => {} }
+      }
+    },
+    "server" => {
+      "default-server" => {
+        "servlet-container" => "testcontainer",
+        "host" => { "test-host" => {
+                       "filter-ref" => { "test-filter-ref" => { "predicate" => "Test" } }
+                    }
+        },
+        "http-listener" => { "default" => { "proxy-address-forwarding" => true }}
+       }
+    }
+  }
+}

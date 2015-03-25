@@ -40,5 +40,6 @@ configurable.22=mail
 configurable.23=ejb3
 configurable.24=resource-adapter
 configurable.25=transactions
-configurable.26=teiid
+configurable.26=undertow
+configurable.27=teiid
 

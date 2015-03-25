@@ -233,7 +233,7 @@ public class Configurable {
                                  else if(s2.precedence==-1)
                                      return -1;
                                  else
-                                     return s1.precedence>s2.precedence?1:-1;
+                                     return s1.precedence>s2.precedence?1:s1.precedence==s2.precedence?0:-1;
                              }
                          });
         return rules;
