@@ -89,7 +89,7 @@ public class NodeDiff {
             boolean found=false;
             for(NodePath s:server)
                 if(s.path.equals(x.path)) {
-                    ctx.log("Processing path "+x.path);
+                    ctx.log("Processing path "+x.path+":"+x.node.getType());
 
                     found=true;
                     if(x.node.asString().equals("deleted")) {

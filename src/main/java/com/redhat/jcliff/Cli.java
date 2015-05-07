@@ -60,6 +60,43 @@ public class Cli {
         return run(command.getCmds());
     }
 
+    /**
+     * Execute the client in a separate thread, and keep the
+     * exception, or the returncode.
+     */
+    private static final class Exec extends Thread {
+        Integer returnCode;
+        Exception exception;
+        final String[] args;
+
+        public Exec(String[] args) {
+            this.args=args;
+        }
+        
+        @Override
+        public void run() {
+            try {
+                Process p=Runtime.getRuntime().exec(args);
+                returnCode=p.waitFor();
+            } catch (Exception e) {
+                exception=e;
+            }
+        }
+    }
+    
+    private static int run(String[] args,long timeout) throws Exception {
+        // Run the command in a different thread with a timeout, so if it hangs, we won't hang
+        Exec x=new Exec(args);
+        x.start();
+        x.join(timeout);
+
+        if(x.isAlive())
+            throw new RuntimeException ("Timeout while waiting for child process to complete");
+        if(x.exception!=null)
+            throw x.exception;
+        else
+            return x.returnCode;
+    }
 
     public String run(String[] command) {
         if (command == null) {
@@ -67,7 +104,6 @@ public class Cli {
             return "";
         }
 
-        Runtime runtime=Runtime.getRuntime();
         List<String> cmdArray=new ArrayList<String>();
         int ix=0;
         File tempFile;
@@ -120,9 +156,11 @@ public class Cli {
                 scw.flush();
                 ctx.log("Script file:"+scriptFile.getAbsolutePath()+" "+scriptFile.exists());
                 ctx.log("In file:"+tempFile.getAbsolutePath()+" "+tempFile.exists());
-                    Process p=runtime.exec(new String[] {"/bin/sh",scriptFile.getAbsolutePath()});
-            
-                    int returnCode=p.waitFor();
+
+                int returnCode=run(new String[] {"/bin/sh",scriptFile.getAbsolutePath()},20000);
+
+
+                    
                     ctx.log("return Code has :"+returnCode);
                     String errString=read(errFile);
                     String outString=read(outFile);

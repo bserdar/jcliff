@@ -70,12 +70,12 @@ addReplicatedCache.precedence=40
 addReplicatedCache.rule=/subsystem=infinispan/cache-container=${name(../../..)}/replicated-cache=${name(..)}:add(mode=${value(.)})
 addReplicatedCache.refresh=true
 
-match.addRepCacheEviction=add:/cache-container/*/replicated-cache/*/eviction/*
+match.addRepCacheEviction=add:/cache-container/*/replicated-cache/*/eviction/EVICTION
 addRepCacheEviction.precedence=45
 addRepCacheEviction.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/eviction=${name(.)}:add
 addRepCacheEviction.refresh=true
 
-match.addRepCacheExpiration=add:/cache-container/*/replicated-cache/*/expiration/*
+match.addRepCacheExpiration=add:/cache-container/*/replicated-cache/*/expiration/EXPIRATION
 addRepCacheExpiration.precedence=46
 addRepCacheExpiration.rule=/subsystem=infinispan/cache-container=${name(../../../..)}/replicated-cache=${name(../..)}/expiration=${name(.)}:add
 addRepCacheExpiration.refresh=true

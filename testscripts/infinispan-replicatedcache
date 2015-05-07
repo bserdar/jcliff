@@ -1,0 +1,26 @@
+{
+ "infinispan" => {
+    "cache-container" => {
+        "web" => {
+            "replicated-cache" => {"test" => {
+                "mode" => "SYNC",
+                "eviction" => {"EVICTION" => {
+                    "max-entries" => 1000,
+                    "strategy" => "NONE"
+                }},
+                "expiration" => {"EXPIRATION" => {
+                    "interval" => 501L,
+                    "lifespan" => 288000001L,
+                    "max-idle" => 600000L
+                }},
+                "locking" => {"LOCKING" => {
+                    "acquire-timeout" => 15000,
+                    "concurrency-level" => 1000,
+                    "isolation" => "REPEATABLE_READ",
+                    "striping" => false
+                }}
+            }}
+        }
+       }
+   }
+}

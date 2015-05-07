@@ -331,12 +331,40 @@ public class Configurable {
         return "true".equals(properties.get(ruleName+".refresh"));
     }
 
+    private static String nodeToString(ModelNode node) {
+        // If we're getting the string value of an object, we have to
+        // remove the "deleted" nodes from that string value
+        if(node.getType().equals(ModelType.OBJECT) ) {
+            ModelNode copy=(ModelNode)node.clone();
+            removeDeletedNodes(copy);
+            return copy.toString();
+        } else {
+            return node.toString();
+        }
+    }
+
+    private static void removeDeletedNodes(ModelNode node) {
+        ModelType type=node.getType();
+        if(type==ModelType.OBJECT) {
+            Set<String> keys=node.keys();
+            for(String x:keys) {
+                ModelNode child=node.get(x);
+                if(NodePath.isPrimitive(child.getType())) {
+                    if(child.asString().equals("deleted"))
+                        node.remove(x);
+                } else {
+                    removeDeletedNodes(child);
+                }
+            }
+        }
+    }
+    
     /**
      * str is of the form funcName(expr)
      */
     private static String func(String str,PathExpression matchedPath,List<NodePath> allPaths) {
         int index=str.indexOf('(');
-        int lastIndex=str.lastIndexOf(')');
+         int lastIndex=str.lastIndexOf(')');
         if(index==-1||lastIndex==-1)
             throw new RuntimeException("Cannot interpret "+str);
         String function=str.substring(0,index).trim();
@@ -358,7 +386,7 @@ public class Configurable {
             NodePath p=NodePath.find(allPaths,absolute);
             if(p==null)
                 throw new RuntimeException("Cannot resolve "+str+" with respect to "+matchedPath);
-            ret=p.node.toString();
+            ret=nodeToString(p.node);
         } else if(function.equals("path")) {
             if(args.size()!=1)
                 throw new RuntimeException("Syntax error in "+str);
