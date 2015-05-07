@@ -346,16 +346,19 @@ public class Configurable {
     private static void removeDeletedNodes(ModelNode node) {
         ModelType type=node.getType();
         if(type==ModelType.OBJECT) {
+            List<String> removeKeys=new ArrayList<String>();
             Set<String> keys=node.keys();
             for(String x:keys) {
                 ModelNode child=node.get(x);
                 if(NodePath.isPrimitive(child.getType())) {
                     if(child.asString().equals("deleted"))
-                        node.remove(x);
+                        removeKeys.add(x);
                 } else {
                     removeDeletedNodes(child);
                 }
             }
+            for(String x:removeKeys)
+                node.remove(x);
         }
     }
     
