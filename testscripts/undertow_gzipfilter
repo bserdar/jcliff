@@ -1,0 +1,9 @@
+{ "undertow" =>
+  { "configuration" =>
+    { "filter" =>
+      { "gzip" =>
+        { "gzipFilter" => {} }
+      }
+    }
+  }
+}

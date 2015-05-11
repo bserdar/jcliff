@@ -91,6 +91,18 @@ match.filterConfig_ErrorPage_modify=modify:/configuration/filter/error-page/*/*
 filterConfig_ErrorPage_modify.rule=/subsystem=undertow/configuration=filter/error-page=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 
 
+match.filterConfig_gzip_add=add:/configuration/filter/gzip/*
+filterConfig_gzip_add.rule=/subsystem=undertow/configuration=filter/gzip=${name(.)}:add
+filterConfig_gzip_add.refresh=true
+filterConfig_gzip_add.precedence=100
+
+match.filterConfig_gzip_remove=remove:/configuration/filter/gzip/*
+filterConfig_gzip_remove.rule=/subsystem=undertow/configuration=filter/gzip=${name(.)}:remove
+filterConfig_gzip_remove.refresh=true
+filterConfig_gzip_remove.precedence=100
+
+
+
 match.filterConfig_ResponseHeader_add=add:/configuration/filter/response-header/*
 filterConfig_ResponseHeader_add.rule=/subsystem=undertow/configuration=filter/response-header=${name(.)}:add(header-name=${value(header-name)},header-value=${value(header-value)})
 filterConfig_ResponseHeader_add.refresh=true
