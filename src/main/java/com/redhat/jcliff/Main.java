@@ -310,6 +310,7 @@ public class Main {
     }
 
     private static void reloadConf(Ctx ctx) {
+        System.err.println("Reloading configuration");
         ctx.cli.run(new Script(new String[] {":reload"}));
     }
 
