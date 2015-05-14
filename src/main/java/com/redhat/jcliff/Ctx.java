@@ -78,7 +78,12 @@ public class Ctx {
             List<ModelNode> ret=new ArrayList<ModelNode>();
 
             for(Script x:scripts) {
-                String s=cli.run(x);
+                String s;
+                // Deployment commands should run without time limit
+                if(x.hasDeployments())
+                    s=cli.run(x.getCmds(),0);
+                else
+                    s=cli.run(x.getCmds());
                 if(!x.hasReload()) {
                     if(s==null)
                         throw new RuntimeException("Operation failed");

@@ -110,6 +110,14 @@ public class Script {
         return false;
     }
 
+    public boolean hasDeployments() {
+        for(String x:cmds)
+            if(x.indexOf("deploy ")!=-1||
+               x.indexOf("undeploy ")!=-1)
+                return true;
+        return false;
+    }
+
     public Script[] splitByReloads() {
         List<Script> scripts=new ArrayList<Script>();
         List<String> current=new ArrayList<String>();

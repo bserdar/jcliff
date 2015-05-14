@@ -84,7 +84,7 @@ public class Cli {
         }
     }
     
-    private static int run(String[] args,long timeout) throws Exception {
+    private static int runAndWait(String[] args,long timeout) throws Exception {
         // Run the command in a different thread with a timeout, so if it hangs, we won't hang
         Exec x=new Exec(args);
         x.start();
@@ -98,7 +98,17 @@ public class Cli {
             return x.returnCode;
     }
 
+    /**
+     * Runs the cli with a 20 sec timeout
+     */
     public String run(String[] command) {
+        return run(command,20000);
+    }
+
+    /**
+     * Runs the cli with the given timeout, 0 means indefinite wait
+     */
+    public String run(String[] command,long execTimeout) {
         if (command == null) {
             ctx.log("cmds: null");
             return "";
@@ -157,7 +167,7 @@ public class Cli {
                 ctx.log("Script file:"+scriptFile.getAbsolutePath()+" "+scriptFile.exists());
                 ctx.log("In file:"+tempFile.getAbsolutePath()+" "+tempFile.exists());
 
-                int returnCode=run(new String[] {"/bin/sh",scriptFile.getAbsolutePath()},20000);
+                int returnCode=runAndWait(new String[] {"/bin/sh",scriptFile.getAbsolutePath()},execTimeout);
 
 
                     
