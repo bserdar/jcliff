@@ -1,3 +1,8 @@
+v2.9.13:
+ - #41: wildfly requires URL property during xa datasource creation
+ - #45: Deployments no longer use timeout
+ = #43: Prints msg when reloaded
+ - #42: Added json support (aelsabbahy)
 v2.9.12:
  - Add gzip filter rules for undertow
 v2.9.11:
