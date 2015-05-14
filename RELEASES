@@ -1,4 +1,4 @@
-v2.9.13:
+v2.9.14:
  - #41: wildfly requires URL property during xa datasource creation
  - #45: Deployments no longer use timeout
  = #43: Prints msg when reloaded

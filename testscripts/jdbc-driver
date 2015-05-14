@@ -1,0 +1,8 @@
+{ "jdbc-driver" =>
+  { "testdriver" => {
+        "driver-name" => "h2",
+        "driver-module-name" => "com.h2database.h2",
+        "driver-xa-datasource-class-name" => "org.h2.jdbcx.JdbcDataSource"
+    }
+  }
+}
