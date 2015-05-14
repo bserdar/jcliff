@@ -46,6 +46,7 @@ public class Main {
         "  --password=pwd          : EAP6 admin password\n"+
         "  --ruledir=Path          : Location of jcliff rules.\n"+
         "  --noop                  : Read-only mode\n"+
+        "  --json                  : Use json to parse input files\n"+
         "  -v                      : Verbose output\n"+
         "  --timeout=timeout       : Command timeout in milliseconds\n"+
         "  --output=Path           : Log output file\n"+
@@ -116,6 +117,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         boolean log=false;
         boolean noop=false;
+        boolean json=false;
         String cli="/usr/share/jbossas/bin/jboss-cli.sh";
         String controller="localhost";
         String user=null;
@@ -144,6 +146,8 @@ public class Main {
                 logOutput=args[i].substring("--output=".length());
             else if(args[i].equals("--noop"))
                 noop=true;
+            else if(args[i].equals("--json"))
+                json=true;
             else if(args[i].startsWith("--ruledir="))
                 ruleDir=args[i].substring("--ruledir=".length());
             else if(args[i].equals("--nobatch"))
@@ -191,7 +195,12 @@ public class Main {
                 for(String file:files) {
                     ctx.log("Opening "+file);
                     FileInputStream is=new FileInputStream(file);
-                    ModelNode node=ModelNode.fromStream(is);
+                    ModelNode node;
+                    if(json) {
+                        node=ModelNode.fromJSONStream(is);
+                    } else {
+                        node=ModelNode.fromStream(is);
+                    }
                     is.close();
                     // We expect an object from the file
                     if(node.getType()!=ModelType.OBJECT)
