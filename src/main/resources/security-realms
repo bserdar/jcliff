@@ -38,6 +38,10 @@ addAuthLocal.rule=/core-service=management/security-realm=${name(../..)}/authent
 addAuthLocal.precedence=30
 addAuthLocal.refresh=true
 
+match.addAuthLocalProp=add:/*/authentication/local/*
+addAuthLocalProp.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+addAuthLocalProp.precedence=40
+
 match.modifyAuthLocal=modify:/*/authentication/local/*
 modifyAuthLocal.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 modifyAuthLocal.precedence=30
@@ -65,6 +69,10 @@ match.addAuthJaas=add:/*/authentication/jaas
 addAuthJaas.rule=/core-service=management/security-realm=${name(../..)}/authentication=${name(.)}:add(name=${value(name)})
 addAuthJaas.precedence=30
 addAuthJaas.refresh=true
+
+match.addAuthJaasProp=add:/*/authentication/jaas/*
+addAuthJaasProp.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+addAuthJaasProp.precedence=40
 
 match.modifyAuthJaas=modify:/*/authentication/jaas/*
 modifyAuthJaas.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
