@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 name=security-realm
-getContents=/core-service=management:read-children-resources(child-type=security-realm)
+getContents=/core-service=management:read-children-resources(child-type=security-realm,recursive=true)
 client.preprocess.strip=/security-realm
 
 match.addRealm=add:/*
