@@ -42,4 +42,5 @@ configurable.24=resource-adapter
 configurable.25=transactions
 configurable.26=undertow
 configurable.27=teiid
+configurable.28=rbac
 

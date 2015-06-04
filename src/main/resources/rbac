@@ -1,0 +1,54 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=rbac
+getContents=/core-service=management/access=authorization:read-resource(recursive=true)
+client.preprocess.strip=/rbac
+
+match.enableRbac=add:/*
+enableRbac.rule.1=/core-service=management/access=authorization:write-attribute(name=${name(.)},value=${value(.)})
+enableRbac.refresh=true
+enableRbac.precedence=10
+
+match.modifyRbac=modify:/*
+modifyRbac.rule.1=/core-service=management/access=authorization:write-attribute(name=${name(.)},value=${value(.)})
+modifyRbac.refresh=true
+modifyRbac.precedence=10
+
+match.defaultRole=modify:/role-mapping/*/*
+defaultRole.rule.1=/core-service=management/access=authorization/role-mapping=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+defaultRole.precedence=20
+
+match.addRoleMapping=add:/role-mapping/*
+addRoleMapping.rule.1=/core-service=management/access=authorization/role-mapping=${name(.)}:add(include-all=${value(include-all)},exclude=${value(exclude)})
+addRoleMapping.refresh=true
+addRoleMapping.precedence=30
+
+match.modifyRoleMappingTo=modify:/role-mapping/*/*
+modifyRoleMappingTo.rule.1=/core-service=management/access=authorization/role-mapping=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyRoleMappingTo.refresh=true
+modifyRoleMappingTo.precedence=35
+
+match.addRoleMappingTo=add:/role-mapping/*/include/*
+addRoleMappingTo.rule.1=/core-service=management/access=authorization/role-mapping=${name(../..)}/include=${name(.)}:add(name=${value(name)},realm=${value(realm)},type=${value(type)})
+addRoleMappingTo.refresh=true
+addRoleMappingTo.precedence=40
+
+match.modifyRoleMapping=modify:/role-mapping/*/include/*/*
+modifyRoleMapping.rule.1=/core-service=management/access=authorization/role-mapping=${name(../../../..}/include=${name(..)}/write-attribute(name=${name(.)},value=${value(.)})
+modifyRoleMapping.refresh=true
+modifyRoleMappung.precedence=45
