@@ -1,3 +1,5 @@
+v2.9.15:
+ - #46: Add role base auth config support (fuero)
 v2.9.14:
  - #41: wildfly requires URL property during xa datasource creation
  - #45: Deployments no longer use timeout
