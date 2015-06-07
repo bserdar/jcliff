@@ -29,7 +29,7 @@ remove.refresh=true
 
 match.addFileHandler=add:/file-handler/*
 addFileHandler.precedence=50
-addFileHandler.rule=/subsytem=logging/file-handler=${name(.)}:add(file={"path"=>${value(./file/path/.)},"relative-to"=>${value(./file/relative-to/.)}})
+addFileHandler.rule=/subsystem=logging/file-handler=${name(.)}:add(file={"path"=>${value(./file/path/.)},"relative-to"=>${value(./file/relative-to/.)}})
 addFileHandler.refresh=true
 
 match.modifyFileHandlerFile=modify:/file-handler/*/file
@@ -104,7 +104,7 @@ assignLoggerHandler.rule=/subsystem=logging/logger=${name(../..)}:assign-handler
 assignLoggerHandler.precedence=1100
 
 match.removeLoggerHandler=remove:/logger/*/handlers/*
-removeLoggerHandler.rule=/subsytem=logging/logger=${name(../..)}:unassign-handler(name=${value(.)})
+removeLoggerHandler.rule=/subsystem=logging/logger=${name(../..)}:unassign-handler(name=${value(.)})
 removeLoggerHandler.precedence=1100
 
 match.modifyParentHandlers=modify:/logger/*/use-parent-handlers
