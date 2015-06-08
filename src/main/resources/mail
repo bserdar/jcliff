@@ -25,7 +25,7 @@ addSession.precedence=10
 addSession.refresh=true
 
 match.removeSession=remove:/mail-session/*
-removeSession.rule=/subsystem=mail/mail-session:${name(.)}:remove
+removeSession.rule=/subsystem=mail/mail-session=${name(.)}:remove
 removeSession.precedence=10
 removeSession.refresh=true
 
@@ -42,9 +42,9 @@ addSmtp.refresh=true
 
 
 match.removeSmtp=remove:/mail-session/*/server/smtp
-removeSmtp.rule=/subsystem=mail/mail-session/${name(../..)}/server=smtp:remove
+removeSmtp.rule=/subsystem=mail/mail-session=${name(../..)}/server=smtp:remove
 removeSmtp.precedence=30
 removeSmtp.refresh=true
 
 match.smtpProps=modify:/mail-session/*/server/smtp/*
-smtpProps.rule=/subsytem=mail/mail-session/${name(../../..)}/server=smtp:write-attribute(name=${name(.)},value=${value(.)})
+smtpProps.rule=/subsystem=mail/mail-session=${name(../../..)}/server=smtp:write-attribute(name=${name(.)},value=${value(.)})

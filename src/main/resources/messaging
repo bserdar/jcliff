@@ -14,9 +14,17 @@ match.addQueue=add:/messaging/hornetq-server/*/jms-queue/*
 addQueue.rule=jms-queue add --queue-address=${name(.)} --entries=${value(entries)} --durable=${value(durable)}
 addQueue.precedence=20
 
+match.modifyQueue=modify:/messaging/hornetq-server/*/jms-queue/*/*
+modifyQueue.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/jms-queue=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+modifyQueue.precedence=25
+
 match.addTopic=add:/messaging/hornetq-server/*/jms-topic/*
 addTopic.rule=jms-topic add --topic-address=${name(.)} --entries=${value(entries)}  
 addTopic.precedence=20
+
+match.modifyTopic=modify:/messaging/hornetq-server/*/jms-topic/*/*
+modifyTopic.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/jms-topic=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+modifyTopic.precedence=25
 
 match.modifyConFactory=modify:/messaging/hornetq-server/*/connection-factory/*/*
 modifyConFactory.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/connection-factory=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}

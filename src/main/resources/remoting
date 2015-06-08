@@ -20,7 +20,7 @@ getContents=/subsystem=remoting:read-resource(recursive=true)
 client.preprocess.strip=/remoting
 
 match.modProps=modify:/*
-modProps.rule=/subsytem=remoting:write-attribute(name=${name(.)},value=${value(.)})
+modProps.rule=/subsystem=remoting:write-attribute(name=${name(.)},value=${value(.)})
 modProps.precedence=100
 
 
