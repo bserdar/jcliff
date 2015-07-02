@@ -253,13 +253,15 @@ public class Configurable {
         return null;
     }
 
-    public Script getScript(String ruleName,PathExpression matchedPath,List<NodePath> allPaths) {
+    public Script getScript(String ruleName,PathExpression matchedPath,List<NodePath> allPaths, Ctx ctx) {
         String[] script=getProperties(properties,ruleName+".rule");
+        List<String> out=new ArrayList<String>();
         if(script!=null) {
             for(int i=0;i<script.length;i++)
-                script[i]=sanitizeScript(resolve(matchedPath,allPaths,script[i]));
+                for(String x:sanitizeScript(resolve(matchedPath,allPaths,script[i],ctx)))
+                    out.add(x);
         }
-        return new Script(script);
+        return new Script(out);
     }
 
     /**
@@ -271,15 +273,30 @@ public class Configurable {
     private String sanitizeScript(String script) {
 	    return script.replaceAll("\\n", "\\\\\n");
     }
+    
+    private String[] sanitizeScript(String[] script) {
+        for(int i=0;i<script.length;i++)
+            script[i]=sanitizeScript(script[i]);
+        return script;
+    }
 
     
 
-    public static String resolve(PathExpression matchedPath,List<NodePath> allPaths,String str) {
+    public static String resolve1(PathExpression matchedPath,List<NodePath> allPaths,String str,Ctx ctx) {
+        String[] arr=resolve(matchedPath,allPaths,str,ctx);
+        if(arr.length!=1)
+            throw new RuntimeException("Expected one result, got "+arr.length+" for "+str);
+        return arr[0];
+    }
+    
+    public static String[] resolve(PathExpression matchedPath,List<NodePath> allPaths,String str,Ctx ctx) {
+        List<StringBuffer> ret=new ArrayList<StringBuffer>();
         StringBuffer output=new StringBuffer();
         StringBuffer buf=null;
         int state=0;
         int n=str.length();
         int depth=0;
+        ret.add(output);
         for(int i=0;i<n;i++) {
             char c=str.charAt(i);
             switch(state) {
@@ -309,10 +326,16 @@ public class Configurable {
                 } else if(c=='}') {
                     depth--;
                     if(depth==0) {
-                        String s=func(buf.toString(),matchedPath,allPaths);
-                        if(s==null)
+                        String[] s=func(buf.toString(),matchedPath,allPaths,ctx);
+                        if(s==null||s.length==0)
                             throw new RuntimeException("Cannot resolve "+buf.toString()+" in "+str);
-                        output.append(s);
+                        for(int j=0;j<s.length;j++) {
+                            output.append(s[j]);
+                            if(j+1<s.length) {
+                                output=new StringBuffer();
+                                ret.add(output);
+                            }
+                        }
                         state=0;
                         buf=null;
                     } else
@@ -324,7 +347,13 @@ public class Configurable {
         }
         if(state!=0)
             throw new RuntimeException("Unterminated reference:"+str);
-        return output.toString();
+        List<String> sret=new ArrayList<String>();
+        for(StringBuffer x:ret) {
+            String s=x.toString();
+            if(s.length()>0)
+                sret.add(s);
+        }
+        return sret.toArray(new String[sret.size()]);
     }
 
     public boolean needsRefresh(String ruleName) {
@@ -365,42 +394,42 @@ public class Configurable {
     /**
      * str is of the form funcName(expr)
      */
-    private static String func(String str,PathExpression matchedPath,List<NodePath> allPaths) {
+    private static String[] func(String str,PathExpression matchedPath,List<NodePath> allPaths,Ctx ctx) {
+        List<String> ret=new ArrayList<String>();
         int index=str.indexOf('(');
-         int lastIndex=str.lastIndexOf(')');
+        int lastIndex=str.lastIndexOf(')');
         if(index==-1||lastIndex==-1)
             throw new RuntimeException("Cannot interpret "+str);
         String function=str.substring(0,index).trim();
         List<String> args=split(str.substring(index,lastIndex+1));
-        String ret;
         if(function.equals("name")) {
             if(args.size()!=1)
                 throw new RuntimeException("Syntax error in "+str);
-            String pathExpr=resolve(matchedPath,allPaths,args.get(0));
+            String pathExpr=resolve1(matchedPath,allPaths,args.get(0),ctx);
             PathExpression expr=PathExpression.parse(pathExpr);
             PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
-            ret=absolute.last();
+            ret.add(absolute.last());
         } else if(function.equals("value")) {
             if(args.size()!=1)
                 throw new RuntimeException("Syntax error in "+str);
-            String pathExpr=resolve(matchedPath,allPaths,args.get(0));
+            String pathExpr=resolve1(matchedPath,allPaths,args.get(0),ctx);
             PathExpression expr=PathExpression.parse(pathExpr);
             PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
             NodePath p=NodePath.find(allPaths,absolute);
             if(p==null)
                 throw new RuntimeException("Cannot resolve "+str+" with respect to "+matchedPath);
-            ret=nodeToString(p.node);
+            ret.add(nodeToString(p.node));
         } else if(function.equals("path")) {
             if(args.size()!=1)
                 throw new RuntimeException("Syntax error in "+str);
-            String pathExpr=resolve(matchedPath,allPaths,args.get(0));
+            String pathExpr=resolve1(matchedPath,allPaths,args.get(0),ctx);
             PathExpression expr=PathExpression.parse(pathExpr);
             PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
-            ret=absolute.toString();
+            ret.add(absolute.toString());
         } else if(function.equals("cmdpath")) {
             if(args.size()!=1)
                 throw new RuntimeException("Syntax error in "+str);
-            String arg=resolve(matchedPath,allPaths,args.get(0));
+            String arg=resolve1(matchedPath,allPaths,args.get(0),ctx);
             boolean name;
             if(arg.startsWith("=")) {
                 arg=arg.substring(1);
@@ -418,10 +447,10 @@ public class Configurable {
                 }
                 name=!name;
             }
-            ret=buf.toString();
+            ret.add(buf.toString());
         } else if(function.equals("if-defined")) {
             if(args.size()==2||args.size()==3) {
-                String pathExpr=resolve(matchedPath,allPaths,args.get(0));
+                String pathExpr=resolve1(matchedPath,allPaths,args.get(0),ctx);
                 PathExpression expr=PathExpression.parse(pathExpr);
                 PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
                 NodePath p=NodePath.find(allPaths,absolute);
@@ -437,17 +466,45 @@ public class Configurable {
                         evalPart=null;
                 }
                 if(evalPart!=null) {
-                    ret=resolve(matchedPath,allPaths,evalPart);
+                    ret.add(resolve1(matchedPath,allPaths,evalPart,ctx));
                 } else {
-                    ret="";
+                    ret.add("");
                 }
             } else
                 throw new RuntimeException("if-defined needs 2 or 3 args in "+str);
+        } else if(function.equals("foreach-server")||
+                  function.equals("foreach-cfg")) {
+            int nArgs=args.size();
+                if(nArgs<2 )
+                    throw new RuntimeException("foreach requires at least 2 args in "+str);
+                String pathExpr=resolve1(matchedPath,allPaths,args.get(0),ctx);
+                PathExpression expr=PathExpression.parse(pathExpr);
+                PathExpression absolute=NodePath.getAbsolutePath(matchedPath,expr);
+                List<String> children=getChildren(function.equals("foreach-server")?ctx.serverPaths:
+                                                  ctx.configPaths,absolute);
+                // Iterate all children
+                for(String x:children) {
+                    PathExpression loopMatchedPath=new PathExpression(absolute,x);
+                    for(int i=1;i<nArgs;i++) {
+                        String[] values=resolve(loopMatchedPath,allPaths,args.get(i),ctx);
+                        for(String s:values)
+                            ret.add(s);
+                    }
+                }
         } else
             throw new RuntimeException("Cannot process "+function);
-        return ret;
+        return ret.toArray(new String[ret.size()]);
     }
 
+
+    public static List<String> getChildren(List<NodePath> paths,PathExpression path) {
+        List<String> list=new ArrayList<String>();
+        NodePath p=NodePath.find(paths,path);
+        if(p!=null) {
+            list.addAll(p.node.keys());
+        }
+        return list;
+    }
 
     /**
      * Parse arguments in parantheses delimited by commas

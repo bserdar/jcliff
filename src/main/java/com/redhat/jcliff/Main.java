@@ -228,6 +228,7 @@ public class Main {
                                 configNode=newNode;
                                 configNode=cfg.applyClientPreprocessingRules(configNode);
                                 ctx.log("Configuration node after preprocessing:"+configNode);
+                                ctx.currentConfigNode=configNode;
 
                                 ctx.configPaths=NodePath.getPaths(configNode);
                                 boolean refresh=false;
@@ -374,7 +375,7 @@ public class Main {
                         norule.remove(diff);
                         ctx.log(rule.name+" will be run on "+diff);
                         boolean rerun=false;
-                        Script script=cfg.getScript(rule.name,diff.configPath.path,ctx.configPaths);
+                        Script script=cfg.getScript(rule.name,diff.configPath.path,ctx.configPaths,ctx);
                         if(script!=null) {
                             ctx.log("run:"+script);
                             if(ctx.cmdsRun!=null)

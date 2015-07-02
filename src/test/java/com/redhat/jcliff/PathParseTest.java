@@ -11,6 +11,8 @@ import org.jboss.dmr.ModelNode;
 
 public class PathParseTest {
 
+    Ctx ctx;
+    
     private static String str(String s) {
         return s.replace("'","\"");
     }
@@ -31,11 +33,11 @@ public class PathParseTest {
         ModelNode node=ModelNode.fromString(str("{'a' => { 'b' => { 'c' => { 'd' => { 'e' => 'f' } } } } }"));
         add(allNodes,node,"a","b","c","d","e");
 
-        Assert.assertEquals("e",Configurable.resolve(matched,allNodes,"${name(.)}"));
-        Assert.assertEquals("d",Configurable.resolve(matched,allNodes,"${name(..)}"));
-        Assert.assertEquals("c",Configurable.resolve(matched,allNodes,"${name(../..)}"));
-        Assert.assertEquals("b",Configurable.resolve(matched,allNodes,"${name(../../..)}"));
-        Assert.assertEquals("a",Configurable.resolve(matched,allNodes,"${name(../../../..)}"));
+        Assert.assertEquals("e",Configurable.resolve1(matched,allNodes,"${name(.)}",ctx));
+        Assert.assertEquals("d",Configurable.resolve1(matched,allNodes,"${name(..)}",ctx));
+        Assert.assertEquals("c",Configurable.resolve1(matched,allNodes,"${name(../..)}",ctx));
+        Assert.assertEquals("b",Configurable.resolve1(matched,allNodes,"${name(../../..)}",ctx));
+        Assert.assertEquals("a",Configurable.resolve1(matched,allNodes,"${name(../../../..)}",ctx));
     }
 
     @Test
@@ -45,8 +47,8 @@ public class PathParseTest {
         ModelNode node=ModelNode.fromString(str("{'a' => { 'b' => { 'c' => { 'd' => { 'e' => 'f' } } } } }"));
         add(allNodes,node,"a","b","c","d","e");
 
-        Assert.assertEquals(str("'f'"),Configurable.resolve(matched,allNodes,"${value(.)}"));
-        Assert.assertEquals(str("{'e' => 'f'}"),Configurable.resolve(matched,allNodes,"${value(..)}"));
+        Assert.assertEquals(str("'f'"),Configurable.resolve1(matched,allNodes,"${value(.)}",ctx));
+        Assert.assertEquals(str("{'e' => 'f'}"),Configurable.resolve1(matched,allNodes,"${value(..)}",ctx));
     }
 
     @Test
@@ -56,11 +58,11 @@ public class PathParseTest {
         ModelNode node=ModelNode.fromString(str("{'a' => { 'b' => { 'c' => { 'd' => { 'e' => 'f' } } } } }"));
         add(allNodes,node,"a","b","c","d","e");
 
-        Assert.assertEquals("/a/b/c/d/e",Configurable.resolve(matched,allNodes,"${path(.)}"));
-        Assert.assertEquals("/a/b/c/d",Configurable.resolve(matched,allNodes,"${path(..)}"));
-        Assert.assertEquals("/a/b/c",Configurable.resolve(matched,allNodes,"${path(../..)}"));
-        Assert.assertEquals("/a/b",Configurable.resolve(matched,allNodes,"${path(../../..)}"));
-        Assert.assertEquals("/a",Configurable.resolve(matched,allNodes,"${path(../../../..)}"));
+        Assert.assertEquals("/a/b/c/d/e",Configurable.resolve1(matched,allNodes,"${path(.)}",ctx));
+        Assert.assertEquals("/a/b/c/d",Configurable.resolve1(matched,allNodes,"${path(..)}",ctx));
+        Assert.assertEquals("/a/b/c",Configurable.resolve1(matched,allNodes,"${path(../..)}",ctx));
+        Assert.assertEquals("/a/b",Configurable.resolve1(matched,allNodes,"${path(../../..)}",ctx));
+        Assert.assertEquals("/a",Configurable.resolve1(matched,allNodes,"${path(../../../..)}",ctx));
     }
 
     @Test
@@ -70,9 +72,9 @@ public class PathParseTest {
         ModelNode node=ModelNode.fromString(str("{'a' => { 'b' => { 'c' => { 'd' => { 'e' => 'f' } } } } }"));
         add(allNodes,node,"a","b","c","d","e");
 
-        Assert.assertEquals("/a=b/c=d/e",Configurable.resolve(matched,allNodes,"${cmdpath(${path(.)})}"));
-        Assert.assertEquals("/subsystem=x/a=b/c=d/e",Configurable.resolve(matched,allNodes,"/subsystem=x${cmdpath(${path(.)})}"));
-        Assert.assertEquals("/subsystem=a/b=c/d=e",Configurable.resolve(matched,allNodes,"/subsystem${cmdpath(=${path(.)})}"));
+        Assert.assertEquals("/a=b/c=d/e",Configurable.resolve1(matched,allNodes,"${cmdpath(${path(.)})}",ctx));
+        Assert.assertEquals("/subsystem=x/a=b/c=d/e",Configurable.resolve1(matched,allNodes,"/subsystem=x${cmdpath(${path(.)})}",ctx));
+        Assert.assertEquals("/subsystem=a/b=c/d=e",Configurable.resolve1(matched,allNodes,"/subsystem${cmdpath(=${path(.)})}",ctx));
     }
 
     @Test
@@ -82,7 +84,7 @@ public class PathParseTest {
         ModelNode node=ModelNode.fromString(str("{'a' => { 'b' => { 'c' => { 'd' => { 'e' => 'f' } } } } }"));
         add(allNodes,node,"a","b","c","d","e");
 
-        Assert.assertEquals("/blah,\"f\"",Configurable.resolve(matched,allNodes,"/blah${if-defined (e),(,${value(e)})}"));
-        Assert.assertEquals("/blah",Configurable.resolve(matched,allNodes,"/blah${if-defined (g),(,${value(g)})}"));
+        Assert.assertEquals("/blah,\"f\"",Configurable.resolve1(matched,allNodes,"/blah${if-defined (e),(,${value(e)})}",ctx));
+        Assert.assertEquals("/blah",Configurable.resolve1(matched,allNodes,"/blah${if-defined (g),(,${value(g)})}",ctx));
     }
 }

@@ -43,6 +43,7 @@ public class Ctx {
     public boolean batch=true;
     public PrintStream out=System.out;
     public ModelNode currentServerNode;
+    public ModelNode currentConfigNode;
     public List<NodePath> configPaths;
     public List<NodePath> serverPaths;
     public Set<Script> cmdsRun;
