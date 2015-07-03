@@ -3,12 +3,9 @@ getContents=/subsystem=messaging:read-resource(recursive=true)
 server.preprocess.prepend=/messaging
 
 match.add=add:/messaging/hornetq-server/*
-add.rule=/subsystem=messaging/hornetq-server=${name(.)}:add}
+add.rule=/subsystem=messaging/hornetq-server=${name(.)}:add
 add.refresh=true
-add.precedence=10
-
-match.modifyAddressSetting=modify:/messaging/hornetq-server/*/address-setting/*/*
-modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/address-setting=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+add.precedence=5
 
 match.addQueue=add:/messaging/hornetq-server/*/jms-queue/*
 addQueue.rule=jms-queue add --queue-address=${name(.)} --entries=${value(entries)} --durable=${value(durable)}
@@ -26,6 +23,11 @@ match.modifyTopic=modify:/messaging/hornetq-server/*/jms-topic/*/*
 modifyTopic.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/jms-topic=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
 modifyTopic.precedence=25
 
+match.addConFactory=add:/messaging/hornetq-server/*/connection-factory/*
+addConFactory.rule=/subsystem=messaging/hornetq-server=${name(../..)}/connection-factory=${name(.)}:add(entries=${value(entries)}, connector=${value(connector)})
+addRemoteConnector.refresh=true
+addRemoteConnector.precedence=20
+
 match.modifyConFactory=modify:/messaging/hornetq-server/*/connection-factory/*/*
 modifyConFactory.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/connection-factory=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
 
@@ -34,7 +36,7 @@ modifyProperty.rule=/subsystem=messaging/hornetq-server=${name(..)}:write-attrib
 
 match.addBridge=add:/messaging/jms-bridge/*
 addBridge.rule=/subsystem=messaging/jms-bridge=${name(.)}:add(quality-of-service=${value(quality-of-service)}, failure-retry-interval=${value(failure-retry-interval)}, max-retries=${value(max-retries)}, max-batch-size=${value(max-batch-size)}, max-batch-time=${value(max-batch-time)}, target-connection-factory=${value(target-connection-factory)}, target-destination=${value(target-destination)}, source-connection-factory=${value(source-connection-factory)}, source-destination=${value(source-destination)}, source-context=${value(source-context)})
-#addBridge.refresh=true
+addBridge.refresh=true
 addBridge.precedence=10
 
 match.modifyBridgeProperty=modify:/messaging/jms-bridge/*/*
@@ -65,7 +67,7 @@ modifyCoreBridge.precedence=60
 match.addAddressSetting=add:/messaging/hornetq-server/*/address-setting/*
 addAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../..)}/address-setting=${name(.)}:add()
 addAddressSetting.refresh=true
-addAddressSetting.precendence=50
+addAddressSetting.precedence=50
 
 match.modifyAddressSetting=modify:/messaging/hornetq-server/*/address-setting/*/*
 modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/address-setting=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
@@ -73,7 +75,62 @@ modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/
 match.addSecuritySetting=add:/messaging/hornetq-server/*/security-setting/*
 addSecuritySetting.rule=/subsystem=messaging/hornetq-server=${name(../..)}/security-setting=${name(.)}:add()
 addSecuritySetting.refresh=true
-addSecuritySetting.precendence=50
+addSecuritySetting.precedence=50
 
-match.modifyAddressSetting=modify:/messaging/hornetq-server/*/security-setting/*/*/*/*
-modifyAddressSetting.rule=/subsystem=messaging/hornetq-server=${name(../../../../../)}/security-setting=${name(../../../)}/role=${name(../)}:write-attribute(name=${name(.)}, value=${value(.)})
+match.addSecuritySettingRole=add:/messaging/hornetq-server/*/security-setting/*/role/*
+addSecuritySettingRole.rule=/subsystem=messaging/hornetq-server=${name(../../../..)}/security-setting=${name(../..)}/role=${name(.)}:add(send=${value(send)} ${if-defined (consume),(,consume=${value(consume)})} ${if-defined (create-non-durable-queue),(,create-non-durable-queue=${value(create-non-durable-queue)})} ${if-defined (delete-non-durable-queue),(,delete-non-durable-queue=${value(delete-non-durable-queue)})} ${if-defined (manage),(,manage=${value(manage)})} ${if-defined (create-durable-queue),(,create-durable-queue=${value(create-durable-queue)})} ${if-defined (delete-durable-queue),(,delete-durable-queue=${value(delete-durable-queue)})})
+addSecuritySettingRole.refresh=true
+addSecuritySettingRole.precedence=60
+
+match.removeSecuritySettingRole=remove:/messaging/hornetq-server/*/security-setting/*/role/*
+removeSecuritySettingRole.rule=/subsystem=messaging/hornetq-server=${name(../../../..)}/security-setting=${name(../..)}/role=${name(.)}:remove
+removeSecuritySettingRole.refresh=true
+removeSecuritySettingRole.precedence=60
+
+match.modifySecuritySettingPerm=modify:/messaging/hornetq-server/*/security-setting/*/role/*/*
+modifySecuritySettingPerm.rule=/subsystem=messaging/hornetq-server=${name(../../../..)}/security-setting=${name(../..)}/role=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+modifySecuritySettingPerm.precedence=65
+
+match.addRemoteAcceptor=add:/messaging/hornetq-server/*/remote-acceptor/*
+addRemoteAcceptor.rule=/subsystem=messaging/hornetq-server=${name(../..)}/remote-acceptor=${name(.)}:add(socket-binding=${value(socket-binding)})
+addRemoteAcceptor.refresh=true
+addRemoteAcceptor.precedence=10
+
+match.AddRemoteAcceptorParam=add:/messaging/hornetq-server/*/remote-acceptor/*/param/*/value
+AddRemoteAcceptorParam.rule=/subsystem=messaging/hornetq-server=${name(../../../../..)}/remote-acceptor=${name(../../..)}/param=${name(..)}:add(value=${value(.)})
+
+match.modifyRemoteAcceptorParam=modify:/messaging/hornetq-server/*/remote-acceptor/*/param/*/value
+modifyRemoteAcceptorParam.rule.1=/subsystem=messaging/hornetq-server=${name(../../../../..)}/remote-acceptor=${name(../../..)}/param=${name(..)}:remove
+modifyRemoteAcceptorParam.rule.2=/subsystem=messaging/hornetq-server=${name(../../../../..)}/remote-acceptor=${name(../../..)}/param=${name(..)}:add(value=${value(.)})
+
+match.addRemoteConnector=add:/messaging/hornetq-server/*/remote-connector/*
+addRemoteConnector.rule=/subsystem=messaging/hornetq-server=${name(../..)}/remote-connector=${name(.)}:add(socket-binding=${value(socket-binding)})
+addRemoteConnector.refresh=true
+addRemoteConnector.precedence=10
+
+match.addRemoteConnectorParam=add:/messaging/hornetq-server/*/remote-connector/*/param/*/value
+addRemoteConnectorParam.rule=/subsystem=messaging/hornetq-server=${name(../../../../..)}/remote-connector=${name(../../..)}/param=${name(..)}:add(value=${value(.)})
+
+match.modifyRemoteConnectorParam=modify:/messaging/hornetq-server/*/remote-connector/*/param/*/value
+modifyRemoteConnectorParam.rule.1=/subsystem=messaging/hornetq-server=${name(../../../../..)}/remote-connector=${name(../../..)}/param=${name(..)}:remove
+modifyRemoteConnectorParam.rule.2=/subsystem=messaging/hornetq-server=${name(../../../../..)}/remote-connector=${name(../../..)}/param=${name(..)}:add(value=${value(.)})
+
+match.addInVMAcceptor=add:/messaging/hornetq-server/*/in-vm-acceptor/*
+addInVMAcceptor.rule.1=/subsystem=messaging/hornetq-server=${name(../..)}/in-vm-acceptor=${name(.)}:add(server-id=${value(server-id)})
+addInVMAcceptor.rule.2=reload
+addInVMAcceptor.refresh=true
+addInVMAcceptor.precedence=10
+
+match.addInVMConnector=add:/messaging/hornetq-server/*/in-vm-connector/*
+addInVMConnector.rule.1=/subsystem=messaging/hornetq-server=${name(../..)}/in-vm-connector=${name(.)}:add(server-id=${value(server-id)})
+addInVMConnector.rule.2=reload
+addInVMConnector.refresh=true
+addInVMConnector.precedence=10
+
+match.addPooledCntFactory=add:/messaging/hornetq-server/*/pooled-connection-factory/*
+addPooledCntFactory.rule=/subsystem=messaging/hornetq-server=${name(../..)}/pooled-connection-factory=${name(.)}:add(connector=${value(connector)}, entries=${value(entries)})
+addPooledCntFactory.refresh=true
+addPooledCntFactory.precedence=20
+
+match.modifyPooledCntFactory=modify:/messaging/hornetq-server/*/pooled-connection-factory/*/*
+modifyPooledCntFactory.rule=/subsystem=messaging/hornetq-server=${name(../../..)}/pooled-connection-factory=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
