@@ -96,28 +96,30 @@ public class Script {
         return buf.toString();
     }
 
+    public boolean hasBatch() {
+        return hasOneOf("run-batch");
+    }
+
     public boolean hasReload() {
-        for(String x:cmds)
-            if(x.indexOf(":reload")!=-1)
-                return true;
-        return false;
+        return hasOneOf(":reload");
     }
 
     public boolean hasIf() {
-        for(String x:cmds)
-            if(x.indexOf("if ")!=-1)
-                return true;
-        return false;
+        return hasOneOf("if ");
     }
 
     public boolean hasDeployments() {
-        for(String x:cmds)
-            if(x.indexOf("deploy ")!=-1||
-               x.indexOf("undeploy ")!=-1)
-                return true;
-        return false;
+        return hasOneOf("deploy ","undeploy ");
     }
 
+    private boolean hasOneOf(String...args) {
+        for(String x:cmds)
+            for(String a:args)
+                if(x.indexOf(a)!=-1)
+                    return true;
+        return false;
+    }
+    
     public Script[] splitByReloads() {
         List<Script> scripts=new ArrayList<Script>();
         List<String> current=new ArrayList<String>();
