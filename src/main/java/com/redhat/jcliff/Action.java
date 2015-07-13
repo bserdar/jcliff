@@ -21,4 +21,4 @@ package com.redhat.jcliff;
 /**
  * @author bserdar@redhat.com
  */
-public enum Action { add, remove, listAdd, listRemove, modify, undefine }
+public enum Action { add, remove, listAdd, listRemove, modify, undefine, reorder }

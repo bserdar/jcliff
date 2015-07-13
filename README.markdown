@@ -370,6 +370,7 @@ computed. The differences are:
    - `undefine`: Undefine item in JBoss tree.
    - `listAdd`: Add a new element in a list in JBoss tree.
    - `listRemove`: Remove an element from a JBoss list.
+   - `reorder`: Reorder the attributes of an object
 
 Hack: you can't add a nontrivial object, and set its attributes. The
 attributes of the nontrivial object don't exist until the object is
@@ -496,6 +497,42 @@ a jdbc driver is written taking this into account:
       ${if-defined (driver-class-name),(,driver-class-name=${value(driver-class-name)})})
 
 Note that the argument has a starting comma. This is required to build a correct command.
+
+## Iteration
+
+ ${foreach-cfg (path), (cmd1), (cmd2),...}
+ ${foreach-server (path), (cmd1), (cmd2),...}
+
+In foreach-cfg, "path" refers to a path in the input configuration
+file. In foreach-server, "path" refers to a path in the current server
+configuration.  The "path" is evaluated based on the matched path of
+the rule. The $foreach command iterates the immediate children of
+"path", and executes all commands for each of the elements. The
+commands "cmdN" are evaluated based on the iterated path. For example:
+
+{
+   "jgroups" => {
+      "stack" => {
+         "udp" => {
+            "protocol" => {
+               "PING" => {...},
+               "MERGE3" => {...},
+               "FD_SOCK" => {...}.
+
+There is no way to insert or reorder protocols, so we remove all protocols from jgroups/stack/udp/protocol, and reinsert them:
+
+match.addProtocol=add:/stack/*/protocol/*
+addProtocol.rule.1=batch
+addProtocol.rule.2=${foreach-server (/stack/${name(../..)}/protocol), (/subsystem=jgroups/stack=${name(../..)}:remove-protocol(type=${name(.)}))}
+addProtocol.rule.3=${foreach-cfg (/stack/${name(../..)}/protocol), (/subsystem=jgroups/stack=${name(../..)}:add-protocol(type=${name(.)} ${if-defined (socket-binding),(,socket-binding=${value(socket-binding)})} ${if-defined (property), (,properties=${value(properties)})} ))}
+addProtocol.rule.4=run-batch
+
+ * The "match" rule matches any insertions to the protocol object. This rule will be evaluated when a new node is added to protocol.
+ * The first rule starts a batch (jboss-cli directive)
+ * The second rule iterates already defined protocols at the server, and removes them one by one.
+ * The third rul iterates the protocols defined in the input configuration file, and inserts them one by one
+ * The fourth rule runs the batch
+
 
 ## Prefix Rules
 

@@ -1,0 +1,82 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=jgroups
+getContents=/subsystem=jgroups:read-resource(recursive=true)
+client.preprocess.strip=/jgroups
+
+match.addStack=add:/stack/*
+addStack.rule.1=batch
+addStack.rule.2=/subsystem=jgroups/stack=${name(.)}:add
+addStack.rule.3=/subsystem=jgroups/stack=${name(.)}/transport=TRANSPORT:add(type=${value(transport/TRANSPORT/type)})
+addStack.rule.4=${foreach-cfg (/stack/${name(.)}/protocol), (/subsystem=jgroups/stack=${name(../..)}:add-protocol(type=${name(.)} ${if-defined (socket-binding),(,socket-binding=${value(socket-binding)})} ${if-defined (property), (,properties=${value(properties)})} ))}
+addStack.rule.5=run-batch
+addStack.refresh=true
+
+
+match.removeStack=remove:/stack/*
+removeStack.rule.1=/subsystem=jgroups/stack=${name(.)}:remove
+removeStack.refresh=true
+
+match.addProtocol=add:/stack/*/protocol/*
+addProtocol.rule.1=batch
+addProtocol.rule.2=${foreach-server (/stack/${name(../..)}/protocol), (/subsystem=jgroups/stack=${name(../..)}:remove-protocol(type=${name(.)}))}
+addProtocol.rule.3=${foreach-cfg (/stack/${name(../..)}/protocol), (/subsystem=jgroups/stack=${name(../..)}:add-protocol(type=${name(.)} ${if-defined (socket-binding),(,socket-binding=${value(socket-binding)})} ${if-defined (property), (,properties=${value(properties)})} ))}
+addProtocol.rule.4=run-batch
+addProtocol.refresh=true
+
+match.removeProtocol=remove:/stack/*/protocol/*
+removeProtocol.rule.1=/subsystem=jgroups/stack=${name(../..)}:remove-protocol(type=${value(type)})
+removeProtocol.refresh=true
+
+
+match.reorderProtocol=reorder:/stack/*/protocol
+reorderProtocol.rule.1=batch
+reorderProtocol.rule.2=${foreach-server (/stack/${name(..)}/protocol), (/subsystem=jgroups/stack=${name(../..)}:remove-protocol(type=${name(.)}))}
+reorderProtocol.rule.3=${foreach-cfg (/stack/${name(..)}/protocol), (/subsystem=jgroups/stack=${name(../..)}:add-protocol(type=${name(.)} ${if-defined (socket-binding),(,socket-binding=${value(socket-binding)})} ${if-defined (property), (,properties=${value(properties)})} ))}
+reorderProtocol.rule.4=run-batch
+reorderProtocol.refresh=true
+
+
+match.modifyProtocolDefn=modify:/stack/*/protocol/*/*
+modifyProtocolDefn.rule.1=/subsystem=jgroups/stack=${name(../../..)}/protocol=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
+match.addProtocolProperty=add:/stack/*/protocol/*/property/*
+addProtocolProperty.rule.1=/subsystem=jgroups/stack=${name(../../../..)}/protocol=${name(../..)}/property=${name(.)}:add(value=${value(.)})
+
+match.removeProtocolProperty=add:/stack/*/protocol/*/property/*
+removeProtocolProperty.rule.1=/subsystem=jgroups/stack=${name(../../../..)}/protocol=${name(../..)}/property=${name(.)}:remove
+
+match.modifyProtocolProperty=add:/stack/*/protocol/*/property/*/value
+modifyProtocolProperty.rule.1=/subsystem=jgroups/stack=${name(../../../../..)}/protocol=${name(../../..)}/property=${name(..)}:write-attribute(name=value,value=${value(.)})
+
+match.modifyTransport=modify:/stack/*/transport/*/*
+modifyTransport.rule.1=/subsystem=jgroups/stack=${name(../../..)}/transport=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyTransport.precedence=100
+
+match.addTransportProperty=add:/stack/*/transport/*/property/*
+addTransportProperty.rule.1=/subsystem=jgroups/stack=${name(../../../..)}/transport=${name(../..)}/property=${name(.)}:add(value=${value(.)})
+addTransportProperty.precedence=110
+
+match.removeTransportProperty=remove:/stack/*/transport/*/property/*
+removeTransportProperty.rule.1=/subsystem=jgroups/stack=${name(../../../..)}/transport=${name(../..)}/property=${name(.)}:remove
+removeTransportProperty.precedence=110
+
+match.modifyTransportProperty=modify:/stack/*/transport/*/property/*/value
+modifyTransportProperty.rule.1=/subsystem=jgroups/stack=${name(../../../../..)}/transport=${name(../../..)}/property=${name(..)}:write-attribute(name=value,value=${value(.)})
+modifyTransportProperty.precedence=110
+

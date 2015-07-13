@@ -1,0 +1,21 @@
+{ "jgroups" => {
+      "stack" => {
+          "teststack" => {
+              "transport" => {
+                  "TRANSPORT" => {
+                      "type" => "TCP"
+                  }
+              },
+              "protocol" => {
+                 "UDP" => {
+                 },
+                 "MERGE3" => {
+                 },
+                 "PING" => {
+                 }
+              }
+           }
+      } 
+   }
+}
+  

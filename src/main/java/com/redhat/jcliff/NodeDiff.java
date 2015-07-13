@@ -21,6 +21,7 @@ package com.redhat.jcliff;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Iterator;
 
 import org.jboss.dmr.ModelType;
 import org.jboss.dmr.ModelNode;
@@ -139,6 +140,18 @@ public class NodeDiff {
                     } else if(!x.node.getType().equals(ModelType.OBJECT)&&!isSubsetOf(x.node,s.node)) {
                         ctx.log("Adding to modify list");
                         modifyList.add(new NodeDiff(Action.modify,x,s));
+                    } else if(x.node.getType().equals(ModelType.OBJECT)&&
+                              s.node.getType().equals(ModelType.OBJECT) ) {
+                        ctx.log("Comparing for reorder: "+x.path+" cfg:"+x.node.asObject().keys()+" s:"+s.node.asObject().keys());
+                        // Compare object member order
+                        Iterator<String> itr1=x.node.asObject().keys().iterator();
+                        Iterator<String> itr2=s.node.asObject().keys().iterator();
+                        for(;itr1.hasNext()&&itr2.hasNext();) {
+                            if(!itr1.next().equals(itr2.next())) {
+                                modifyList.add(new NodeDiff(Action.reorder,x,s));
+                                break;
+                            }
+                        }
                     }
                 }
             if (!found) {

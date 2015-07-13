@@ -341,7 +341,7 @@ public class Main {
             StringBuffer buf=new StringBuffer();
             for(NodeDiff x:norule)
                 buf.append(x.toString()).append('\n');
-            System.err.println("No rules for diffs:"+buf.toString());
+            ctx.log("No rules for diffs:"+buf.toString());
         }
         return false;
     }

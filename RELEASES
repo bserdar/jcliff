@@ -1,3 +1,8 @@
+v2.10.0:
+ - Add support for iteration (foreach-cfg and foreach-server)
+ - Add reordering detection for object nodes
+ - Add jgroups support
+ - Recognize batches in rules to prevent re-batching
 v2.9.15:
  - #46: Add role base auth config support (fuero)
 v2.9.14:
