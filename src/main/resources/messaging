@@ -88,7 +88,7 @@ removeSecuritySettingRole.refresh=true
 removeSecuritySettingRole.precedence=60
 
 match.modifySecuritySettingPerm=modify:/messaging/hornetq-server/*/security-setting/*/role/*/*
-modifySecuritySettingPerm.rule=/subsystem=messaging/hornetq-server=${name(../../../..)}/security-setting=${name(../..)}/role=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+modifySecuritySettingPerm.rule=/subsystem=messaging/hornetq-server=${name(../../../../..)}/security-setting=${name(../../..)}/role=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
 modifySecuritySettingPerm.precedence=65
 
 match.addRemoteAcceptor=add:/messaging/hornetq-server/*/remote-acceptor/*
