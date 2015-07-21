@@ -1,3 +1,5 @@
+v2.10.2:
+ - Security rule fix (smezouar)
 v2.10.1:
  - Fix #51: Add login-module-stack to security
 v2.10.0:
