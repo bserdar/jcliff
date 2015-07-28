@@ -353,6 +353,9 @@ public class Configurable {
             if(s.length()>0)
                 sret.add(s);
         }
+        // Don't return empty list, return at least one empty string
+        if(sret.isEmpty())
+            sret.add("");
         return sret.toArray(new String[sret.size()]);
     }
 
