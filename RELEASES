@@ -1,3 +1,5 @@
+v2.10.4:
+ - Add connection properties support to datasources
 v2.10.3:
  - Fix #53: caused failures in ee rules
 v2.10.2:

@@ -1,0 +1,12 @@
+{ "datasource" => {
+    "ExampleDS" => {
+            "connection-properties" => {"test2" => {"value" => "testValue"}},
+            "connection-url" => "jdbc:h2:mem:test",
+            "driver-name" => "h2",
+            "enabled" => true,
+            "jndi-name" => "java:jboss/datasources/ExampleDS",
+            "password" => "sa",
+            "user-name" => "sa",
+      }
+   }
+}
