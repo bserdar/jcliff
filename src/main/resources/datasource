@@ -39,17 +39,31 @@ delete.refresh=true
 match.undefine=undefine:/datasource/*/*
 undefine.rule.1=/subsystem=datasources/data-source=${name(..)}:undefine-attribute(name=${name(.)})
 
-match.addConnProperties=add:/datasource/*/connection-properties/*
-addConnProperties.rule.1=/subsystem=datasources/data-source=${name(../..)}/connection-properties=${name(.)}:add(value=${value(value)})
+match.addConnProperty=add:/datasource/*/connection-properties/*
+addConnProperty.rule.1=/subsystem=datasources/data-source=${name(../..)}/connection-properties=${name(.)}:add(value=${value(value)})
+addConnProperty.refresh=true
+addConnProperty.precedence=20
 
-match.removeConnProperties=remove:/datasource/*/connection-properties/*
-removeConnProperties.rule.1=/subsystem=datasources/data-source=${name(../..)}/connection-properties=${name(.)}:remove
+match.removeConnProperty=remove:/datasource/*/connection-properties/*
+removeConnProperty.rule.1=/subsystem=datasources/data-source=${name(../..)}/connection-properties=${name(.)}:remove
+removeConnProperty.refresh=true
+removeConnProperty.precedence=20
 
-match.modifyConnProperties=modify:/datasource/*/connection-properties/*/value
-modifyConnProperties.rule.1=/subsystem=datasources/data-source=${name(../../..)}/connection-properties=${name(..)}:remove
-modifyConnProperties.rule.2=/subsystem=datasources/data-source=${name(../../..)}/connection-properties=${name(..)}:add(value=${value(.)})
+#match.addConnPropertyValue=add:/datasource/*/connection-properties/*/value
+#addConnPropertyValue.rule.1=/subsystem=datasources/data-source=${name(../../..)}/connection-properties=${name(..)}:remove
+#addConnPropertyValue.rule.2=:reload
+#addConnPropertyValue.rule.3=/subsystem=datasources/data-source=${name(../../..)}/connection-properties=${name(..)}:add(value=${value(.)})
+#addConnPropertyValue.rule.4=:reload
+#addConnPropertyValue.refresh=true
+#addConnPropertyValue.precedence=30
 
-match.modifyConnProperties2=add:/datasource/*/connection-properties/*/*
-modifyConnProperties2.rule.1=/subsystem=datasources/data-source=${name(../../..)}/connection-properties=${name(..)}:remove
-modifyConnProperties2.rule.2=/subsystem=datasources/data-source=${name(../../..)}/connection-properties=${name(..)}:add(value=${value(.)})
+#match.modifyConnPropertyValue=modify:/datasource/*/connection-properties/*/value
+#modifyConnPropertyValue.rule.1=/subsystem=datasources/data-source=${name(../../..)}/connection-properties=${name(..)}:remove
+#modifyConnPropertyValue.rule.2=:reload
+#modifyConnPropertyValue.rule.3=/subsystem=datasources/data-source=${name(../../..)}/connection-properties=${name(..)}:add(value=${value(.)})
+#modifyConnPropertyValue.rule.4=:reload
+#modifyConnPropertyValue.refresh=true
+
+#modifyConnPropertyValue.precedence=40
+
 
