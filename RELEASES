@@ -1,3 +1,5 @@
+v2.10.5:
+ - Add reload after adding jdbc driver or datasource (#56)
 v2.10.4:
  - Add connection properties support to datasources
 v2.10.3:
