@@ -23,6 +23,7 @@ match.add=add:/datasource/*
 add.rule.1=data-source add --name=${name(.)} --jndi-name=${value(jndi-name)} --driver-name=${value(driver-name)} --connection-url=${value(connection-url)}
 add.rule.2=if result.value==false of /subsystem=datasources/datasource=${name(.)}:read-resource 
 add.rule.3=data-source enable --name=${name(.)}
+add.rule.4=:reload
 add.refresh=true
 
 
