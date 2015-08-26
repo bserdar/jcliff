@@ -1,5 +1,6 @@
 v2.10.5:
  - Add reload after adding jdbc driver or datasource (#56)
+ - Reload after each subsystem if --reload is specified
 v2.10.4:
  - Add connection properties support to datasources
 v2.10.3:

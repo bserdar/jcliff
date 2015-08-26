@@ -50,7 +50,7 @@ public class Main {
         "  -v                      : Verbose output\n"+
         "  --timeout=timeout       : Command timeout in milliseconds\n"+
         "  --output=Path           : Log output file\n"+
-        "  --reload                : Reload if required\n"+
+        "  --reload                : Reload after each subsystem configuration if required\n"+
         "  --waitport=waitport     : Wait this many seconds for the port to be opened\n"+
         "  --nobatch               : Don't use batch mode of jboss-cli\n"+
         "  --redeploy              : Redeploy all apps";
@@ -250,8 +250,12 @@ public class Main {
                             }
                         }
                     }
+                    if(reload)
+                        if(reloadRequired(ctx))
+                            ctx.reloadConf();
+                    
                 }
-
+                
                 // Deal with deployments
                 ctx.log("Processing deployments");
                 ctx.batch=false; // Don't batch them
@@ -303,7 +307,7 @@ public class Main {
 
                 if(reload)
                     if(reloadRequired(ctx))
-                        reloadConf(ctx);
+                        ctx.reloadConf();
             } catch (Exception t) {
                 ctx.error(t);
                 throw t;
@@ -317,11 +321,6 @@ public class Main {
         Script script=new Script(new String[] {"ls"});
         String output=ctx.cli.run(script);
         return output.indexOf("server-state=reload-required")!=-1;
-    }
-
-    private static void reloadConf(Ctx ctx) {
-        System.err.println("Reloading configuration");
-        ctx.cli.run(new Script(new String[] {":reload"}));
     }
 
     private static boolean executeRules(Ctx ctx,Configurable cfg,List<NodeDiff> ldiff) {

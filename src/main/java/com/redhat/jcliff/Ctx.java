@@ -137,4 +137,9 @@ public class Ctx {
     public static String timestamp() {
         return timestampFormat.format(new Date());
     }
+
+    public  void reloadConf() {
+        System.err.println("Reloading configuration");
+        cli.run(new Script(new String[] {":reload"}));
+    }
 }
