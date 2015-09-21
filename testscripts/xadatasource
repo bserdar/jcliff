@@ -1,0 +1,9 @@
+{ "xadatasource" => {
+    "examplexa" => {
+            "xa-datasource-properties" => {"URL" => {"value" => "testValue"}},
+            "driver-name" => "h2",
+            "enabled" => true,
+            "jndi-name" => "java:jboss/datasources/examplexa",
+      }
+   }
+}

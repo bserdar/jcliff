@@ -1,3 +1,5 @@
+v2.10.7:
+ - Fix #57: XA datasource URL is optional (mkrakowitzer)
 v2.10.6:
  - Reload after each subsystem if --reload is specified
 v2.10.5:
