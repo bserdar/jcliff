@@ -1,3 +1,5 @@
+v2.10.8:
+ - Re-fix #57
 v2.10.7:
  - Fix #57: XA datasource URL is optional (mkrakowitzer)
 v2.10.6:
