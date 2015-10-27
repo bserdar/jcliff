@@ -53,7 +53,8 @@ public class Main {
         "  --reload                : Reload after each subsystem configuration if required\n"+
         "  --waitport=waitport     : Wait this many seconds for the port to be opened\n"+
         "  --nobatch               : Don't use batch mode of jboss-cli\n"+
-        "  --redeploy              : Redeploy all apps";
+        "  --redeploy              : Redeploy all apps\n"+
+        "  --reconnect-delay=delay : Wait this many milliseconds after a :reload for the server to restart";
 
     public static void println(int indent,String s) {
         for(int i=0;i<indent;i++)
@@ -130,6 +131,7 @@ public class Main {
         boolean reload=false;
         boolean redeploy=false;
         boolean batch=true;
+        String reconnectDelay="20000";
 
         for(int i=0;i<args.length;i++) {
             if(args[i].startsWith("--cli="))
@@ -157,8 +159,9 @@ public class Main {
                 if ("0".equals(timeout.trim())) {
                     timeout = null;
                 }
-            }
-            else if(args[i].startsWith("--waitport="))
+            } else if(args[i].startsWith("--reconnect-delay=")) {
+                reconnectDelay=args[i].substring("--reconnect-delay=".length());
+            }  else if(args[i].startsWith("--waitport="))
                 waitport=Integer.parseInt(args[i].substring("--waitport=".length()));
             else if(args[i].equals("--reload"))
                 reload=true;
@@ -174,6 +177,7 @@ public class Main {
             ctx.noop=noop;
             ctx.log=log;
             ctx.batch=batch;
+            ctx.reconnectDelay=Long.valueOf(reconnectDelay);
             if(logOutput!=null)
                 ctx.out=new PrintStream(new File(logOutput));
             if ( waitport != 0 ) {

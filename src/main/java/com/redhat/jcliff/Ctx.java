@@ -47,6 +47,7 @@ public class Ctx {
     public List<NodePath> configPaths;
     public List<NodePath> serverPaths;
     public Set<Script> cmdsRun;
+    public long reconnectDelay=20000;
     public final List<String> cmdQueue=new ArrayList<String>();
 
     public void log(String s) {
@@ -94,7 +95,7 @@ public class Ctx {
                 } else {
                     // Reload: wait for reload
                     try {
-                        Thread.sleep(20000);
+                        Thread.sleep(reconnectDelay);
                     } catch (Exception e) {}
                 }
             }
