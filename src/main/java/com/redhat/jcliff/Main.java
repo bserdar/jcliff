@@ -126,7 +126,7 @@ public class Main {
         String logOutput=null;
         List<String> files=new ArrayList<String>();
         String ruleDir=null;
-        String timeout="5000";
+        String timeout=null;
         int     waitport=0;
         boolean reload=false;
         boolean redeploy=false;

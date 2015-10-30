@@ -1,3 +1,5 @@
+v2.10.10:
+ - Default timeout is null, jbossas 7.1.1 can't deal with --timeout
 v2.10.9:
  - Added --reconnect-delay command line option
 v2.10.8:
