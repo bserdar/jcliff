@@ -19,9 +19,8 @@ name=naming
 getContents=/subsystem=naming:read-resource(recursive=true)
 client.preprocess.strip=/naming
 
-
 match.addBinding=add:/binding/*
-addBinding.rule.1=/subsystem=naming/binding="${name(.)}":add(binding-type=${value(binding-type)})
+addBinding.rule.1=/subsystem=naming/binding="${name(.)}":add(binding-type=${value(binding-type)},value=${value(./value)})
 addBinding.refresh=true
 
 match.modifyBinding=modify:/binding/*/*
