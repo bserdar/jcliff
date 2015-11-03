@@ -1,3 +1,5 @@
+v2.10.11:
+ - PR #61: Fixed naming/binding add command to include mandatory value attribute (egeorge-nolab)
 v2.10.10:
  - Default timeout is null, jbossas 7.1.1 can't deal with --timeout
 v2.10.9:
