@@ -1,3 +1,7 @@
+v2.10.12:
+ - PR #62: Added mandatory xa-datasource-property values to add.
+   Included disablement/re-enablement for xa-datasource-properties
+   updates (egeorge-nolab)
 v2.10.11:
  - PR #61: Fixed naming/binding add command to include mandatory value attribute (egeorge-nolab)
 v2.10.10:
