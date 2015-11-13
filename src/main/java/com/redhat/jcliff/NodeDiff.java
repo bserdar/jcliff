@@ -188,10 +188,16 @@ public class NodeDiff {
      */
     private static boolean valueEquals(ModelNode n1,ModelNode n2) {
         if(n1.getType().equals(ModelType.STRING)&&
-           n2.getType().equals(ModelType.STRING))
+           n2.getType().equals(ModelType.STRING)) {
             return stringCompare(n1.asString(),n2.asString());
-        else
+        } else if( (n1.getType().equals(ModelType.INT) ||
+                    n1.getType().equals(ModelType.LONG)) &&
+                   (n2.getType().equals(ModelType.INT) ||
+                    n2.getType().equals(ModelType.LONG)) ) {
+            return n1.asLong()==n2.asLong();
+        } else {
             return n1.equals(n2);
+        }
     }
 
     private static boolean stringCompare(String s1,String s2) {

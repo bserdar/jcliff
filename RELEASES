@@ -1,3 +1,5 @@
+v2.10.13:
+ - #54: long comparison problem
 v2.10.12:
  - PR #62: Added mandatory xa-datasource-property values to add.
    Included disablement/re-enablement for xa-datasource-properties
