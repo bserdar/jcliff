@@ -1,3 +1,5 @@
+v2.10.14:
+ - re#54: long and string comparison problem
 v2.10.13:
  - #54: long comparison problem
 v2.10.12:

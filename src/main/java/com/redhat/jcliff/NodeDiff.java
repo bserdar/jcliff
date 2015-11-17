@@ -191,10 +191,16 @@ public class NodeDiff {
            n2.getType().equals(ModelType.STRING)) {
             return stringCompare(n1.asString(),n2.asString());
         } else if( (n1.getType().equals(ModelType.INT) ||
-                    n1.getType().equals(ModelType.LONG)) &&
+                    n1.getType().equals(ModelType.LONG) ||
+                    n1.getType().equals(ModelType.STRING) ) &&
                    (n2.getType().equals(ModelType.INT) ||
-                    n2.getType().equals(ModelType.LONG)) ) {
-            return n1.asLong()==n2.asLong();
+                    n2.getType().equals(ModelType.LONG) ||
+                    n2.getType().equals(ModelType.STRING)) ) {
+            try {
+                return n1.asLong()==n2.asLong();
+            } catch (NumberFormatException x) {
+                return n1.equals(n2);
+            }
         } else {
             return n1.equals(n2);
         }
