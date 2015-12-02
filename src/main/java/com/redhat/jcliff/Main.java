@@ -29,7 +29,7 @@ import org.jboss.dmr.*;
  */
 public class Main {
 
-    private static final String VERSION="2.10.15";
+    private static final String VERSION="2.10.16";
 
     private static final HashSet<String> specialRules=new HashSet<String>();
 
@@ -56,7 +56,8 @@ public class Main {
         "  --waitport=waitport     : Wait this many seconds for the port to be opened\n"+
         "  --nobatch               : Don't use batch mode of jboss-cli\n"+
         "  --redeploy              : Redeploy all apps\n"+
-        "  --reconnect-delay=delay : Wait this many milliseconds after a :reload for the server to restart";
+        "  --reconnect-delay=delay : Wait this many milliseconds after a :reload for the server to restart\n"+
+        "  --leavetmp              : Don't erase temp files";
 
     public static void println(int indent,String s) {
         for(int i=0;i<indent;i++)
@@ -134,6 +135,7 @@ public class Main {
         boolean redeploy=false;
         boolean batch=true;
         String reconnectDelay="20000";
+        boolean leaveTmp=false;
 
         System.out.println("Jcliff version "+VERSION);
         for(int i=0;i<args.length;i++) {
@@ -170,6 +172,8 @@ public class Main {
                 reload=true;
             else if(args[i].equals("--redeploy"))
                 redeploy=true;
+            else if(args[i].equals("--leavetmp"))
+                leaveTmp=true;
             else
                 files.add(args[i]);
         }
@@ -179,6 +183,7 @@ public class Main {
             ctx.noop=noop;
             ctx.log=log;
             ctx.batch=batch;
+            ctx.leaveTmp=leaveTmp;
             ctx.reconnectDelay=Long.valueOf(reconnectDelay);
             if(logOutput!=null)
                 ctx.out=new PrintStream(new File(logOutput));

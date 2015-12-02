@@ -49,6 +49,7 @@ public class Ctx {
     public Set<Script> cmdsRun;
     public long reconnectDelay=20000;
     public final List<String> cmdQueue=new ArrayList<String>();
+    public boolean leaveTmp=false;
 
     public void log(String s) {
         if(log)

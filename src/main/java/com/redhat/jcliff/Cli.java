@@ -176,10 +176,12 @@ public class Cli {
                     String outString=read(outFile);
                     ctx.log("stderr:"+errString);
                     ctx.log("stdout:"+outString);
-                    scriptFile.delete();
-                    tempFile.delete();
-                    errFile.delete();
-                    outFile.delete();
+                    if(!ctx.leaveTmp) {
+                        scriptFile.delete();
+                        tempFile.delete();
+                        errFile.delete();
+                        outFile.delete();
+                    }
                     if(errString.length()>0)
                         throw new RuntimeException(errString);
                     if(returnCode==0||returnCode==1) {
