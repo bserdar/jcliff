@@ -201,6 +201,13 @@ public class NodeDiff {
             } catch (NumberFormatException x) {
                 return n1.equals(n2);
             }
+        } if((n1.getType().equals(ModelType.BOOLEAN)&&n2.getType().equals(ModelType.STRING) ) ||
+             (n1.getType().equals(ModelType.STRING)&&n2.getType().equals(ModelType.BOOLEAN) ) ) {
+            try {
+                return n1.asBoolean()==n2.asBoolean();
+            } catch (Exception e) {
+                return n1.equals(n2);
+            }
         } else {
             return n1.equals(n2);
         }
