@@ -29,7 +29,7 @@ import org.jboss.dmr.*;
  */
 public class Main {
 
-    private static final String VERSION="2.10.16";
+    private static final String VERSION="2.11.0";
 
     private static final HashSet<String> specialRules=new HashSet<String>();
 
@@ -57,7 +57,8 @@ public class Main {
         "  --nobatch               : Don't use batch mode of jboss-cli\n"+
         "  --redeploy              : Redeploy all apps\n"+
         "  --reconnect-delay=delay : Wait this many milliseconds after a :reload for the server to restart\n"+
-        "  --leavetmp              : Don't erase temp files";
+        "  --leavetmp              : Don't erase temp files\n"+
+        "  --pre=str               : Prepend str to all commands (can be used for domain mode support)";
 
     public static void println(int indent,String s) {
         for(int i=0;i<indent;i++)
@@ -136,6 +137,7 @@ public class Main {
         boolean batch=true;
         String reconnectDelay="20000";
         boolean leaveTmp=false;
+        String prepend=null;
 
         System.out.println("Jcliff version "+VERSION);
         for(int i=0;i<args.length;i++) {
@@ -151,6 +153,8 @@ public class Main {
                 log=true;
             else if(args[i].startsWith("--output="))
                 logOutput=args[i].substring("--output=".length());
+            else if(args[i].startsWith("--pre="))
+                prepend=args[i].substring("--pre=".length());
             else if(args[i].equals("--noop"))
                 noop=true;
             else if(args[i].equals("--json"))
@@ -180,6 +184,7 @@ public class Main {
         RuleSet rules=RuleSet.getRules(new RuleLoader(ruleDir),"rules");
         if(!files.isEmpty()) {
             Ctx ctx=new Ctx();
+            ctx.prepend=prepend;
             ctx.noop=noop;
             ctx.log=log;
             ctx.batch=batch;

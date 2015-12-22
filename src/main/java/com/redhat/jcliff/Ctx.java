@@ -50,6 +50,7 @@ public class Ctx {
     public long reconnectDelay=20000;
     public final List<String> cmdQueue=new ArrayList<String>();
     public boolean leaveTmp=false;
+    public String prepend=null;
 
     public void log(String s) {
         if(log)
@@ -65,6 +66,17 @@ public class Ctx {
         e.printStackTrace(out);
     }
 
+    public Script pre(Script script) {
+        if(prepend!=null) {
+            String[] cmds=script.getCmds();
+            String[] newCmds=new String[cmds.length];
+            for(int i=0;i<cmds.length;i++)
+                newCmds[i]=prepend+cmds[i];
+            return new Script(newCmds);
+        } else
+            return script;
+    }
+
     public ModelNode[] runcmd(Script cmds,Postprocessor p) {
         if(!noop) {
             Script run=cmds;
@@ -75,7 +87,7 @@ public class Ctx {
                     run.addToTail("run-batch");
                 }
             }
-            msg(run.toString());
+            msg(pre(run).toString());
 
             Script[] scripts=run.splitByReloads();
             List<ModelNode> ret=new ArrayList<ModelNode>();
@@ -84,9 +96,9 @@ public class Ctx {
                 String s;
                 // Deployment commands should run without time limit
                 if(x.hasDeployments())
-                    s=cli.run(x.getCmds(),0);
+                    s=cli.run(pre(x).getCmds(),0);
                 else
-                    s=cli.run(x.getCmds());
+                    s=cli.run(pre(x).getCmds());
                 if(!x.hasReload()) {
                     if(s==null)
                         throw new RuntimeException("Operation failed");
