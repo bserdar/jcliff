@@ -99,16 +99,18 @@ public class Main {
 
     private static class RuleLoader implements RuleSet.RuleAccessor {
         private final File ruleDir;
+        private final Ctx ctx;
 
-        public RuleLoader(String dir) {
-            System.out.println("Setting ruledir to:"+dir);
+        public RuleLoader(String dir,Ctx ctx) {
+            this.ctx=ctx;
+            ctx.log("Setting ruledir to:"+dir);
             ruleDir=new File(dir);
         }
 
         public Properties loadProperties(String name) {
             Properties p=new Properties();
             try {
-                System.out.println("Reading properties from file: " + new File(ruleDir,name).toString());
+                ctx.log("Reading properties from file: " + new File(ruleDir,name).toString());
                 InputStream stream=new FileInputStream(new File(ruleDir,name));
                 p.load(stream);
                 stream.close();
@@ -181,7 +183,6 @@ public class Main {
             else
                 files.add(args[i]);
         }
-        RuleSet rules=RuleSet.getRules(new RuleLoader(ruleDir),"rules");
         if(!files.isEmpty()) {
             Ctx ctx=new Ctx();
             ctx.prepend=prepend;
@@ -192,6 +193,7 @@ public class Main {
             ctx.reconnectDelay=Long.valueOf(reconnectDelay);
             if(logOutput!=null)
                 ctx.out=new PrintStream(new File(logOutput));
+            RuleSet rules=RuleSet.getRules(new RuleLoader(ruleDir,ctx),"rules");
             if ( waitport != 0 ) {
             Socket s = null;
             String host = controller.split(":")[0];
@@ -327,7 +329,7 @@ public class Main {
                         ctx.reloadConf();
             } catch (Exception t) {
                 ctx.error(t);
-                throw t;
+                System.exit(1);
             }
         } else
             System.out.println(HELP);
