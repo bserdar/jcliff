@@ -26,6 +26,10 @@ prefix.remove=remove:/
 remove.rule.1=/subsystem=ee${cmdpath(${path(.)})}:remove
 remove.refresh=true
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=ee${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 match.listAddGlobalModule=listAdd:/global-modules
 listAddGlobalModule.rule.1=/subsystem=ee:write-attribute(name=global-modules,value=${value(..)})
 listAddGlobalModule.refresh=true

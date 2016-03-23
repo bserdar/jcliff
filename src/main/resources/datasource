@@ -19,6 +19,10 @@ name=datasource
 getContents=/subsystem=datasources:read-children-resources(child-type=data-source)
 server.preprocess.prepend=/datasource
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=datasources${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 match.add=add:/datasource/*
 add.rule.1=data-source add --name=${name(.)} --jndi-name=${value(jndi-name)} --driver-name=${value(driver-name)} --connection-url=${value(connection-url)}
 add.rule.2=if result.value==false of /subsystem=datasources/datasource=${name(.)}:read-resource 

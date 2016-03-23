@@ -19,6 +19,10 @@ name=undertow
 getContents=/subsystem=undertow:read-resource(recursive=true)
 client.preprocess.strip=/undertow
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=undertow${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 match.rootLevelProps=modify:/*
 rootLevelProps.rule=/subsystem=undertow:write-attribute(name=${name(.)},value=${value(.)})
 

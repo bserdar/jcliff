@@ -26,6 +26,10 @@ prefix.remove=remove:/
 remove.rule.1=/subsystem=teiid${cmdpath(${path(.)})}:remove
 remove.refresh=true
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=teiid${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 
 match.addTransport=add:/transport/*
 addTransport.rule.1=/subsystem=teiid/transport=${name(.)}:add

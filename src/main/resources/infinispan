@@ -26,6 +26,10 @@ prefix.remove=remove:/
 remove.rule.1=/subsystem=infinispan${cmdpath(${path(.)})}:remove
 remove.refresh=true
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=infinispan${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 
 match.addCacheContainer=add:/cache-container/*
 addCacheContainer.precedence=10

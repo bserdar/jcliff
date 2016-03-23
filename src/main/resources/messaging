@@ -2,6 +2,10 @@ name=messaging
 getContents=/subsystem=messaging:read-resource(recursive=true)
 server.preprocess.prepend=/messaging
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=messaging${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 match.add=add:/messaging/hornetq-server/*
 add.rule=/subsystem=messaging/hornetq-server=${name(.)}:add
 add.refresh=true

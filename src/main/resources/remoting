@@ -19,6 +19,10 @@ name=remoting
 getContents=/subsystem=remoting:read-resource(recursive=true)
 client.preprocess.strip=/remoting
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=remoting${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 match.modProps=modify:/*
 modProps.rule=/subsystem=remoting:write-attribute(name=${name(.)},value=${value(.)})
 modProps.precedence=100

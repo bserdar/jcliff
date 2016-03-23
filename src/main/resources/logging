@@ -26,6 +26,10 @@ prefix.remove=remove:/
 remove.rule.1=/subsystem=logging${cmdpath(${path(.)})}:remove
 remove.refresh=true
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=logging${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 
 match.addFileHandler=add:/file-handler/*
 addFileHandler.precedence=50

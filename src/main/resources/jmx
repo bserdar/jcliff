@@ -19,6 +19,10 @@ name=jmx
 getContents=/subsystem=jmx:read-resource(recursive=true)
 client.preprocess.strip=/jmx
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=jmx${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 match.addConnector=add:/remoting-connector/*
 addConnector.rule.1=/subsystem=jmx/remoting-connector=${name}
 addConnector.refresh=true

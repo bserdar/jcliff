@@ -1,0 +1,30 @@
+{ "security" =>
+  {
+    "security-domain" => {
+      "abcd" => {
+        "cache-type" => "default",
+        "authentication" => {"jaspi" => {
+            "auth-modules" => [{
+                "code" => "com.example.abcd",
+                "flag" => "required",
+                "login-module-stack-ref" => "abcd-stack",
+                "module-options" => {
+                    "configuration_endpoint_url" => "https://example.com:443/abcd-service/",
+                    "client_id" => "2361933560598880824923619335605988808249",
+                    "client_secret" => "46325493924300150246",
+                }
+            }],
+            "login-module-stack" => {"abcd-stack" => {
+                "login-module" => {
+                   "Dummy" => {
+                    "code" => "Dummy",
+                    "flag" => "required",
+                    "module-options" => { "prop" => "value" }
+                    }
+                }
+            }}
+        }}
+      }
+    }
+  }
+}

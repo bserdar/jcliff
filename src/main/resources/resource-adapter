@@ -25,6 +25,10 @@ prefix.remove=remove:/
 remove.rule.1=/subsystem=resource-adapters${cmdpath(${path(.)})}:remove
 remove.refresh=true
 
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=resource-adapters${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
 
 #first add/modify/delete resource adapter, then enable it
 match.addAdapter=add:/resource-adapter/*

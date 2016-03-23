@@ -1,0 +1,10 @@
+{
+  "remoting" => {
+    "connector" => {
+       "remoting-connector" => {
+         "socket-binding" => "ajp",
+         "security-realm" => undefined
+       }
+    }
+  }
+}
