@@ -19,6 +19,10 @@ name=subsystem
 getContents=:read-children-resources(child-type=subsystem)
 server.preprocess.prepend=/subsystem
 
+match.addSubsystem=add:/subsystem/*
+addSubsystem.rule=/subsystem=${name(.)}:add
+addSubsystem.refresh=true
+
 match.delete=remove:/subsystem/*
 delete.rule=/subsystem=${name(.)}:remove
 delete.refresh=true

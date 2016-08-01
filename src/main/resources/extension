@@ -15,33 +15,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-configurable.1=system-properties
-configurable.2=path
-configurable.3=ee
-configurable.4=jmx
-configurable.5=naming
-configurable.6=threads
-configurable.7=logging
-configurable.8=jdbc-driver
-configurable.9=security
-configurable.10=datasource
-configurable.11=xadatasource
-configurable.12=standard-sockets
-configurable.13=security-realms
-configurable.14=web
-configurable.15=webservices
-configurable.16=jgroups
-configurable.17=infinispan
-configurable.18=scanner
-configurable.19=extension
-configurable.20=subsystem
-configurable.21=remoting
-configurable.22=osgi
-configurable.23=messaging
-configurable.24=mail
-configurable.25=ejb3
-configurable.26=resource-adapter
-configurable.27=transactions
-configurable.28=undertow
-configurable.29=teiid
-configurable.30=rbac
+name=extension
+getContents=/extension=:read-children-resources(child-type=extension)
+server.preprocess.prepend=/extension
+
+match.addExtension=add:/extension/*
+addExtension.rule.1=/extension=${name(.)}/:add(module=${name(.)})
+addExtension.rule.2=:reload
