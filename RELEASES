@@ -1,3 +1,6 @@
+v2.11.5:
+ - Add rules for subsystem/extension (jblashka)
+ - Fix #68: XA properties should be added later
 v2.11.3:
  - Add rules for undefine
 v2.11.2:
