@@ -35,7 +35,7 @@ addXAProperty.rule.2=:reload
 addXAProperty.rule.3=/subsystem=datasources/xa-data-source=${name(../..)}/xa-datasource-properties=${name(.)}:add(value=${value(value)})
 addXAProperty.rule.4=:reload
 addXAProperty.rule.5=xa-data-source enable --name=${name(../../..)}
-addXAProperty.precedence=10
+addXAProperty.precedence=70
 
 match.setXAProperty=modify:/xadatasource/*/xa-datasource-properties/*/value
 setXAProperty.rule.1=xa-data-source disable --name=${name(../../..)}
@@ -44,7 +44,7 @@ setXAProperty.rule.3=/subsystem=datasources/xa-data-source=${name(../../..)}/xa-
 setXAProperty.rule.4=/subsystem=datasources/xa-data-source=${name(../../..)}/xa-datasource-properties=${name(..)}:add(value=${value(.)})
 setXAProperty.rule.5=:reload
 setXAProperty.rule.6=xa-data-source enable --name=${name(../../..)}
-setXAProperty.precedence=10
+setXAProperty.precedence=70
 
 match.removeXAProperty=remove:/xadatasource/*/xa-datasource-properties/*
 removeXAProperty.rule.1=xa-data-source disable --name=${name(../..)}
