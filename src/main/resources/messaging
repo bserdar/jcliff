@@ -6,6 +6,11 @@ prefix.undefine=undefine:/
 undefine.rule.1=/subsystem=messaging${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
 undefine.refresh=true
 
+match.removeServer=remove:/messaging/*
+removeServer.rule.1=/subsystem=messaging/${name(.)}=default:remove
+removeServer.rule.2=:reload
+removeServer.refresh=true
+
 match.add=add:/messaging/hornetq-server/*
 add.rule=/subsystem=messaging/hornetq-server=${name(.)}:add
 add.refresh=true

@@ -1,3 +1,5 @@
+v2.11.6:
+ - Add rules for messaging server removal
 v2.11.5:
  - Add rules for subsystem/extension (jblashka)
  - Fix #68: XA properties should be added later
