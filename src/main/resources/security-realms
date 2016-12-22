@@ -83,6 +83,20 @@ removeAuthJaas.rule=/core-service=management/security-realm=${name(../..)}/authe
 removeAuthJaas.precedence=25
 removeAuthJaas.refresh=true
 
+match.addAuthTruststore=add:/*/authentication/truststore
+addAuthTruststore.rule=/core-service=management/security-realm=${name(../..)}/authentication=truststore:add(keystore-password=${value(keystore-password)})
+addAuthTruststore.precedence=40
+addAuthTruststore.refresh=true
+
+match.modifyAuthTruststore=modify:/*/authentication/truststore/*
+modifyAuthTruststore.rule=/core-service=management/security-realm=${name(../../..)}/authentication=truststore:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthTruststore.precedence=30
+
+match.removeAuthTruststore=remove:/*/authentication/truststore
+removeAuthTruststore.rule=/core-service=management/security-realm=${name(../..)}/authentication=truststore:remove
+removeAuthTruststore.precedence=25
+removeAuthTruststore.refresh=true
+
 match.addAuthorizationProperties=add:/*/authorization/properties
 addAuthorizationProperties.rule=/core-service=management/security-realm=${name(../..)}/authorization=${name(.)}:add(path=${value(path)})
 addAuthorizationProperties.precedence=30
@@ -97,3 +111,16 @@ removeAuthorizationProperties.rule=/core-service=management/security-realm=${nam
 removeAuthorizationProperties.precedence=25
 removeAuthorizationProperties.refresh=true
 
+match.addSslServerIdentity=add:/*/server-identity/ssl
+addSslServerIdentity.rule=/core-service=management/security-realm=${name(../..)}/server-identity=ssl:add(keystore-password=${value(keystore-password)})
+addSslServerIdentity.precedence=40
+addSslServerIdentity.refresh=true
+
+match.modifySslServerIdentity=modify:/*/server-identity/ssl/*
+modifySslServerIdentity.rule=/core-service=management/security-realm=${name(../../..)}/server-identity=ssl:write-attribute(name=${name(.)},value=${value(.)})
+modifySslServerIdentity.precedence=30
+
+match.removeSslServerIdentity=remove:/*/server-identity/ssl
+removeSslServerIdentity.rule=/core-service=management/security-realm=${name(../..)}/server-identity=ssl:remove
+removeSslServerIdentity.precedence=25
+removeSslServerIdentity.refresh=true
