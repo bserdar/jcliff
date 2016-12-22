@@ -97,3 +97,16 @@ removeAuthorizationProperties.rule=/core-service=management/security-realm=${nam
 removeAuthorizationProperties.precedence=25
 removeAuthorizationProperties.refresh=true
 
+match.addSslServerIdentity=add:/*/server-identity/ssl
+addSslServerIdentity.rule=/core-service=management/security-realm=${name(../..)}/server-identity=ssl:add(keystore-password=${value(keystore-password)})
+addSslServerIdentity.precedence=40
+addSslServerIdentity.refresh=true
+
+match.modifySslServerIdentity=modify:/*/server-identity/ssl/*
+modifySslServerIdentity.rule=/core-service=management/security-realm=${name(../../..)}/server-identity=ssl:write-attribute(name=${name(.)},value=${value(.)})
+modifySslServerIdentity.precedence=30
+
+match.removeSslServerIdentity=remove:/*/server-identity/ssl
+removeSslServerIdentity.rule=/core-service=management/security-realm=${name(../..)}/server-identity=ssl:remove
+removeSslServerIdentity.precedence=25
+removeSslServerIdentity.refresh=true
