@@ -208,7 +208,7 @@ http-listener_modify.rule=/subsystem=undertow/server=${name(../../..)}/http-list
 
 
 match.https-listener_add=add:/server/*/https-listener/*
-https-listener_add.rule=/subsystem=undertow/server=${name(../..)}/https-listener=${name(.)}:add(socket-binding=${value(socket-binding),security-realm(${value(security-realm)}}
+https-listener_add.rule=/subsystem=undertow/server=${name(../..)}/https-listener=${name(.)}:add(socket-binding=${value(socket-binding),security-realm=(${value(security-realm)})})
 https-listener_add.refresh=true
 https-listener_add.precedence=300
 
