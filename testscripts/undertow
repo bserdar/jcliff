@@ -2,6 +2,11 @@
   "undertow" => {
     "configuration" => {
       "filter" => {
+        "expression-filter" => {
+          "my-proxy-peer-address" => {
+            "expression" => "proxy-peer-address"
+          }
+        },
         "basic-auth" => { "basic_auth_test" => { "security-domain" => "test" } },
         "connection-limit" => { "conn_limit_test" => { "queue-size" => 100 } },
         "custom-filter" => { "test_custom_filter" => { "class-name" => "test.class", "module" => "test.module" } },
@@ -20,8 +25,17 @@
                        "filter-ref" => { "test-filter-ref" => { "predicate" => "Test" } }
                     }
         },
-        "http-listener" => { "default" => { "proxy-address-forwarding" => true }}
-       }
+        "http-listener" => { "default" => { "proxy-address-forwarding" => true }},
+        "https-listener" => {
+          "https-listener" => {
+            "security-realm"    => "SslRealm",
+            "socket-binding"    => "https",
+            "secure"            => "true",
+            "enabled-protocols" => "TLSv1.1,TLSv1.2",
+            "verify-client"     => "REQUIRED"
+          }
+        }
+      }
     }
   }
 }

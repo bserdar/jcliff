@@ -39,6 +39,19 @@ removeBufferCache.precedence=10
 match.modBufferCache=modify:/buffer-cache/*/*
 modBufferCache.rule=/subsystem=undertow/buffer-cache=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 
+match.filterConfig_ExpressionFilter_add=add:/configuration/filter/expression-filter/*
+filterConfig_ExpressionFilter_add.rule=/subsystem=undertow/configuration=filter/expression-filter=${name(.)}:add(expression=${value(expression)}
+filterConfig_ExpressionFilter_add.refresh=true
+filterConfig_ExpressionFilter_add.precedence=100
+
+match.filterConfig_ExpressionFilter_remove=remove:/configuration/filter/expression-filter/*
+filterConfig_ExpressionFilter_remove.rule=/subsystem=undertow/configuration=filter/expression-filter=${name(.)}:remove
+filterConfig_ExpressionFilter_remove.refresh=true
+filterConfig_ExpressionFilter_remove.precedence=100
+
+match.filterConfig_ExpressionFilter_modify=modify:/configuration/filter/expression-filter/*/*
+filterConfig_ExpressionFilter_modify.rule=/subsystem=undertow/configuration=filter/expression-filter=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+
 match.filterConfig_BasicAuth_add=add:/configuration/filter/basic-auth/*
 filterConfig_BasicAuth_add.rule=/subsystem=undertow/configuration=filter/basic-auth=${name(.)}:add(security-domain=${value(security-domain)}
 filterConfig_BasicAuth_add.refresh=true
