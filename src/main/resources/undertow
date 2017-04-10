@@ -234,6 +234,20 @@ match.https-listener_modify=modify:/server/*/https-listener/*/*
 https-listener_modify.rule=/subsystem=undertow/server=${name(../../..)}/https-listener=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
 
 
+match.access-log_add=add:/server/*/host/*/setting/access-log
+access-log_add.rule=/subsystem=undertow/server=${name(../../../..)}/host=${name(../..)}/setting=access-log:add()
+access-log_add.refresh=true
+access-log_add.precedence=300
+
+match.access-log_remove=remove:/server/*/host/*/setting/access-log
+access-log_remove.rule=/subsystem=undertow/server=${name(../../../..)}/host=${name(../..)}/setting=access-log:remove()
+access-log_remove.refresh=true
+access-log_remove.precedence=300
+
+match.access-log_modify=modify:/server/*/host/*/setting/access-log/*
+access-log_modify.rule=/subsystem=undertow/server=${name(../../../../..)}/host=${name(../../..)}/setting=access-log:write-attribute(name=${name(.)},value=${value(.)})
+
+
 match.servlet-container_add=add:/servlet-container/*
 servlet-container_add.rule=/subsystem=undertow/servlet-container=${name(.)}:add
 servlet-container_add.refresh=true
