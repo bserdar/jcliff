@@ -21,7 +21,7 @@ server.preprocess.prepend=/xadatasource
 
 
 match.add=add:/xadatasource/*
-add.rule.1=xa-data-source add --name=${name(.)} --jndi-name=${value(jndi-name)} --driver-name=${value(driver-name)} ${if-defined (xa-datasource-properties/URL),(--xa-datasource-properties=URL=${value(xa-datasource-properties/URL/value)})} ${if-defined (xa-datasource-properties/DatabaseName),(--xa-datasource-properties=DatabaseName=${value(xa-datasource-properties/DatabaseName/value)}}${if-defined (xa-datasource-properties/ServerName),(,{ServerName=${value(xa-datasource-properties/ServerName/value)}})}${if-defined (xa-datasource-properties/PortNumber),(,{PortNumber=${value(xa-datasource-properties/PortNumber/value)}}))}
+add.rule.1=xa-data-source add --name=${name(.)} --jndi-name=${value(jndi-name)} --driver-name=${value(driver-name)} ${if-defined (xa-datasource-properties/URL),(--xa-datasource-properties=URL=${value(xa-datasource-properties/URL/value)})} ${if-defined (xa-datasource-properties/DatabaseName),(--xa-datasource-properties=DatabaseName=${value(xa-datasource-properties/DatabaseName/value)})}${if-defined (xa-datasource-properties/ServerName),(,ServerName=${value(xa-datasource-properties/ServerName/value)})}${if-defined (xa-datasource-properties/PortNumber),(,PortNumber=${value(xa-datasource-properties/PortNumber/value)})}
 add.rule.2=if result.value==false of /subsystem=datasources/xa-datasource=${name(.)}:read-resource 
 add.rule.3=xa-data-source enable --name=${name(.)}
 add.rule.4=:reload

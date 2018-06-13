@@ -1,6 +1,8 @@
 { "xadatasource" => {
     "examplexa" => {
-            "xa-datasource-properties" => {"DatabaseName" => {"value" => "testValue"}},
+            "xa-datasource-properties" => {
+               "DatabaseName" => {"value" => "testValue"},
+               "PortNumber" => {"value" => "1234"} },
             "driver-name" => "h2",
             "enabled" => true,
             "jndi-name" => "java:jboss/datasources/examplexa",
