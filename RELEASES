@@ -1,3 +1,5 @@
+v2.11.12:
+ - Fix issue #75: web/.../access-log/setting/directory
 v2.11.11:
  - Fix issue #74: xa properties are not [{x},{y}], but x,y
 v2.11.6:

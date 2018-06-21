@@ -114,17 +114,28 @@ match.addSSOIgnore=add:/web/virtual-server/*/configuration/sso/*
 
 #access-log
 match.addAccessLog=add:/web/virtual-server/*/configuration/access-log
-addAccessLog.rule=/subsystem=web/virtual-server=${name(../..)}/access-log=configuration:add(pattern=${value(pattern)})
+addAccessLog.rule=/subsystem=web/virtual-server=${name(../..)}/configuration=access-log:add(pattern=${value(pattern)})
 addAccessLog.precedence=60
 addAccessLog.refresh=true
 
 match.modifyAccessLog=modify:/web/virtual-server/*/configuration/access-log/*
-modifyAccessLog.rule=/subsystem=web/virtual-server=${name(../../..)}/access-log=configuration:write-attribute(name=${name(.)},value=${value(.)})
+modifyAccessLog.rule=/subsystem=web/virtual-server=${name(../../..)}/configuration=access-log:write-attribute(name=${name(.)},value=${value(.)})
 modifyAccessLog.precedence=70
 
 match.removeAccessLog=remove:/web/virtual-server/*/configuration/access-log/*
-removeAccessLog.rule=subsystem=web/virtual-server=${name(../..)}/access-log=configuration:remove
+removeAccessLog.rule=subsystem=web/virtual-server=${name(../..)}/configuration=access-log:remove
 removeAccessLog.precedence=60
+
+#access-log/setting/directory
+match.addAccessLogSetting=add:/web/virtual-server/*/configuration/access-log/setting/directory
+addAccessLogSetting.rule=/subsystem=web/virtual-server=${name(../../../..)}/configuration=access-log/setting=directory:add
+addAccessLogSetting.precedence=61
+addAccessLogSetting.refresh=true
+
+match.modifyAccessLog=modify:/web/virtual-server/*/configuration/access-log/setting/directory/*
+modifyAccessLog.rule=/subsystem=web/virtual-server=${name(../../../../..)}/configuration=access-log/setting=directory:write-attribute(name=${name(.)},value=${value(.)})
+addAccessLogSetting.precedence=62
+
 
 #SSL
 match.addSSL=add:/web/connector/*/configuration/ssl/*

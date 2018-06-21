@@ -1,0 +1,17 @@
+{
+  "web" => {
+    "virtual-server" => {"default-host" => {
+      "configuration" => {"access-log" => {
+         "extended" => false,
+         "pattern" => "%a %t %H %p %U %s %D %I",
+         "prefix" => "access_log.",
+         "resolve-hosts" => false,
+         "rotate" => true,
+         "configuration" => {"directory" => {
+            "path" => ".",
+            "relative-to" => "jboss.server.log.dir"
+       }}
+    }}
+  }}
+ }
+}
