@@ -327,6 +327,11 @@ public class Main {
                 if(reload)
                     if(reloadRequired(ctx))
                         ctx.reloadConf();
+                // To allow external tool to notify Wfly if changes
+                // still requires a restart
+                if ( reloadRequired(ctx) )
+                    System.exit(2);
+
             } catch (Exception t) {
                 ctx.error(t);
                 System.exit(1);
