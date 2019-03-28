@@ -6,3 +6,7 @@ target/*
 *.war
 *.ear
 target
+# Eclipse IDE Files
+.classpath
+.project
+.settings/
