@@ -1,5 +1,4 @@
-#!/bin/sh
-
+#!/bin/bash
 #    Copyright 2013 Red Hat, Inc. and/or its affiliates.
 #
 #    This file is part of jcliff.
@@ -16,12 +15,28 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+set -euo pipefail
+readonly IFS=$'\n\t'
 
-DIRNAME=`dirname "$(test -L "$0" && readlink "$0" || echo "$0")"`
+readonly JBOSS_HOME=${JBOSS_HOME}
+readonly JCLIFF_HOME=${JCLIFF_HOME:-"$(pwd)"}
+readonly JBOSS_CONTROLLER_HOST=${JBOSS_CONTROLLER:-'localhost'}
+readonly JBOSS_CONTROLLER_PORT=${JBOSS_PORT:-'9990'}
+readonly JCLIFF_RULES_DIR=${JCLIFF_RULES_DIR:-"$(pwd)/src/main/resources/"}
 
-cp=""
-for f in $DIRNAME/*.jar ; do
-    cp="$f:$cp"
+if [ ! -d "${JBOSS_HOME}" ]; then
+  echo "The provided JBOSS_HOME is invalid: '${JBOSS_HOME}'."
+  exit 1
+fi
+
+CLASSPATH=$(echo "${JCLIFF_HOME}"/target/jcliff-*.jar)
+readonly dependencies_dir="${JCLIFF_HOME}/target/dependency/"
+for jar in ${dependencies_dir}/*.jar ; do
+    CLASSPATH="${jar}:${CLASSPATH}"
 done
 
-java -classpath $cp com.redhat.jcliff.Main --ruledir=$DIRNAME/rules $*
+java -classpath "${CLASSPATH}" 'com.redhat.jcliff.Main' \
+     --cli="${JBOSS_HOME}/bin/jboss-cli.sh" \
+     --controller="${JBOSS_CONTROLLER_HOST}:${JBOSS_CONTROLLER_PORT}" \
+     --ruledir="${JCLIFF_RULES_DIR}"     \
+     ${@}
