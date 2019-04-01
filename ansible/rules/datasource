@@ -1,0 +1,13 @@
+{ "datasource" => {
+    "MjolnirDS" => {
+            "pool-name" => "MjolnirDS",
+		    "use-java-context" => "true",
+			"connection-url" => "jdbc:postgresql://localhost:5432/mjolnir",
+            "driver-name" => "postgresql",
+            "enabled" => true,
+            "jndi-name" => "java:jboss/datasources/mjolnir/MjolnirDS",
+            "password" => "loki",
+            "user-name" => "hella"
+      }
+   }
+}

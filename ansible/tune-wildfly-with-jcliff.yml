@@ -1,0 +1,33 @@
+---
+  - name: "A Wildfly Playbook"
+    hosts: localhost
+    gather_facts: no
+    vars:
+      wfly_home: "/opt/wildfly/wildfly-16.0.0.Final/"
+      pgsql_module_dir: "{{ wfly_home }}//modules/org/postgresql/main"
+      jdbc_drive_url: https://repo.maven.apache.org/maven2/org/postgresql/postgresql/9.2-1002-jdbc4/postgresql-9.2-1002-jdbc4.jar
+    tasks:
+      - name: "Add JCliff Repo"
+        yum_repository:
+          name: jcliff
+          description: JCliff repository
+          baseurl: http://people.redhat.com/~rpelisse/jcliff.yum/
+          gpgcheck: 0
+
+      - name: "Ensure JCliff is installed"
+        yum:
+          name: jcliff
+          state: present
+
+      - name: "Tuning Wildfly using JCliff"
+        jcliff:
+          wfly_home: "{{ wfly_home }}"
+          rule_file: 'rules/driver rules/datasource rules/deployment'
+        notify: "Restart Wildfly Server"
+
+    handlers:
+      - name: "Restart Wildfly Server"
+        service:
+          name: wfly
+          state: restarted
+

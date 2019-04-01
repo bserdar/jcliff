@@ -1,0 +1,66 @@
+---
+  - name: "A Wildfly Playbook"
+    hosts: localhost
+    vars:
+      workdir: /opt/wildfly/
+      wlfy_zipfile: wildfly-16.0.0.Final.zip
+      wfly_download_url: https://download.jboss.org/wildfly/16.0.0.Final/{{ wlfy_zipfile }}
+      wildfly_home: "{{ workdir }}/wildfly-16.0.0.Final/"
+      pgsql_module_dir: "{{ wildfly_home }}//modules/org/postgresql/main"
+      jdbc_driver_filename: postgresql-9.2-1002-jdbc4.jar
+      jdbc_driver_url: https://repo.maven.apache.org/maven2/org/postgresql/postgresql/9.2-1002-jdbc4/{{ jdbc_driver_filename }}
+      jdbc_driver_path: "{{ pgsql_module_dir }}/{{ jdbc_driver_filename }}"
+      wildfly_user: rpelisse
+    tasks:
+      - name: "Ensures workdir '{{ workdir }}' is created"
+        file:
+          path: "{{ workdir }}"
+          state: directory
+
+      - name: "Download and unzip Wildfly zipfile from {{ wfly_download_url }}"
+        unarchive:
+          src: "{{ wfly_download_url }}"
+          dest: "{{ workdir }}"
+          owner: "{{ wildfly_user }}"
+          group: "{{ wildfly_user }}"
+          remote_src: yes
+          creates: "{{ workdir }}/{{ wlfy_zipfile }}"
+
+      - name: "Ensure Wildfly Postgres module directory tree is present: {{ pgsql_module_dir }}"
+        file:
+          path: "{{ pgsql_module_dir }}"
+          state: directory
+
+      - name: "Ensures Wildfly Postgres Driver is present: "
+        uri:
+          url: "{{ jdbc_driver_url }}"
+          dest: "{{ jdbc_driver_path }}"
+          creates: "{{ jdbc_driver_path }}"
+
+      - name: "Ensures Widlfy module for Postgres driver is present"
+        template:
+          src:  templates/pgsql-module.xml.j2
+          dest: "{{ pgsql_module_dir }}/module.xml"
+
+      - name: "Ensures Wildfly's service script are properly deployed"
+        copy:
+          src: "{{ wildfly_home }}/docs/contrib/scripts/init.d/wildfly-init-redhat.sh"
+          dest: /etc/init.d/wfly
+          mode: 0755
+          owner: "{{wildfly_user}}"
+          group: "{{wildfly_user}}"
+
+      - name: "Ensures Wildfly service system configuration is properly deployed"
+        template:
+          src: templates/etc_jboss.conf.j2
+          dest: /etc/default/wfly
+          mode: 0644
+          owner: "{{wildfly_user}}"
+          group: "{{wildfly_user}}"
+
+      - name: "Start Wildfly Server"
+        service:
+          name: wfly
+          state: started
+
+
