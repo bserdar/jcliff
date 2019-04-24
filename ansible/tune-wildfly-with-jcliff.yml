@@ -14,20 +14,31 @@
           baseurl: http://people.redhat.com/~rpelisse/jcliff.yum/
           gpgcheck: 0
 
-      - name: "Ensure JCliff is installed"
-        yum:
-          name: jcliff
-          state: present
+          #- name: "Ensure JCliff is installed"
+          #yum:
+          #name: jcliff
+          #state: present
 
       - name: "Tuning Wildfly using JCliff"
         jcliff:
           wfly_home: "{{ wfly_home }}"
-          rule_file: 'rules/driver rules/datasource rules/deployment'
-        notify: "Restart Wildfly Server"
+          #rule_file: 'rules/driver rules/deployment rules/undertow'
+          subsystems:
+            - datasources:
+              - name: PetStoreDS
+                jndi_name: 'java:jboss/datasources/PetStoreDS'
+                connection_url: 'jdbc:postgresql://petstoreds:5432/petstoredb'
+                driver_name: 'postgresql'
+            - system_props:
+              - name: myProp
+                value: myValue
+              - name: myProp2
+                value: myValue2
+ #        notify: "Restart Wildfly Server"
 
-    handlers:
-      - name: "Restart Wildfly Server"
-        service:
-          name: wfly
-          state: restarted
-
+#    handlers:
+#      - name: "Restart Wildfly Server"
+#        service:
+#          name: wfly
+#          state: restarted
+#

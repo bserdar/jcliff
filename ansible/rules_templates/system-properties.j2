@@ -1,0 +1,6 @@
+{ "system-property" => {
+  {% for item in values %}
+  "{{ item.name }}" => "{{ item.value }}",
+  {% endfor %}
+  }
+}

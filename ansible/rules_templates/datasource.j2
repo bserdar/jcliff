@@ -1,13 +1,13 @@
 { "datasource" => {
-    "{{ name }}" => {
-            "pool-name" => "{{ name }}",
-		    "use-java-context" => "true",
-			"connection-url" => "jdbc:postgresql://localhost:5432/mjolnir",
-            "driver-name" => "postgresql",
-            "enabled" => true,
-            "jndi-name" => "java:jboss/datasources/mjolnir/MjolnirDS",
-            "password" => "loki",
-            "user-name" => "ohchie8J"
-      }
+  "{{ values['name'] }}" => {
+    "pool-name" => "{{ values['jndi_name'] }}",
+    "use-java-context" => "{{ values['use_java_context'] }}",
+    "connection-url" => "{{ values['connection_url'] }}",
+    "driver-name" => "{{ values['driver_name'] }}",
+    "jndi-name" => "{{ values['jndi_name'] }}",
+    {% if values['password'] %} "password" => "{{ values['password'] }}", {% endif %}
+    {% if values['username'] %} "user-name" => "{{ values['user_name'] }}", {% endif %}
+    "enabled" => "{{ values['enabled'] }}"
    }
+ }
 }
