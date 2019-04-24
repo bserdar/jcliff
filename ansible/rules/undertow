@@ -1,0 +1,16 @@
+{ "undertow" =>
+  { "server" =>
+    { "default-server" =>
+      { "host" =>
+        { "default-host" => {
+            "setting" => {
+              "access-log" => {
+                "use-server-log" => "true",
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
