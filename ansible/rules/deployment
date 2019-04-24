@@ -1,7 +1,0 @@
-{ "deployments" => {
-    "simple-webapp-v1.war" => {
-     "NAME" => "simple-webapp-v1.war",
-     "path" => "/home/rpelisse/Repositories/contrib/simple-webapp.git/target/simple-webapp.war",
-     }
-  }
-}

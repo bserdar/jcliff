@@ -1,0 +1,9 @@
+{ "deployments" => {
+  {% for item in values %}
+    "{{ item['artifact_id'] }}" => {
+    {% if item['name'] %} "name" => "{{ item['name'] }}", {% else %} "name" => "{{ item['artifact_id'] }}", {% endif %}
+     "path" => "{{ item['path'] }}",
+     }
+  {% endfor %}
+  }
+}

@@ -51,6 +51,8 @@ def generateRuleFromTemplate(data,rulesdir):
           renderFromTemplate(rulesdir, 'datasource.j2', "datasource-" + ds['name'] + ".yml", ds)
       if subsys['system_props'] is not None:
         renderFromTemplate(rulesdir,'system-properties.j2', 'system-properties.yml', subsys['system_props'])
+      if subsys['deployments'] is not None:
+        renderFromTemplate(rulesdir,'deployments.j2', 'deployments.yml', subsys['deployments'])
 
 def listRuleFiles(rulesdir):
   rules_filename = os.listdir(rulesdir)
@@ -134,29 +136,17 @@ def main():
                     name=dict(type='str', required=False),
                     value=dict(type='str', required=False)
                     )
+                ),
+                deployments=dict(type='list', required=False, elements='dict', options=dict(
+                    artifact_id=dict(type='str', required=True),
+                    name=dict(type='str', required=False),
+                    path=dict(type='str', required=True)
+                    )
                 )
             )
          ),
          state=dict(default="present", choices=['present', 'absent'], type='str')
     )
-#    fields = {
-        #"jcliff_home": {"default": default_jcliff_home, "type": "str" },
-        #"jcliff": { "default": "/usr/bin/jcliff", "type": "str" },
-        #"rules_dir": {"default": default_jcliff_home + "/rules", "type": "str"},
-        #"wfly_home": {"required": True, "type": "str" },
-#        "management_host": {"default": 'localhost', "type": "str" },
-#        "management_port": {"default": '9990', "type": "str" },
-#        "rule_file": { "required": True, "type": "str" },
-#        "susbsytems": {
-#            { "datasource": { "required": False, "type": "str" }},
-#            { "system_props": { "required": False, "type": "str" }}
-#        },
-#        "state": {
-#            "default": "present",
-#            "choices": ['present', 'absent'],
-#            "type": 'str'
-#        },
-#    }
 
     module = AnsibleModule(argument_spec=fields)
     if os.environ.get("JCLIFF_HOME"):

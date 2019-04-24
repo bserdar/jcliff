@@ -34,6 +34,10 @@
                 value: myValue
               - name: myProp2
                 value: myValue2
+            - deployments:
+              - artifact_id: simple-webapp-v1.war
+                name: simple-webapp
+                path: /home/rpelisse/Repositories/contrib/simple-webapp.git/target/simple-webapp.war
  #        notify: "Restart Wildfly Server"
 
 #    handlers:
