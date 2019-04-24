@@ -24,6 +24,13 @@
           wfly_home: "{{ wfly_home }}"
           #rule_file: 'rules/driver rules/deployment rules/undertow'
           subsystems:
+            - drivers:
+              - driver_name: h2
+                driver_xa_datasource_class_name: org.h2.jdbcx.JdbcDataSource
+                driver_module_name: com.h2database.h2
+              - driver_name: postgresql
+                driver_module_name: org.postgresql
+                driver_xa_datasource_class_name: org.postgresql.xa.PGXADataSource
             - datasources:
               - name: PetStoreDS
                 jndi_name: 'java:jboss/datasources/PetStoreDS'

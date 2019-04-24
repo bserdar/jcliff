@@ -53,6 +53,9 @@ def generateRuleFromTemplate(data,rulesdir):
         renderFromTemplate(rulesdir,'system-properties.j2', 'system-properties.yml', subsys['system_props'])
       if subsys['deployments'] is not None:
         renderFromTemplate(rulesdir,'deployments.j2', 'deployments.yml', subsys['deployments'])
+      if subsys['drivers'] is not None:
+        for driver in subsys['drivers']:
+          renderFromTemplate(rulesdir,'drivers.j2', "drivers-" + driver['driver_name'] + ".yml", driver)
 
 def listRuleFiles(rulesdir):
   rules_filename = os.listdir(rulesdir)
@@ -115,6 +118,15 @@ def main():
          rule_file=dict(required=False, type='str'),
          subsystems=dict(type='list', required=False, elements='dict',
             options=dict(
+                drivers=dict(type='list', required=False, elements='dict', options=dict(
+                    driver_name=dict(type='str', required=True),
+                    driver_module_name=dict(type='str', required=True),
+                    driver_xa_datasource_class_name=dict(type='str', default='undefined'),
+                    driver_class_name=dict(type='str', default='undefined'),
+                    driver_datasource_class_name=dict(type='str', default='undefined'),
+                    module_slot=dict(type='str', default='undefined'),
+                    )
+                ),
                 datasources=dict(type='list', required=False, elements='dict', options=dict(
                     name=dict(type='str', required=True),
                     jndi_name=dict(type='str', required=True),
