@@ -5,12 +5,22 @@
       workdir: /opt/wildfly/
       wlfy_zipfile: wildfly-16.0.0.Final.zip
       wfly_download_url: https://download.jboss.org/wildfly/16.0.0.Final/{{ wlfy_zipfile }}
-      wildfly_home: "{{ workdir }}/wildfly-16.0.0.Final/"
-      pgsql_module_dir: "{{ wildfly_home }}//modules/org/postgresql/main"
+      wildfly:
+        home: "{{ workdir }}/wildfly-16.0.0.Final/"
+        user: rpelisse
+        min_mem: 64m
+        max_mem: 512m
+        metaspace_size: 96m
+        metaspace_maxsize: 256m
+        #gc_log: true
+        #debug:
+        #  suspend: y
+        #  port 8787
+      pgsql_module_dir: "{{ wildfly.home }}//modules/org/postgresql/main"
       jdbc_driver_filename: postgresql-9.2-1002-jdbc4.jar
       jdbc_driver_url: https://repo.maven.apache.org/maven2/org/postgresql/postgresql/9.2-1002-jdbc4/{{ jdbc_driver_filename }}
       jdbc_driver_path: "{{ pgsql_module_dir }}/{{ jdbc_driver_filename }}"
-      wildfly_user: rpelisse
+
     tasks:
       - name: "Ensures workdir '{{ workdir }}' is created"
         file:
@@ -21,8 +31,8 @@
         unarchive:
           src: "{{ wfly_download_url }}"
           dest: "{{ workdir }}"
-          owner: "{{ wildfly_user }}"
-          group: "{{ wildfly_user }}"
+          owner: "{{ wildfly.user }}"
+          group: "{{ wildfly.user }}"
           remote_src: yes
           creates: "{{ workdir }}/{{ wlfy_zipfile }}"
 
@@ -44,19 +54,19 @@
 
       - name: "Ensures Wildfly's service script are properly deployed"
         copy:
-          src: "{{ wildfly_home }}/docs/contrib/scripts/init.d/wildfly-init-redhat.sh"
+          src: "{{ wildfly.home }}/docs/contrib/scripts/init.d/wildfly-init-redhat.sh"
           dest: /etc/init.d/wfly
           mode: 0755
-          owner: "{{wildfly_user}}"
-          group: "{{wildfly_user}}"
+          owner: "{{wildfly.user}}"
+          group: "{{wildfly.user}}"
 
       - name: "Ensures Wildfly service system configuration is properly deployed"
         template:
           src: templates/etc_jboss.conf.j2
           dest: /etc/default/wfly
           mode: 0644
-          owner: "{{wildfly_user}}"
-          group: "{{wildfly_user}}"
+          owner: "{{wildfly.user}}"
+          group: "{{wildfly.user}}"
 
       - name: "Start Wildfly Server"
         service:

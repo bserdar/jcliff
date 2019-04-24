@@ -1,2 +1,9 @@
-JBOSS_USER={{ wildfly_user }}
-JBOSS_HOME={{ wildfly_home }}
+JBOSS_USER={{ wildfly.user }}
+JBOSS_HOME={{ wildfly.home }}
+JAVA_OPTS="-Xms{{ wildfly.min_mem }} -Xmx{{ wildfly.max_mem }} -XX:MetaspaceSize={{ wildfly.metaspace_size }} -XX:MaxMetaspaceSize={{ wildfly.metaspace_maxsize }}"
+{% if wildfly.gc_log is defined %}
+JAVA_OPTS="${JAVA_OPTS} -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
+{% endif %}
+{% if wildfly.debug is defined %}
+JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address={{ wildfly.debug.port }},server=y,suspend={{ wildfly.debug.suspend }}"
+{% endif %}
