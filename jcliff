@@ -23,6 +23,13 @@ readonly JCLIFF_HOME=${JCLIFF_HOME:-"$(pwd)"}
 readonly JBOSS_CONTROLLER_HOST=${JBOSS_CONTROLLER:-'localhost'}
 readonly JBOSS_CONTROLLER_PORT=${JBOSS_PORT:-'9990'}
 readonly JCLIFF_RULES_DIR=${JCLIFF_RULES_DIR:-"$(pwd)/src/main/resources/"}
+readonly JAVA_HOME=${JAVA_HOME:-''}
+
+if [ ! -z "${JAVA_HOME}" ]; then
+  JAVA=${JAVA_HOME}/bin/java
+else
+  JAVA=$(which java)
+fi
 
 if [ ! -d "${JBOSS_HOME}" ]; then
   echo "The provided JBOSS_HOME is invalid: '${JBOSS_HOME}'."
@@ -35,8 +42,8 @@ for jar in ${dependencies_dir}/*.jar ; do
     CLASSPATH="${jar}:${CLASSPATH}"
 done
 
-java -classpath "${CLASSPATH}" 'com.redhat.jcliff.Main' \
-     --cli="${JBOSS_HOME}/bin/jboss-cli.sh" \
-     --controller="${JBOSS_CONTROLLER_HOST}:${JBOSS_CONTROLLER_PORT}" \
-     --ruledir="${JCLIFF_RULES_DIR}"     \
-     ${@}
+"${JAVA}" -classpath "${CLASSPATH}" 'com.redhat.jcliff.Main' \
+          --cli="${JBOSS_HOME}/bin/jboss-cli.sh" \
+          --controller="${JBOSS_CONTROLLER_HOST}:${JBOSS_CONTROLLER_PORT}" \
+          --ruledir="${JCLIFF_RULES_DIR}"     \
+          ${@}
