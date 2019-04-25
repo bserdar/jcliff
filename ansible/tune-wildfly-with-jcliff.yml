@@ -14,10 +14,10 @@
           baseurl: http://people.redhat.com/~rpelisse/jcliff.yum/
           gpgcheck: 0
 
-          #- name: "Ensure JCliff is installed"
-          #yum:
-          #name: jcliff
-          #state: present
+      - name: "Ensure JCliff is installed"
+        yum:
+          name: jcliff
+          state: present
 
       - name: "Tuning Wildfly using JCliff"
         jcliff:

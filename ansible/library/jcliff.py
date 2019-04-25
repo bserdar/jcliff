@@ -66,6 +66,10 @@ def listRuleFiles(rulesdir):
 
 def executeRulesWithJCliff(data,rulesdir):
   jcliff_command_line = [data["jcliff"], "--cli=" + data['wfly_home'] + "/bin/jboss-cli.sh", "--ruledir=" + data['rules_dir'], "--controller=" + data['management_host'] + ":" + data['management_port'], "-v"]
+  if data["management_username"] is not None:
+    jcliff_command_line.extend(["--user=" + data["management_username"]])
+  if data["management_password"] is not None:
+    jcliff_command_line.extend(["--password=" + data["management_password"]])
   jcliff_command_line.extend(listRuleFiles(rulesdir))
   output = None
   try:
@@ -111,6 +115,8 @@ def main():
     fields = dict(
          jcliff_home=dict(type='str', default=default_jcliff_home),
          jcliff=dict(default='/usr/bin/jcliff', type='str'),
+         management_username=dict(required=False, type='str'),
+         management_password=dict(required=False, type='str'),
          rules_dir=dict(type='str', default=default_jcliff_home + "/rules"),
          wfly_home=dict(required=True, type='str'),
          management_host=dict(default='localhost', type='str'),
