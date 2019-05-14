@@ -1,0 +1,6 @@
+{ "system-property" => {
+    "cacheName => "github-cache",
+    "cacheSize => "20",
+    "java.util.logging.manager => "org.jboss.logmanager.LogManager"
+  }
+}

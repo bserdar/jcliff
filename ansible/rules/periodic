@@ -1,0 +1,13 @@
+{ "logging" => {
+    "periodic-size-rotating-file-handler" => {
+        "FILE" => {
+            "name" => "FILE",
+            "path" => "server.log",
+            "autoflush" => "true",
+            "rotate-on-boot" =>"true",
+            "rotate-size" => "1G",
+            "max-backup-index" => "31"
+            }
+        }
+    }
+}

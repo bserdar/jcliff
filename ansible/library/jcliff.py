@@ -102,7 +102,7 @@ def jcliff_present(data):
   print("Executing JCliff:")
   meta = executeRulesWithJCliff(data, rulesdir)
   has_changed = True
-  #shutil.rmtree(rulesdir)
+  #shutil.rmtree(rulesdir)name=name)
   return (has_changed, meta)
 
 def jcliff_absent(data=None):

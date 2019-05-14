@@ -23,6 +23,7 @@ readonly JCLIFF_HOME=${JCLIFF_HOME:-"$(pwd)"}
 readonly JBOSS_CONTROLLER_HOST=${JBOSS_CONTROLLER:-'localhost'}
 readonly JBOSS_CONTROLLER_PORT=${JBOSS_PORT:-'9990'}
 readonly JCLIFF_RULES_DIR=${JCLIFF_RULES_DIR:-"$(pwd)/src/main/resources/"}
+
 readonly JAVA_HOME=${JAVA_HOME:-''}
 
 if [ ! -z "${JAVA_HOME}" ]; then
