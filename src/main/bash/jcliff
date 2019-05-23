@@ -1,0 +1,67 @@
+#!/bin/bash
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+set -euo pipefail
+readonly IFS=$'\n\t'
+
+readonly JBOSS_HOME=${JBOSS_HOME:-''}
+if [ -z "${JBOSS_HOME}" ]; then
+  echo 'No JBOSS_HOME provided, aborting...'
+  exit 1
+fi
+
+readonly JCLIFF_HOME=${JCLIFF_HOME:-'/usr/share/jcliff-2.11.13'}
+if [ ! -d "${JCLIFF_HOME}" ]; then
+  echo "Provided JCLIFF_HOME is NOT a directory or does not exist: ${JCLIFF_HOME}."
+  exit 2
+fi
+
+readonly JBOSS_CONTROLLER_HOST=${JBOSS_CONTROLLER_HOST:-''}
+readonly JBOSS_CONTROLLER_PORT=${JBOSS_CONTROLLER_PORT:-''}
+readonly JBOSS_CONTROLLER="${JBOSS_CONTROLLER_HOST}:${JBOSS_CONTROLLER_PORT}"
+if [ "${JBOSS_CONTROLLER}" != ':' ] ; then
+  readonly CONTROLLER="--controller=${JBOSS_CONTROLLER}"
+else
+  readonly CONTROLLER=''
+fi
+
+readonly JBOSS_CLI_TIMEOUT=${JBOSS_CLI_TIMEOUT:-'30000'}
+readonly JCLIFF_RULES_DIR=${JCLIFF_RULES_DIR:-"${JCLIFF_HOME}/rules/"}
+readonly JAVA_HOME=${JAVA_HOME:-''}
+
+if [ ! -z "${JAVA_HOME}" ]; then
+  JAVA=${JAVA_HOME}/bin/java
+else
+  JAVA=$(which java)
+fi
+
+if [ ! -e "${JAVA}" ]; then
+  echo "Invalid path to Java executable: ${JAVA}."
+  exit 3
+fi
+
+CLASSPATH=${CLASSPATH:-''}
+readonly JCLIFF_DEPS_DIR=${JCLIFF_DEPS_DIR:-${JCLIFF_HOME}}
+for jar in ${JCLIFF_DEPS_DIR}/*.jar ; do
+    CLASSPATH="${jar}:${CLASSPATH}"
+done
+
+"${JAVA}" -classpath "${CLASSPATH}" 'com.redhat.jcliff.Main' \
+          --cli="${JBOSS_HOME}/bin/jboss-cli.sh" ${CONTROLLER} \
+          --timeout="${JBOSS_CLI_TIMEOUT}" \
+          --ruledir="${JCLIFF_RULES_DIR}"     \
+          ${@}

@@ -196,8 +196,9 @@
               <directory>/usr/share/jcliff-${project.version}</directory>
               <filemode>755</filemode>
               <sources>
-                <source>
-                  <location>jcliff</location>
+                  <source>
+                    <destination>jcliff</destination>
+                    <location>src/main/bash/jcliff</location>
                 </source>
               </sources>
             </mapping>
