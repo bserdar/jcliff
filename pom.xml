@@ -203,6 +203,16 @@
               </sources>
             </mapping>
             <mapping>
+              <directory>/usr/share/</directory>
+              <filemode>755</filemode>
+              <sources>
+                  <softlinkSource>
+                    <destination>jcliff</destination>
+                    <location>/usr/share/jcliff-${project.version}</location>
+                </softlinkSource>
+              </sources>
+            </mapping>
+            <mapping>
               <directory>/usr/bin</directory>
               <sources>
                  <softlinkSource>
