@@ -1,3 +1,12 @@
+v2.12.0:
+- Creates a symlink /usr/share/jcliff so that tools using JCLiff does not need to hard the version number in their configuration
+- Move jcliff script to src/main/bash
+- Enhance jcliff script to allow overriding the JVM used to run jcliff
+- Rework jcliff module to support subsystems, which allow to configure subsystem directly into Ansible, rather than using JCliff rules files.
+- First draft of an Ansible module for jcliff
+- Rework jcliff to be cleaner and more resilient
+v2.11.13:
+ - Change jcliff script to return status 2 if the jbossas needs to be reloaded
 v2.11.12:
  - Fix issue #75: web/.../access-log/setting/directory
 v2.11.11:
