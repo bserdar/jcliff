@@ -1,3 +1,5 @@
+v2.12.1:
+ - Minor fix, add jcliff script to tar
 v2.12.0:
 - Creates a symlink /usr/share/jcliff so that tools using JCLiff does not need to hard the version number in their configuration
 - Move jcliff script to src/main/bash

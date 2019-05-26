@@ -11,7 +11,13 @@
               <include>README*</include>
               <include>COPYING*</include>
               <include>INSTALL**</include>
-              <include>jcliff</include>
+          </includes>
+        </fileSet>
+        <fileSet>
+          <directory>${project.basedir}/src/main/bash</directory>
+          <outputDirectory>/</outputDirectory>
+          <includes>
+            <include>jcliff</include>
           </includes>
         </fileSet>
         <fileSet>
