@@ -20,7 +20,7 @@ getContents=/subsystem=datasources:read-children-resources(child-type=jdbc-drive
 server.preprocess.prepend=/jdbc-driver
 
 match.addDriver=add:/jdbc-driver/*
-addDriver.rule.1=/subsystem=datasources/jdbc-driver=${name(.)}:add(driver-name=${value(driver-name)},driver-module-name=${value(driver-module-name)},driver-xa-datasource-class-name=${value(driver-xa-datasource-class-name)} ${if-defined (module-slot),(,module-slot=${value(module-slot)})} ${if-defined (driver-class-name),(,driver-class-name=${value(driver-class-name)})})
+addDriver.rule.1=/subsystem=datasources/jdbc-driver=${name(.)}:add(driver-name=${value(driver-name)},driver-module-name=${value(driver-module-name)},${if-defined (driver-xa-datasource-class-name),(,driver-xa-datasource-class-name=${value(driver-xa-datasource-class-name)})} ${if-defined (module-slot),(,module-slot=${value(module-slot)})} ${if-defined (driver-class-name),(,driver-class-name=${value(driver-class-name)})})
 addDriver.rule.2=:reload
 
 match.removeDriver=remove:/jdbc-driver/*
