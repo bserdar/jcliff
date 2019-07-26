@@ -25,4 +25,4 @@ export CLASSPATH=$(echo "${JCLIFF_HOME}"/target/jcliff-*.jar)
 export JCLIFF_RULES_DIR=${JCLIFF_RULES_DIR:-'./src/main/resources'}
 export JCLIFF_DEPS_DIR=${JCLIFF_DEPS_DIR:-'./target/dependency/'}
 
-./src/main/bash/jcliff ${@}
+./src/main/scripts/jcliff ${@}

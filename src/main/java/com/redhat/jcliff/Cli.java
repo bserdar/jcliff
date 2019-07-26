@@ -37,6 +37,7 @@ public class Cli {
     private final String password;
     private final String timeout;
     private final Ctx ctx;
+    private final Boolean isWindows;
 
     public Cli(String cli,
                String controller,
@@ -50,6 +51,7 @@ public class Cli {
         this.password=password;
         this.timeout=timeout;
         this.ctx=ctx;
+        this.isWindows=isWindows();
     }
 
     public String run(String command) {
@@ -162,12 +164,23 @@ public class Cli {
                 for(String x:cmdArray)
                     buf.append(x).append(' ');
                 FileWriter scw=new FileWriter(scriptFile);
+                if(isWindows) {
+                    scw.write("set NOPAUSE=true &&");
+                }
                 scw.write(buf.toString()+">"+outFile.getAbsolutePath()+" 2>"+errFile.getAbsolutePath());
                 scw.flush();
                 ctx.log("Script file:"+scriptFile.getAbsolutePath()+" "+scriptFile.exists());
                 ctx.log("In file:"+tempFile.getAbsolutePath()+" "+tempFile.exists());
 
-                int returnCode=runAndWait(new String[] {"/bin/sh",scriptFile.getAbsolutePath()},execTimeout);
+                String[] runAndWaitArgs = null;
+
+                if(isWindows) {
+                    runAndWaitArgs = new String[]{String.format("cmd.exe", "/c", "FOR /F 'Tokens=*' %%A IN ('type %s') DO call %%~A", scriptFile.getAbsolutePath())};
+                } else {
+                    runAndWaitArgs = new String[] {"/bin/sh",scriptFile.getAbsolutePath()};
+                }
+
+                int returnCode=runAndWait(runAndWaitArgs, execTimeout);
 
 
                     
@@ -204,5 +217,9 @@ public class Cli {
             buf.append((char)i);
         r.close();
         return buf.toString().trim();
+    }
+
+    private Boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
     }
 }
