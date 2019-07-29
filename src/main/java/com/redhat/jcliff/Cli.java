@@ -18,11 +18,9 @@
 */
 package com.redhat.jcliff;
 
-import java.io.InputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -91,7 +89,6 @@ public class Cli {
         Exec x=new Exec(args);
         x.start();
         x.join(timeout);
-
         if(x.isAlive())
             throw new RuntimeException ("Timeout while waiting for child process to complete");
         if(x.exception!=null)
@@ -150,6 +147,7 @@ public class Cli {
                     writer.write('\n');
                 }
                 writer.flush();
+                writer.close();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -164,20 +162,21 @@ public class Cli {
                 for(String x:cmdArray)
                     buf.append(x).append(' ');
                 FileWriter scw=new FileWriter(scriptFile);
-                if(isWindows) {
-                    scw.write("set NOPAUSE=true &&");
-                }
-                scw.write(buf.toString()+">"+outFile.getAbsolutePath()+" 2>"+errFile.getAbsolutePath());
+                buf.append(">"+outFile.getAbsolutePath());
+                buf.append(" ");
+                buf.append("2>"+errFile.getAbsolutePath());
                 scw.flush();
+                scw.write(buf.toString());
+                scw.close();
                 ctx.log("Script file:"+scriptFile.getAbsolutePath()+" "+scriptFile.exists());
                 ctx.log("In file:"+tempFile.getAbsolutePath()+" "+tempFile.exists());
 
                 String[] runAndWaitArgs = null;
 
                 if(isWindows) {
-                    runAndWaitArgs = new String[]{String.format("cmd.exe", "/c", "FOR /F 'Tokens=*' %%A IN ('type %s') DO call %%~A", scriptFile.getAbsolutePath())};
+                    runAndWaitArgs = new String[]{"cmd.exe", "/c", buf.toString()};
                 } else {
-                    runAndWaitArgs = new String[] {"/bin/sh",scriptFile.getAbsolutePath()};
+                    runAndWaitArgs = new String[] {"/bin/sh","-c", buf.toString()};
                 }
 
                 int returnCode=runAndWait(runAndWaitArgs, execTimeout);
