@@ -29,7 +29,7 @@ import org.jboss.dmr.*;
  */
 public class Main {
 
-    private static final String VERSION="2.12.2";
+    private static final String VERSION="2.12.3";
 
     private static final HashSet<String> specialRules=new HashSet<String>();
 
