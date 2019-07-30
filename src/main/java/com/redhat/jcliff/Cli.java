@@ -18,11 +18,9 @@
 */
 package com.redhat.jcliff;
 
-import java.io.InputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -37,6 +35,7 @@ public class Cli {
     private final String password;
     private final String timeout;
     private final Ctx ctx;
+    private final Boolean isWindows;
 
     public Cli(String cli,
                String controller,
@@ -50,6 +49,7 @@ public class Cli {
         this.password=password;
         this.timeout=timeout;
         this.ctx=ctx;
+        this.isWindows=isWindows();
     }
 
     public String run(String command) {
@@ -89,7 +89,6 @@ public class Cli {
         Exec x=new Exec(args);
         x.start();
         x.join(timeout);
-
         if(x.isAlive())
             throw new RuntimeException ("Timeout while waiting for child process to complete");
         if(x.exception!=null)
@@ -148,6 +147,7 @@ public class Cli {
                     writer.write('\n');
                 }
                 writer.flush();
+                writer.close();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -162,12 +162,24 @@ public class Cli {
                 for(String x:cmdArray)
                     buf.append(x).append(' ');
                 FileWriter scw=new FileWriter(scriptFile);
-                scw.write(buf.toString()+">"+outFile.getAbsolutePath()+" 2>"+errFile.getAbsolutePath());
+                buf.append(">"+outFile.getAbsolutePath());
+                buf.append(" ");
+                buf.append("2>"+errFile.getAbsolutePath());
                 scw.flush();
+                scw.write(buf.toString());
+                scw.close();
                 ctx.log("Script file:"+scriptFile.getAbsolutePath()+" "+scriptFile.exists());
                 ctx.log("In file:"+tempFile.getAbsolutePath()+" "+tempFile.exists());
 
-                int returnCode=runAndWait(new String[] {"/bin/sh",scriptFile.getAbsolutePath()},execTimeout);
+                String[] runAndWaitArgs = null;
+
+                if(isWindows) {
+                    runAndWaitArgs = new String[]{"cmd.exe", "/c", buf.toString()};
+                } else {
+                    runAndWaitArgs = new String[] {"/bin/sh","-c", buf.toString()};
+                }
+
+                int returnCode=runAndWait(runAndWaitArgs, execTimeout);
 
 
                     
@@ -204,5 +216,9 @@ public class Cli {
             buf.append((char)i);
         r.close();
         return buf.toString().trim();
+    }
+
+    private Boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
     }
 }

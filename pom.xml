@@ -198,7 +198,7 @@
               <sources>
                   <source>
                     <destination>jcliff</destination>
-                    <location>src/main/bash/jcliff</location>
+                    <location>src/main/scripts/jcliff</location>
                 </source>
               </sources>
             </mapping>
