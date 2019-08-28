@@ -135,7 +135,7 @@ filterConfig_ResponseHeader_modify.rule=/subsystem=undertow/configuration=filter
 
 
 match.handlerConfig_file_add=add:/configuration/handler/file/*
-handlerConfig_file_add.rule=/subsystem=undertow/configuration=handler/file=${name(.)}:add
+handlerConfig_file_add.rule=/subsystem=undertow/configuration=handler/file=${name(.)}:add(path=${value(path)} ${if-defined (directory-listing),(,directory-listing=${value(directory-listing)})})
 handlerConfig_file_add.refresh=true
 handlerConfig_file_add.precedence=100
 
