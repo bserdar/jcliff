@@ -24,7 +24,7 @@ if [ -z "${JBOSS_HOME}" ]; then
   exit 1
 fi
 
-readonly JCLIFF_HOME=${JCLIFF_HOME:-'/usr/share/jcliff-2.11.13'}
+readonly JCLIFF_HOME=${JCLIFF_HOME:-'/usr/share/jcliff'}
 if [ ! -d "${JCLIFF_HOME}" ]; then
   echo "Provided JCLIFF_HOME is NOT a directory or does not exist: ${JCLIFF_HOME}."
   exit 2
