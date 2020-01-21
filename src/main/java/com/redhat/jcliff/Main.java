@@ -59,6 +59,7 @@ public class Main {
         "  --reconnect-delay=delay : Wait this many milliseconds after a :reload for the server to restart\n"+
         "  --leavetmp              : Don't erase temp files\n"+
         "  --pre=str               : Prepend str to all commands (can be used for domain mode support)";
+    private static int USAGE_INFO_DISPLAYED_EXIT_CODE = 3;
 
     public static void println(int indent,String s) {
         for(int i=0;i<indent;i++)
@@ -338,6 +339,7 @@ public class Main {
             }
         } else
             System.out.println(HELP);
+            System.exit(USAGE_INFO_DISPLAYED_EXIT_CODE);
     }
 
 
