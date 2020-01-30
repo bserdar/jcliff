@@ -272,9 +272,9 @@ public class Main {
                     if(reload)
                         if(reloadRequired(ctx))
                             ctx.reloadConf();
-                    
+
                 }
-                
+
                 // Deal with deployments
                 ctx.log("Processing deployments");
                 ctx.batch=false; // Don't batch them
@@ -323,6 +323,7 @@ public class Main {
                     if(names.length>0)
                         deployment.undeploy(names);
                 }
+                ctx.log("Server configuration changed: " + ctx.cmdQueueProcessed);
 
                 if(reload)
                     if(reloadRequired(ctx))
