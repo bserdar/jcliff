@@ -51,6 +51,7 @@ public class Ctx {
     public final List<String> cmdQueue=new ArrayList<String>();
     public boolean leaveTmp=false;
     public String prepend=null;
+    public boolean cmdQueueProcessed=false;
 
     public void log(String s) {
         if(log)
@@ -141,6 +142,7 @@ public class Ctx {
 
     public ModelNode[] runQueuedCmds(Postprocessor p) {
         if(!cmdQueue.isEmpty()) {
+            this.cmdQueueProcessed = true;
             ModelNode[] ret=runcmd(getQueuedCmds(),p);
             cmdQueue.clear();
             return ret;
