@@ -60,7 +60,12 @@ for jar in ${JCLIFF_DEPS_DIR}/*.jar ; do
     CLASSPATH="${jar}:${CLASSPATH}"
 done
 
-"${JAVA}" -classpath "${CLASSPATH}" 'com.redhat.jcliff.Main' \
+JAVA_ARGS=${JAVA_ARGS:-''}
+# uncomment to enable debugging:
+#JAVA_ARGS="$JAVA_ARGS -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+
+"${JAVA}" $JAVA_ARGS \
+          -classpath "${CLASSPATH}" 'com.redhat.jcliff.Main' \
           --cli="${JBOSS_HOME}/bin/jboss-cli.sh" ${CONTROLLER} \
           --timeout="${JBOSS_CLI_TIMEOUT}" \
           --ruledir="${JCLIFF_RULES_DIR}"     \

@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 name=extension
-getContents=/extension=:read-children-resources(child-type=extension)
+getContents=:read-children-resources(child-type=extension)
 server.preprocess.prepend=/extension
 
 match.addExtension=add:/extension/*
