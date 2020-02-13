@@ -18,6 +18,7 @@
 set -euo pipefail
 readonly IFS=$'\n\t'
 
+readonly JCLIFF_DEBUG=${JCLIFF_DEBUG:-''}
 readonly JBOSS_HOME=${JBOSS_HOME:-''}
 if [ -z "${JBOSS_HOME}" ]; then
   echo 'No JBOSS_HOME provided, aborting...'
@@ -61,8 +62,9 @@ for jar in ${JCLIFF_DEPS_DIR}/*.jar ; do
 done
 
 JAVA_ARGS=${JAVA_ARGS:-''}
-# uncomment to enable debugging:
-#JAVA_ARGS="$JAVA_ARGS -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+if [ -n "${JCLIFF_DEBUG}" ]; then
+  JAVA_ARGS="${JAVA_ARGS} -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+fi
 
 "${JAVA}" $JAVA_ARGS \
           -classpath "${CLASSPATH}" 'com.redhat.jcliff.Main' \
