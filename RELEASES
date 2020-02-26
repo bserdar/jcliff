@@ -1,5 +1,16 @@
+v2.12.5:
+- if usage is invoked, exit code should not be zero
+- add JCLIFF_DEBUG parameters to allow debugging JCLIFF without editing the jcliff script
+- fix extension lookup
+- report when JCliff has apply change
+v2.12.4:
+- fix jcliff default home to /usr/share/jcliff
+- fix undertow file handler add
+- added license file
+v2.13.3:
 v2.12.2:
 - makes 'driver-xa-datasource-class-name' property optional in JDBC driver defintion
+- Windows integration
 v2.12.1:
 - Minor fix, add jcliff script to tar
 v2.12.0:
