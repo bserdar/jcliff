@@ -18,12 +18,18 @@ JCliff modifies the configuration incrementally. Only necessary parts
 of the configuration is modified, and if the required changes are already 
 applied, nothing is done.
 
-### How do I use puppet?
+### How do I use Puppet?
 
 Use puppet to lay down configuration files, and then have puppet
 execute jcliff. This way, you can define datasources, logging,
 etc. using puppet code and templates, and configure only what's
 necessary.
+
+### How do I use it with Ansible
+
+JCliff has been integrated into Ansible as part of its own
+[JCliff Collection](https://github.com/wildfly-extras/ansible_collections_jcliff),
+please refers to this project documentation.
 
 ### Can I use another configuration management tool?
 
@@ -45,6 +51,25 @@ A configuration file that sets the root level logging looks like
     }
   }
 }
+
+### How do I install JCliff on my system ?
+
+First of all, build the project using Maven:
+
+    $ mvn clean install
+
+Then create a directory and associate a environment variable called JCLIFF_HOME
+to it
+
+    $ mkdir -p /usr/local/jcliff
+    $ export JCLIFF_HOME=/usr/local/jcliff
+
+Copy the jcliff jar and its dependency to this directory:
+
+    $ cp -Rv target/dependency/ "${JCLIFF_HOME}"
+    $ cp target/jcliff*.jar "${JCLIFF_HOME}"
+
+From there, you can use the scripts provided in src/main/scripts to use jcliff.
 
 # Operation
 
