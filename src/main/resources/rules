@@ -45,3 +45,4 @@ configurable.27=transactions
 configurable.28=undertow
 configurable.29=teiid
 configurable.30=rbac
+configurable.31=interface

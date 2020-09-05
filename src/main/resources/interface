@@ -1,0 +1,43 @@
+#    Copyright 2013 Red Hat, Inc. and/or its affiliates.
+#
+#    This file is part of jcliff.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name=interface
+getContents=:read-children-resources(child-type=interface)
+server.preprocess.prepend=/interface
+
+#match.addInterface=add:/interface/*
+#addInterface.rule.1=/interface=${name(.)}:add(inet-address=${value(./inet-address)})
+#addInterface.rule.2=:reload
+
+match.addInterface=add:/interface/*
+addInterface.rule.1=/interface=${name(.)}:add(${if-defined (./inet-address),(,inet-address=${value(./inet-address)})} ${if-defined (./any-address),(,any-address=${value(./any-address)})} ${if-defined (./link-local-address),(,link-local-address=${value(./link-local-address)})} ${if-defined (./loopback),(,loopback=${value(./loopback-address)})} ${if-defined (./loopback-address),(,loopback-address=${value(./loopback-address)})} ${if-defined (./multicast),(,multicast=${value(./multicast)})} ${if-defined (./nic),(,nic=${value(./nic)})} ${if-defined (./nic-match),(,nic-match=${value(./nic-match)})} ${if-defined (./point-to-point),(,point-to-point=${value(./point-to-point)})} ${if-defined (./public-address),(,public-address=${value(./public-address)})} ${if-defined (./site-local-address),(,site-local-address=${value(./site-local-address)})} ${if-defined (./subnet-match),(,subnet-match=${value(./subnet-match)})} ${if-defined (./up),(,up=${value(./up)})} ${if-defined (./virtual),(,virtual=${value(./virtual)})})
+addInterface.rule.2=:reload
+
+match.modifyInterface=modify:/interface/*/*
+modifyInterface.rule.1=/interface="${name(..)}":write-attribute(name=${name(.)},value=${value(.)})
+modifyInterface.rule.2=:reload
+modifyInterface.refresh=true
+
+match.undefineInterfaceAttribute=undefine:/interface/*/*
+undefineInterfaceAttribute.rule.1=/interface=${name(..)}:undefine-attribute(name=${name(.)})
+undefineInterfaceAttribute.rule.2=:reload
+undefineInterfaceAttribute.refresh=true
+
+
+match.delete=remove:/interface/*
+delete.rule=/interface=${name(.)}:remove
+delete.refresh=true
