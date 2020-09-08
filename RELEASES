@@ -1,3 +1,5 @@
+v2.12.6:
+- adding rule for interface
 v2.12.5:
 - if usage is invoked, exit code should not be zero
 - add JCLIFF_DEBUG parameters to allow debugging JCLIFF without editing the jcliff script
