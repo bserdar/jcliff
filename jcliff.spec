@@ -1,15 +1,14 @@
-Name: 		jcliff
-Version: 	2.12.6
-Release: 	1%{?dist}
-Summary: 	JBoss configuration client front-end
-License: 	2013, Red Hat, Inc. and/or its affiliates.
-Group: 		Applications/File
+Name: 		      jcliff
+Version: 	      2.12.6
+Release: 	      1%{?dist}
+Summary: 	      JBoss configuration client front-end
+License: 	      2013, Red Hat, Inc. and/or its affiliates.
+Group: 		      Applications/File
 URL:           	https://github.com/bserdar/jcliff
 Source0:       	https://github.com/bserdar/jcliff/releases/download/v%{version}/%{name}-%{version}-dist.tar.gz
 BuildArch:      noarch
-BuildRoot: 	%{_tmppath}/%{name}-%{namedversion}-%{release}-root
+BuildRoot: 	    %{_tmppath}/%{name}-%{namedversion}-%{release}-root
 BuildRequires:  unzip
-
 
 %description
 Jcliff configures a running instance of EAP6/JBoss7 using modular configuration files.
@@ -18,61 +17,58 @@ Jcliff configures a running instance of EAP6/JBoss7 using modular configuration 
 tar -xf %{_sourcedir}/%{name}-%{version}-dist.tar.gz -C %{_sourcedir}
 
 %install
-
-mv %{_sourcedir}/%{name}-%{version} %{buildroot}
-ln -s %{_datadir}/%{name}-%{verison} %{buildroot}/%{_datadir}/jcliff
-ln -s %{_datadir}/%{name}-%{verison}/jcliff %{buildroot}/%{_datadir}/jcliff
-
-sudo mkdir -p %{_datadir}/%{name}-%{version}
-cp %{_sourcedir}/%{name}-%{version}/* %{_datadir}/%{name}-%{version}/
+mkdir -p %{buildroot}/%{_datadir}/jcliff
+mkdir -p %{buildroot}/%{_bindir}/jcliff
+mv %{_sourcedir}/%{name}-%{version}/* %{buildroot}/%{_datadir}/jcliff
+ls %{buildroot}/%{_datadir}/jcliff
+ln -s %{_datadir}/%{name}-%{version} %{buildroot}%{_datadir}/jcliff
+ln -s %{_datadir}/%{name}-%{version}/jcliff %{buildroot}%{_bindir}/jcliff
 
 %files
-%defattr(-,root,root,755)
-%doc LICENSE
-%dir %attr(755,root,root) "%{_datadir}/%{name}-%{version}"
-  "%{_datadir}/%{name}-%{version}/cookcc-0.3.3.jar"
-  "%{_datadir}/%{name}-%{version}/jboss-dmr-1.1.1.Final.jar"
-  "%{_datadir}/%{name}-%{version}/jcliff-2.12.6.jar"
-  "%{_datadir}/%{name}-%{version}/junit-4.4.jar"
-%dir %attr(755,root,root) "%{_datadir}/%{name}-%{version}/rules"
- "%{_datadir}/%{name}-%{version}/rules"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/jcliff"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/mail"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/rules"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/security"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/scanner"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/osgi"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/jgroups"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/ee"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/ejb3"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/jmx"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/extension"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/standard-sockets"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/messaging"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/infinispan"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/teiid"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/system-properties"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/datasource"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/interface"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/undertow"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/web"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/webservices"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/path"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/security-realms"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/threads"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/resource-adapter"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/xadatasource"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/remoting"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/jdbc-driver"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/logging"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/naming"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/rbac"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/transactions"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/rules/subsystem"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/cookcc-0.3.3.jar"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/jboss-dmr-1.1.1.Final.jar"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/jcliff"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/jcliff-2.12.6.jar"
-%attr(755,root,root)  "%{_datadir}/%{name}-%{version}/junit-4.4.jar"
-%attr(755,root,root)  "%{_datadir}/jcliff"
-  "{_datadir}/jcliff"
+%defattr(0644,root,root,0755)
+%{_bindir}/jcliff/jcliff
+%{_datadir}/jcliff/COPYING
+%{_datadir}/jcliff/README.markdown
+%{_datadir}/jcliff/cookcc-0.3.3.jar
+%{_datadir}/jcliff/jboss-dmr-1.1.1.Final.jar
+%{_datadir}/jcliff/jcliff
+%{_datadir}/jcliff/jcliff-2.12.6
+%{_datadir}/jcliff/jcliff-2.12.6.jar
+%{_datadir}/jcliff/jcliff.bat
+%{_datadir}/jcliff/junit-4.4.jar
+%{_datadir}/jcliff/rules/datasource
+%{_datadir}/jcliff/rules/ee
+%{_datadir}/jcliff/rules/ejb3
+%{_datadir}/jcliff/rules/extension
+%{_datadir}/jcliff/rules/infinispan
+%{_datadir}/jcliff/rules/interface
+%{_datadir}/jcliff/rules/jdbc-driver
+%{_datadir}/jcliff/rules/jgroups
+%{_datadir}/jcliff/rules/jmx
+%{_datadir}/jcliff/rules/logging
+%{_datadir}/jcliff/rules/mail
+%{_datadir}/jcliff/rules/messaging
+%{_datadir}/jcliff/rules/naming
+%{_datadir}/jcliff/rules/osgi
+%{_datadir}/jcliff/rules/path
+%{_datadir}/jcliff/rules/rbac
+%{_datadir}/jcliff/rules/remoting
+%{_datadir}/jcliff/rules/resource-adapter
+%{_datadir}/jcliff/rules/rules
+%{_datadir}/jcliff/rules/scanner
+%{_datadir}/jcliff/rules/security
+%{_datadir}/jcliff/rules/security-realms
+%{_datadir}/jcliff/rules/standard-sockets
+%{_datadir}/jcliff/rules/subsystem
+%{_datadir}/jcliff/rules/system-properties
+%{_datadir}/jcliff/rules/teiid
+%{_datadir}/jcliff/rules/threads
+%{_datadir}/jcliff/rules/transactions
+%{_datadir}/jcliff/rules/undertow
+%{_datadir}/jcliff/rules/web
+%{_datadir}/jcliff/rules/webservices
+%{_datadir}/jcliff/rules/xadatasource
+
+%changelog
+* Wed Dec 02 2020 Harsha Cherukuri <hcheruku@redhat.com> - 2.12.6-1
+- Initial release for Fedora COPR
