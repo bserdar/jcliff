@@ -25,7 +25,7 @@ addSocketBinding.refresh=true
 addSocketBinding.precedence=40
 
 match.addRSocketBinding=add:/standard-sockets/remote-destination-outbound-socket-binding/*
-addRSocketBinding.rule=/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=${name(.)}:add
+addRSocketBinding.rule=/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=${name(.)}:add(host=${value(host)}, port=${value(port)})
 addRSocketBinding.refresh=true
 addRSocketBinding.precedence=45
 
