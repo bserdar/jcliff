@@ -33,35 +33,8 @@ jobs:
       - name: Homebrew Release
         env:
           HOMEBREW_TAP_REPO: ${{ secrets.HOMEBREW_REPOSITORY }}
-          BREW_USER: ${{ secrets.BREW_USER }}
-          BREW_TOKEN: ${{ secrets.BREW_TOKEN }}
-        run: |
-          set -e
-
-          JCLIFF_TAG=${{ steps.get_version.outputs.TAG_VERSION }}
-          HOMEBREW_TAP_REPO="${HOMEBREW_TAP_REPO:-redhat-cop/homebrew-redhat-cop}"
-          REPO_NAME=$(basename $HOMEBREW_TAP_REPO)
-
-          SHA256=`sha256sum target/jcliff-${JCLIFF_TAG:1}-dist.tar.gz | cut -f1 -d ' '`
-          URL="https://github.com/bserdar/jcliff/releases/download/${JCLIFF_TAG}/jcliff-${JCLIFF_TAG:1}-dist.tar.gz"
-
-          rm -rf $REPO_NAME
-
-          git clone https://github.com/${HOMEBREW_TAP_REPO}.git
-
-          sed -i -e 's|^  url.*|  url "'"$URL"'"|g' $REPO_NAME/Formula/jcliff.rb
-          sed -i -e 's|^  sha256.*|  sha256 "'"$SHA256"'"|g' $REPO_NAME/Formula/jcliff.rb
-
-          cd $(basename $HOMEBREW_TAP_REPO)
-
-          git config user.name "Andrew Block"
-          git config user.email "andy.block@gmail.com"
-
-          git add Formula/jcliff.rb
-          git commit -m "jcliff ${JCLIFF_TAG} release"
-
-          if [[ ! -z $BREW_USER && ! -z $BREW_TOKEN ]]; then
-            git push https://${BREW_USER}:${BREW_GITHUB_TOKEN}@github.com/${HOMEBREW_TAP_REPO}.git
-          else
-            echo "BREW_USER and BREW_TOKEN variables not set. Skipping push..."
-          fi
+          BREW_GITHUB_USERNAME: ${{ secrets.BREW_GITHUB_USERNAME }}
+          BREW_GITHUB_TOKEN: ${{ secrets.BREW_GITHUB_TOKEN }}
+          BREW_GITHUB_USER: ${{ secrets.BREW_GITHUB_USER }}
+          BREW_GITHUB_EMAIL: ${{ secrets.BREW_GITHUB_EMAIL }}
+        run: ./src/main/scripts/homebrew-release.sh
