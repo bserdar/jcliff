@@ -21,9 +21,10 @@ git config user.email "${BREW_GITHUB_EMAIL:-andy.block@gmail.com}"
 
 git add Formula/jcliff.rb
 git commit -m "jcliff ${JCLIFF_TAG} release"
+git tag -a "jcliff-${JCLIFF_TAG}" -m "jcliff ${JCLIFF_TAG}"
 
 if [[ ! -z $BREW_GITHUB_USERNAME && ! -z $BREW_GITHUB_TOKEN ]]; then
-git push https://${BREW_GITHUB_USERNAME}:${BREW_GITHUB_TOKEN}@github.com/${HOMEBREW_TAP_REPO}.git
+git push https://${BREW_GITHUB_USERNAME}:${BREW_GITHUB_TOKEN}@github.com/${HOMEBREW_TAP_REPO}.git --follow-tags
 else
 echo "BREW_GITHUB_USERNAME and BREW_GITHUB_TOKEN variables not set. Skipping push..."
 fi
