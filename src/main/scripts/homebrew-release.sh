@@ -1,7 +1,7 @@
 set -e
 
 readonly JCLIFF_TAG="${{ steps.get_version.outputs.TAG_VERSION }}"
-readonly HOMEBREW_TAP_REPO="${HOMEBREW_TAP_REPO:-redhat-cop/homebrew-redhat-cop}"
+readonly HOMEBREW_TAP_REPO="${HOMEBREW_TAP_REPO:-ansible-middleware/homebrew-tap}"
 readonly REPO_NAME=$(basename $HOMEBREW_TAP_REPO)
 
 readonly SHA256=$(sha256sum target/jcliff-${JCLIFF_TAG:1}-dist.tar.gz | cut -f1 -d ' ')
