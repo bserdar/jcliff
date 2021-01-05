@@ -37,4 +37,5 @@ jobs:
           BREW_GITHUB_TOKEN: ${{ secrets.BREW_GITHUB_TOKEN }}
           BREW_GITHUB_USER: ${{ secrets.BREW_GITHUB_USER }}
           BREW_GITHUB_EMAIL: ${{ secrets.BREW_GITHUB_EMAIL }}
+          JCLIFF_TAG: "${{ steps.get_version.outputs.TAG_VERSION }}"
         run: ./src/main/scripts/homebrew-release.sh
