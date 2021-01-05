@@ -18,7 +18,7 @@ git clone "https://${HOMEBREW_TAP_REPO_HOST}/${HOMEBREW_TAP_REPO}.git"
 sed -i -e 's|^  url.*|  url "'"$DIST_TARBALL_URL"'"|g' "${REPO_NAME}/${FORMULA_PATH}"
 sed -i -e 's|^  sha256.*|  sha256 "'"$SHA256"'"|g' "${REPO_NAME}/${FORMULA_PATH}"
 
-cd $(basename "$HOMEBREW_TAP_REPO")
+cd "$(basename "${HOMEBREW_TAP_REPO}")"
 
 git config user.name "${BREW_GITHUB_USER:-Andrew Block}"
 git config user.email "${BREW_GITHUB_EMAIL:-andy.block@gmail.com}"
