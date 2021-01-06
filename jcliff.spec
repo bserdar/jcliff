@@ -5,7 +5,7 @@ Summary: 	      JBoss configuration client front-end
 License: 	      2013, Red Hat, Inc. and/or its affiliates.
 Group: 		      Applications/File
 URL:           	https://github.com/bserdar/jcliff
-Source0:       	https://github.com/bserdar/jcliff/archive/v%{version}.tar.gz
+Source0:       	https://github.com/bserdar/jcliff/releases/download/v%{version}/%{name}-%{version}-dist.tar.gz
 BuildArch:      noarch
 BuildRoot: 	    %{_tmppath}/%{name}-%{namedversion}-%{release}-root
 BuildRequires:  unzip
@@ -17,19 +17,22 @@ Jcliff configures a running instance of EAP6/JBoss7 using modular configuration 
 tar -xf %{_sourcedir}/%{name}-%{version}-dist.tar.gz -C %{_sourcedir}
 
 %install
-mkdir -p %{buildroot}/%{_datadir}/jcliff
-mkdir -p %{buildroot}/%{_bindir}/jcliff
-mv %{_sourcedir}/%{name}-%{version}/* %{buildroot}/%{_datadir}/jcliff
-ls %{buildroot}/%{_datadir}/jcliff
-ln -s %{_datadir}/%{name}-%{version} %{buildroot}%{_datadir}/jcliff
-ln -s %{_datadir}/%{name}-%{version}/jcliff %{buildroot}%{_bindir}/jcliff
+mkdir -p %{buildroot}/%{_datadir}/%{name}-%{version}
+mkdir -p %{buildroot}/%{_bindir}
+cp -R %{_sourcedir}/%{name}-%{version}/* %{buildroot}/%{_datadir}/%{name}-%{version}/
+ln -sf %{_datadir}/%{name}-%{version}  %{buildroot}%{_datadir}/jcliff
+ln -sf %{_datadir}/%{name}-%{version}/jcliff  %{buildroot}%{_bindir}/jcliff
 
 %files
-%defattr(0644,root,root,0755)
-%{_bindir}/jcliff/jcliff
-%{_datadir}/jcliff/
-%{_datadir}/jcliff/rules/
+%defattr(-,root,root,755)
+%dir %attr(755,root,root) %{_datadir}/%{name}-%{version}/
+  %{_datadir}/%{name}-%{version}/
+%dir %attr(755,root,root) %{_datadir}/%{name}-%{version}/rules
+  %{_datadir}/%{name}-%{version}/rules
+%attr(755,root,root) %{_datadir}/%{name}-%{version}/jcliff
+%attr(755,root,root) %{_datadir}/jcliff
+  %{_bindir}/jcliff
 
 %changelog
-* Wed Dec 02 2020 Harsha Cherukuri <hcheruku@redhat.com> - 2.12.6-1
+* Wed Dec 02 2020 Harsha Cherukuri <hcheruku@redhat.com> - 2.12.7-1
 - Initial release for Fedora COPR
