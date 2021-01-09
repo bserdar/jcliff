@@ -1,0 +1,152 @@
+name=messaging-activemq
+getContents=/subsystem=messaging-activemq:read-resource(recursive=true)
+server.preprocess.prepend=/messaging-activemq
+
+prefix.undefine=undefine:/
+undefine.rule.1=/subsystem=messaging-activemq${cmdpath(${path(..)})}:undefine-attribute(name=${name(.)})
+undefine.refresh=true
+
+match.removeServer=remove:/messaging-activemq/*
+removeServer.rule.1=/subsystem=messaging-activemq/server=${name(.)}:remove
+removeServer.rule.2=:reload
+removeServer.refresh=true
+
+match.add=add:/messaging-activemq/server/*
+add.rule=/subsystem=messaging-activemq/server=${name(.)}:add
+add.refresh=true
+add.precedence=5
+
+match.addQueue=add:/messaging-activemq/server/*/jms-queue/*
+addQueue.rule=jms-queue add --queue-address=${name(.)} --entries=${value(entries)} ${if-defined (durable),(--durable=${value(durable)})} ${if-defined (legacy-entries),(--legacy-entries=${value(legacy-entries)})} ${if-defined (headers),(--headers=${value(headers)})} ${if-defined (selector),(--selector=${value(selector)})}
+addQueue.precedence=20
+
+match.modifyQueue=modify:/messaging-activemq/server/*/jms-queue/*/*
+modifyQueue.rule=/subsystem=messaging-activemq/server=${name(../../..)}/jms-queue=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+modifyQueue.precedence=25
+
+match.addTopic=add:/messaging-activemq/server/*/jms-topic/*
+addTopic.rule=jms-topic add --topic-address=${name(.)} --entries=${value(entries)} ${if-defined (legacy-entries),(--legacy-entries=${value(legacy-entries)})} ${if-defined (headers),(--headers=${value(headers)})}
+addTopic.precedence=20
+
+match.modifyTopic=modify:/messaging-activemq/server/*/jms-topic/*/*
+modifyTopic.rule=/subsystem=messaging-activemq/server=${name(../../..)}/jms-topic=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+modifyTopic.precedence=25
+
+match.addConFactory=add:/messaging-activemq/server/*/connection-factory/*
+addConFactory.rule=/subsystem=messaging-activemq/server=${name(../..)}/connection-factory=${name(.)}:add(entries=${value(entries)}, ${if-defined (connectors),(,connectors=${value(connectors)})}, ${if-defined (discovery-group),(,discovery-group=${value(discovery-group)})}
+addConFactory.refresh=true
+addConFactory.precedence=20
+
+match.modifyConFactory=modify:/messaging-activemq/server/*/connection-factory/*/*
+modifyConFactory.rule=/subsystem=messaging-activemq/server=${name(../../..)}/connection-factory=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+
+match.modifyProperty=modify:/messaging-activemq/server/*/*
+modifyProperty.rule=/subsystem=messaging-activemq/server=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+
+match.addBridge=add:/messaging-activemq/jms-bridge/*
+addBridge.rule=/subsystem=messaging-activemq/jms-bridge=${name(.)}:add(quality-of-service=${value(quality-of-service)}, failure-retry-interval=${value(failure-retry-interval)}, max-retries=${value(max-retries)}, max-batch-size=${value(max-batch-size)}, max-batch-time=${value(max-batch-time)}, target-connection-factory=${value(target-connection-factory)}, target-destination=${value(target-destination)}, source-connection-factory=${value(source-connection-factory)}, source-destination=${value(source-destination)}, source-context=${value(source-context)})
+addBridge.refresh=true
+addBridge.precedence=10
+
+match.modifyBridgeProperty=modify:/messaging-activemq/jms-bridge/*/*
+modifyBridgeProperty.rule=/subsystem=messaging-activemq/jms-bridge=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)}
+
+match.addConnector=add:/messaging-activemq/server/*/connector/*
+addConnector.rule=/subsystem=messaging-activemq/server=${name(../..)}/connector=${name(.)}:add(factory-class=${value(factory-class)})
+addConnector.refresh=true
+addConnector.precedence=10
+
+match.modifyConnector=modify:/messaging-activemq/server/*/connector/*/*
+modifyConnector.rule=/subsystem=messaging-activemq/server=${name(../../..)}/connector=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyConnector.precedence=60
+
+match.addCoreBridge=add:/messaging-activemq/server/*/bridge/*
+addCoreBridge.rule.1=/subsystem=messaging-activemq/server=${name(../..)}/bridge=${name(.)}:add(static-connectors=${value(static-connectors)}, queue-name=${value(queue-name)}, discovery-group=${value(discovery-group)})
+addCoreBridge.rule.2=:reload
+addCoreBridge.refresh=true
+addCoreBridge.precedence=50
+
+match.modifyCoreBridge=modify:/messaging-activemq/server/*/bridge/*/*
+modifyCoreBridge.rule=/subsystem=messaging-activemq/server=${name(../../..)}/bridge=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyCoreBridge.precedence=60
+
+match.addAddressSetting=add:/messaging-activemq/server/*/address-setting/*
+addAddressSetting.rule=/subsystem=messaging-activemq/server=${name(../..)}/address-setting=${name(.)}:add()
+addAddressSetting.refresh=true
+addAddressSetting.precedence=50
+
+match.modifyAddressSetting=modify:/messaging-activemq/server/*/address-setting/*/*
+modifyAddressSetting.rule=/subsystem=messaging-activemq/server=${name(../../..)}/address-setting=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+
+match.addSecuritySetting=add:/messaging-activemq/server/*/security-setting/*
+addSecuritySetting.rule=/subsystem=messaging-activemq/server=${name(../..)}/security-setting=${name(.)}:add()
+addSecuritySetting.refresh=true
+addSecuritySetting.precedence=50
+
+match.addSecuritySettingRole=add:/messaging-activemq/server/*/security-setting/*/role/*
+addSecuritySettingRole.rule=/subsystem=messaging-activemq/server=${name(../../../..)}/security-setting=${name(../..)}/role=${name(.)}:add(send=${value(send)} ${if-defined (consume),(,consume=${value(consume)})} ${if-defined (create-non-durable-queue),(,create-non-durable-queue=${value(create-non-durable-queue)})} ${if-defined (delete-non-durable-queue),(,delete-non-durable-queue=${value(delete-non-durable-queue)})} ${if-defined (manage),(,manage=${value(manage)})} ${if-defined (create-durable-queue),(,create-durable-queue=${value(create-durable-queue)})} ${if-defined (delete-durable-queue),(,delete-durable-queue=${value(delete-durable-queue)})})
+addSecuritySettingRole.refresh=true
+addSecuritySettingRole.precedence=60
+
+match.removeSecuritySettingRole=remove:/messaging-activemq/server/*/security-setting/*/role/*
+removeSecuritySettingRole.rule=/subsystem=messaging-activemq/server=${name(../../../..)}/security-setting=${name(../..)}/role=${name(.)}:remove
+removeSecuritySettingRole.refresh=true
+removeSecuritySettingRole.precedence=60
+
+match.modifySecuritySettingPerm=modify:/messaging-activemq/server/*/security-setting/*/role/*/*
+modifySecuritySettingPerm.rule=/subsystem=messaging-activemq/server=${name(../../../../..)}/security-setting=${name(../../..)}/role=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+modifySecuritySettingPerm.precedence=65
+
+match.addRemoteAcceptor=add:/messaging-activemq/server/*/remote-acceptor/*
+addRemoteAcceptor.rule.1=/subsystem=messaging-activemq/server=${name(../..)}/remote-acceptor=${name(.)}:add(socket-binding=${value(socket-binding)})
+addRemoteAcceptor.rule.2=:reload
+addRemoteAcceptor.refresh=true
+addRemoteAcceptor.precedence=10
+
+match.modifyRemoteAcceptor=modify:/messaging-activemq/server/*/remote-acceptor/*/*
+modifyRemoteAcceptor.rule.1=/subsystem=messaging-activemq/server=${name(../../..)}/remote-acceptor=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+modifyRemoteAcceptor.rule.2=:reload
+modifyRemoteAcceptor.refresh=true
+modifyRemoteAcceptor.precedence=10
+
+match.addRemoteConnector=add:/messaging-activemq/server/*/remote-connector/*
+addRemoteConnector.rule.1=/subsystem=messaging-activemq/server=${name(../..)}/remote-connector=${name(.)}:add(socket-binding=${value(socket-binding)})
+addRemoteConnector.rule.2=:reload
+addRemoteConnector.refresh=true
+addRemoteConnector.precedence=10
+
+match.modifyRemoteConnector=modify:/messaging-activemq/server/*/remote-connector/*/*
+modifyRemoteConnector.rule.1=/subsystem=messaging-activemq/server=${name(../../..)}/remote-connector=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+modifyRemoteConnector.rule.2=:reload
+modifyRemoteConnector.precedence=10
+
+match.addInVMAcceptor=add:/messaging-activemq/server/*/in-vm-acceptor/*
+addInVMAcceptor.rule.1=/subsystem=messaging-activemq/server=${name(../..)}/in-vm-acceptor=${name(.)}:add(server-id=${value(server-id)})
+addInVMAcceptor.rule.2=:reload
+addInVMAcceptor.refresh=true
+addInVMAcceptor.precedence=10
+
+match.modifyInVMAcceptor=modify:/messaging-activemq/server/*/in-vm-connector/*/*
+modifyInVMAcceptor.rule=/subsystem=messaging-activemq/server=${name(../../..)}/in-vm-connector=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+
+match.addInVMConnector=add:/messaging-activemq/server/*/in-vm-connector/*
+addInVMConnector.rule.1=/subsystem=messaging-activemq/server=${name(../..)}/in-vm-connector=${name(.)}:add(server-id=${value(server-id)})
+addInVMConnector.rule.2=:reload
+addInVMConnector.refresh=true
+addInVMConnector.precedence=10
+
+match.modifyInVMConnector=modify:/messaging-activemq/server/*/in-vm-connector/*/*
+modifyInVMConnector.rule.1=/subsystem=messaging-activemq/server=${name(../../..)}/in-vm-connector=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+modifyInVMConnector.rule.2=:reload
+modifyInVMConnector.precedence=10
+
+
+match.addPooledCntFactory=add:/messaging-activemq/server/*/pooled-connection-factory/*
+addPooledCntFactory.rule=/subsystem=messaging-activemq/server=${name(../..)}/pooled-connection-factory=${name(.)}:add(connector=${value(connector)}, entries=${value(entries)}, discovery-group=${value(discovery-group)})
+addPooledCntFactory.refresh=true
+addPooledCntFactory.precedence=20
+
+match.modifyPooledCntFactory=modify:/messaging-activemq/server/*/pooled-connection-factory/*/*
+modifyPooledCntFactory.rule.1=/subsystem=messaging-activemq/server=${name(../../..)}/pooled-connection-factory=${name(..)}:write-attribute(name=${name(.)}, value=${value(.)})
+modifyPooledCntFactory.rule.2=:reload
+modifyPooledCntFactory.precedence=20
