@@ -43,7 +43,8 @@ addAuthLocalProp.rule=/core-service=management/security-realm=${name(../../..)}/
 addAuthLocalProp.precedence=40
 
 match.modifyAuthLocal=modify:/*/authentication/local/*
-modifyAuthLocal.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthLocal.rule.1=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthLocal.rule.2=:reload
 modifyAuthLocal.precedence=30
 
 match.removeAuthLocal=remove:/*/authentication/local
@@ -57,7 +58,8 @@ addAuthProperties.precedence=30
 addAuthProperties.refresh=true
 
 match.modifyAuthProperties=modify:/*/authentication/properties/*
-modifyAuthProperties.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthProperties.rule.1=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthProperties.rule.2=:reload
 modifyAuthProperties.precedence=30
 
 match.removeAuthProperties=remove:/*/authentication/properties
@@ -75,7 +77,8 @@ addAuthJaasProp.rule=/core-service=management/security-realm=${name(../../..)}/a
 addAuthJaasProp.precedence=40
 
 match.modifyAuthJaas=modify:/*/authentication/jaas/*
-modifyAuthJaas.rule=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthJaas.rule.1=/core-service=management/security-realm=${name(../../..)}/authentication=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthJaas.rule.2=:reload
 modifyAuthJaas.precedence=30
 
 match.removeAuthJaas=remove:/*/authentication/jaas
@@ -84,12 +87,14 @@ removeAuthJaas.precedence=25
 removeAuthJaas.refresh=true
 
 match.addAuthTruststore=add:/*/authentication/truststore
-addAuthTruststore.rule=/core-service=management/security-realm=${name(../..)}/authentication=truststore:add(keystore-password=${value(keystore-password)})
+addAuthTruststore.rule.1=/core-service=management/security-realm=${name(../..)}/authentication=truststore:add(keystore-password=${value(keystore-password)})
+addAuthTruststore.rule.2=:reload
 addAuthTruststore.precedence=40
 addAuthTruststore.refresh=true
 
 match.modifyAuthTruststore=modify:/*/authentication/truststore/*
-modifyAuthTruststore.rule=/core-service=management/security-realm=${name(../../..)}/authentication=truststore:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthTruststore.rule.1=/core-service=management/security-realm=${name(../../..)}/authentication=truststore:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthTruststore.rule.2=:reload
 modifyAuthTruststore.precedence=30
 
 match.removeAuthTruststore=remove:/*/authentication/truststore
@@ -103,7 +108,8 @@ addAuthorizationProperties.precedence=30
 addAuthorizationProperties.refresh=true
 
 match.modifyAuthorizationProperties=modify:/*/authorization/properties/*
-modifyAuthorizationProperties.rule=/core-service=management/security-realm=${name(../../..)}/authorization=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthorizationProperties.rule.1=/core-service=management/security-realm=${name(../../..)}/authorization=${name(..)}:write-attribute(name=${name(.)},value=${value(.)})
+modifyAuthorizationProperties.rule.2=:reload
 modifyAuthorizationProperties.precedence=30
 
 match.removeAuthorizationProperties=remove:/*/authorization/properties
@@ -112,12 +118,14 @@ removeAuthorizationProperties.precedence=25
 removeAuthorizationProperties.refresh=true
 
 match.addSslServerIdentity=add:/*/server-identity/ssl
-addSslServerIdentity.rule=/core-service=management/security-realm=${name(../..)}/server-identity=ssl:add(keystore-password=${value(keystore-password)})
+addSslServerIdentity.rule.1=/core-service=management/security-realm=${name(../..)}/server-identity=ssl:add(keystore-password=${value(keystore-password)})
+addSslServerIdentity.rule.2=:reload
 addSslServerIdentity.precedence=40
 addSslServerIdentity.refresh=true
 
 match.modifySslServerIdentity=modify:/*/server-identity/ssl/*
-modifySslServerIdentity.rule=/core-service=management/security-realm=${name(../../..)}/server-identity=ssl:write-attribute(name=${name(.)},value=${value(.)})
+modifySslServerIdentity.rule.1=/core-service=management/security-realm=${name(../../..)}/server-identity=ssl:write-attribute(name=${name(.)},value=${value(.)})
+modifySslServerIdentity.rule.2=:reload
 modifySslServerIdentity.precedence=30
 
 match.removeSslServerIdentity=remove:/*/server-identity/ssl
