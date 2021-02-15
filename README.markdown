@@ -1,8 +1,19 @@
-# Jcliff
+# JCliff
 ## What does it do?
 
 Jcliff configures a running instance of EAP6/JBoss7 using modular
 configuration files.
+
+## How to install it?
+
+JCliff is simple Java app, you can build it from the source code:
+
+    $ mvn clean install
+
+If you are using Linux and RPM to manage your software (RHEL, CentOS, Fedora...), there is a copr repos available:
+
+    $ yum install yum-plugin-copr  # to ensure copr is available to yum
+    $  dnf copr enable ansiblemiddleware/jcliff && dnf install jcliff -y
 
 ### But I can configure EAP6/JBoss7 by editing the configuration XML file....
 
