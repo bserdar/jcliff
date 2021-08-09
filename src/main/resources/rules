@@ -48,3 +48,4 @@ configurable.30=rbac
 configurable.31=interface
 configurable.32=keycloak
 configurable.33=messaging-activemq
+configurable.34=modcluster
