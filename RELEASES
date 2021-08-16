@@ -1,3 +1,12 @@
+v2.12.8:
+- created homebrew release process
+- rules for activemq
+- rules for mod_cluster
+- updates for security realm
+- updates to rpm generation
+v2.12.7:
+- rules for Keycloak
+- minor fix for socket bindings
 v2.12.6:
 - adding rule for interface
 v2.12.5:

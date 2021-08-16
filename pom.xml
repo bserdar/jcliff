@@ -22,7 +22,7 @@
   <groupId>com.redhat.util</groupId>
   <artifactId>jcliff</artifactId>
   <packaging>jar</packaging>
-  <version>2.12.7</version>
+  <version>2.12.8</version>
   <name>JBoss configuration client front-end</name>
   <developers>
     <developer>
@@ -46,34 +46,34 @@
   </contributors>
   <repositories>
     <repository>
-        <id>nexus</id>
-        <name>JBoss repo</name>
-        <url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
-        <releases>
-          <enabled>true</enabled>
-        </releases>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
+      <id>nexus</id>
+      <name>JBoss repo</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
   <dependencies>
-        <dependency>
-            <groupId>com.google.code.cookcc</groupId>
-            <artifactId>cookcc</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-dmr</artifactId>
-            <version>1.1.1.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>com.google.code.cookcc</groupId>
+      <artifactId>cookcc</artifactId>
+      <version>0.3.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-dmr</artifactId>
+      <version>1.1.1.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -108,12 +108,11 @@
             <id>copy</id>
             <phase>package</phase>
             <goals>
-               <goal>copy-dependencies</goal>
+              <goal>copy-dependencies</goal>
             </goals>
           </execution>
-         </executions>
-         <configuration>
-         </configuration>
+        </executions>
+        <configuration></configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -187,7 +186,7 @@
                 <source>
                   <location>src/main/resources</location>
                   <includes>
-                     <include>*</include>
+                    <include>*</include>
                   </includes>
                 </source>
               </sources>
@@ -196,9 +195,9 @@
               <directory>/usr/share/jcliff-${project.version}</directory>
               <filemode>755</filemode>
               <sources>
-                  <source>
-                    <destination>jcliff</destination>
-                    <location>src/main/scripts/jcliff</location>
+                <source>
+                  <destination>jcliff</destination>
+                  <location>src/main/scripts/jcliff</location>
                 </source>
               </sources>
             </mapping>
@@ -206,19 +205,19 @@
               <directory>/usr/share/</directory>
               <filemode>755</filemode>
               <sources>
-                  <softlinkSource>
-                    <destination>jcliff</destination>
-                    <location>/usr/share/jcliff-${project.version}</location>
+                <softlinkSource>
+                  <destination>jcliff</destination>
+                  <location>/usr/share/jcliff-${project.version}</location>
                 </softlinkSource>
               </sources>
             </mapping>
             <mapping>
               <directory>/usr/bin</directory>
               <sources>
-                 <softlinkSource>
-                     <destination>jcliff</destination>
-                     <location>/usr/share/jcliff-${project.version}/jcliff</location>
-                 </softlinkSource>
+                <softlinkSource>
+                  <destination>jcliff</destination>
+                  <location>/usr/share/jcliff-${project.version}/jcliff</location>
+                </softlinkSource>
               </sources>
             </mapping>
           </mappings>
@@ -227,6 +226,6 @@
     </plugins>
   </build>
   <properties>
-     <rpm.release>1</rpm.release>
+    <rpm.release>1</rpm.release>
   </properties>
 </project>
