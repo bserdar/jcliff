@@ -1,5 +1,5 @@
 Name: 		      jcliff
-Version: 	      2.12.7
+Version: 	      2.12.8
 Release: 	      1%{?dist}
 Summary: 	      JBoss configuration client front-end
 License: 	      2013, Red Hat, Inc. and/or its affiliates.
