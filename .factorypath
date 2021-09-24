@@ -1,0 +1,4 @@
+<factorypath>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/code/cookcc/cookcc/0.3.3/cookcc-0.3.3.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/jboss/jboss-dmr/1.1.1.Final/jboss-dmr-1.1.1.Final.jar" enabled="true" runInBatchMode="false"/>
+</factorypath>
