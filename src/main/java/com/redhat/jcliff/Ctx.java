@@ -99,7 +99,7 @@ public class Ctx {
                 if(x.hasDeployments())
                     s=cli.run(pre(x).getCmds(),0);
                 else
-                    s=cli.run(pre(x).getCmds());
+                    s=cli.run(pre(x).getCmds(), reconnectDelay);
                 if(!x.hasReload()) {
                     if(s==null)
                         throw new RuntimeException("Operation failed");
