@@ -53,11 +53,11 @@ public class Cli {
     }
 
     public String run(String command) {
-        return run(new String[] {command});
+        return run(new String[] {command}, ctx.reconnectDelay);
     }
 
     public String run(Script command) {
-        return run(command.getCmds());
+        return run(command.getCmds(), ctx.reconnectDelay);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Cli {
      * Runs the cli with a 20 sec timeout
      */
     public String run(String[] command) {
-        return run(command,20000);
+        return run(command);
     }
 
     /**
